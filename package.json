@@ -9,6 +9,32 @@
   "files": [
     "dist"
   ],
+  "license": "AGPL-3.0-only",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "node": {
+        "production": {
+          "import": "./dist/index.es.js",
+          "require": "./dist/index.cjs.js",
+          "default": "./dist/index.cjs.js"
+        },
+        "import": "./dist/index.es.js",
+        "require": "./dist/index.cjs.js",
+        "default": "./dist/index.cjs.js"
+      },
+      "module": "./dist/index.es.js",
+      "import": "./dist/index.es.js",
+      "require": "./dist/index.cjs.js",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.cjs.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.cjs.js",
+  "module": "./dist/index.es.js",
+  "browser": "./dist/index.es.js",
+  "types": "./dist/index.d.ts",
   "dependencies": {
     "@noble/hashes": "^1.8.0"
   },
@@ -28,7 +54,8 @@
     "globals": "^16.0.0",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.26.1",
-    "vite": "^6.3.1"
+    "vite": "^6.3.1",
+    "vite-plugin-dts": "^4.5.3"
   },
   "packageManager": "pnpm@8.15.4+sha1.c85a4305534f76d461407b59277b954bac97b5c4"
 }
