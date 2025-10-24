@@ -50,7 +50,7 @@ type WalletConnectStatus =
       session: SessionTypes.Struct;
     };
 
-export interface WalletConnectPlugin extends Plugin<WalletConnectAccount> {
+export interface WalletConnectProvider extends Plugin<WalletConnectAccount> {
   id: "walletconnect";
   accounts$: DefaultedStateObservable<WalletConnectAccount[]>;
 
@@ -58,12 +58,12 @@ export interface WalletConnectPlugin extends Plugin<WalletConnectAccount> {
   walletConnectStatus$: DefaultedStateObservable<WalletConnectStatus>;
 }
 
-export const walletConnectPlugin = (
+export const createWalletConnectProvider = (
   projectId: string,
   opts?: Partial<{
     persist: PersistenceProvider;
   }>
-): WalletConnectPlugin => {
+): WalletConnectProvider => {
   const { persist } = {
     persist: localStorageProvider("walletconnect-plugin"),
     ...opts,

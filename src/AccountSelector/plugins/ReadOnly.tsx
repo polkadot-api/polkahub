@@ -10,7 +10,7 @@ import {
 import { Account, Plugin } from "./plugin";
 import { DefaultedStateObservable, withDefault } from "@react-rxjs/core";
 
-export interface ReadOnlyPlugin extends Plugin {
+export interface ReadOnlyProvider extends Plugin {
   id: "readonly";
   accounts$: DefaultedStateObservable<Account[]>;
   setAccounts: (payload: SS58String[]) => void;
@@ -19,12 +19,12 @@ export interface ReadOnlyPlugin extends Plugin {
   toAccount: (address: SS58String) => Account;
 }
 
-export const createReadOnlyPlugin = (
+export const createReadOnlyProvider = (
   opts?: Partial<{
     fakeSigner: boolean;
     persist: PersistenceProvider;
   }>
-): ReadOnlyPlugin => {
+): ReadOnlyProvider => {
   const { fakeSigner, persist } = {
     fakeSigner: false,
     persist: localStorageProvider("readonly-accounts"),

@@ -1,6 +1,6 @@
 {
   "name": "@polkadot-api/react-components",
-  "version": "0.2.0",
+  "version": "0.2.0-local.4",
   "type": "module",
   "private": false,
   "scripts": {
@@ -37,7 +37,9 @@
   "module": "./dist/esm/index.mjs",
   "browser": "./dist/esm/index.mjs",
   "dependencies": {
+    "@ledgerhq/hw-transport": "^6.31.12",
     "@noble/hashes": "^2.0.1",
+    "@polkadot-api/ledger-signer": "^0.2.12",
     "@polkadot-api/meta-signers": "^0.1.16",
     "@polkadot-api/pjs-signer": "^0.6.16",
     "@polkadot-api/signers-common": "^0.1.17",
@@ -48,6 +50,7 @@
     "@walletconnect/types": "^2.22.4",
     "@walletconnect/universal-provider": "^2.22.4",
     "@walletconnect/utils": "^2.22.4",
+    "buffer": "^6.0.3",
     "polkadot-api": "^1.20.0",
     "rxjs": "^7.8.2"
   },

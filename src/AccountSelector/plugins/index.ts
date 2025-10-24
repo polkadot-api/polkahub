@@ -1,9 +1,10 @@
 export type * from "./plugin";
 export { type PersistenceProvider, localStorageProvider } from "./persist";
-export * from "./MultisigPlugin";
+export * from "./Multisig";
+export * from "./Ledger";
 export * from "./PjsWallet";
 export * from "./PolkadotVault";
-export * from "./ProxyPlugin";
+export * from "./Proxy";
 export * from "./ReadOnly";
 export * from "./SelectedAccount";
 export * from "./WalletConnect";

@@ -32,7 +32,7 @@ export interface MultisigAccount extends Account {
   info: MultisigInfo;
 }
 
-export interface MultisigPlugin extends Plugin<MultisigAccount> {
+export interface MultisigProvider extends Plugin<MultisigAccount> {
   id: "multisig";
   accounts$: DefaultedStateObservable<MultisigAccount[]>;
 
@@ -41,7 +41,7 @@ export interface MultisigPlugin extends Plugin<MultisigAccount> {
   removeMultisig: (addr: SS58String) => void;
 }
 
-export const multisigPlugin = (
+export const createMultisigProvider = (
   getMultisigInfo: (
     multisig: SS58String,
     callHash: FixedSizeBinary<32>
@@ -69,7 +69,7 @@ export const multisigPlugin = (
       persist: PersistenceProvider;
     } & MultisigSignerOptions<SS58String>
   >
-): MultisigPlugin => {
+): MultisigProvider => {
   const { persist } = {
     persist: localStorageProvider("multisigs"),
     ...opts,

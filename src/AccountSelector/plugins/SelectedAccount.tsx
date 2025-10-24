@@ -24,7 +24,7 @@ export interface SelectedAccountPlugin extends Plugin {
   setAccount: (value: Account | null) => void;
 }
 
-export const selectedAccountPlugin = (
+export const createSelectedAccountPlugin = (
   opts?: Partial<{
     persist: PersistenceProvider;
   }>
@@ -51,7 +51,9 @@ export const selectedAccountPlugin = (
       )
     );
   }).pipe(
-    timeout(3000),
+    timeout({
+      first: 3000,
+    }),
     catchError((ex) => {
       console.error(ex);
       return [null];

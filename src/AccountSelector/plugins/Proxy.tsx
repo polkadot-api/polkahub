@@ -23,7 +23,7 @@ export interface ProxyAccount extends Account {
   info: ProxyInfo;
 }
 
-export interface ProxyPlugin extends Plugin<ProxyAccount> {
+export interface ProxyProvider extends Plugin<ProxyAccount> {
   id: "proxy";
   accounts$: DefaultedStateObservable<ProxyAccount[]>;
 
@@ -32,11 +32,11 @@ export interface ProxyPlugin extends Plugin<ProxyAccount> {
   removeProxy: (proxy: ProxyInfo) => void;
 }
 
-export const proxyPlugin = (
+export const createProxyProvider = (
   opts?: Partial<{
     persist: PersistenceProvider;
   }>
-): ProxyPlugin => {
+): ProxyProvider => {
   const { persist } = {
     persist: localStorageProvider("proxies"),
     ...opts,

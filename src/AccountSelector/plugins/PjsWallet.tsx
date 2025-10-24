@@ -43,7 +43,7 @@ export interface PjsWalletAccount extends Account {
   injectedAccount: InjectedPolkadotAccount;
 }
 
-export interface PjsWalletPlugin extends Plugin<PjsWalletAccount> {
+export interface PjsWalletProvider extends Plugin<PjsWalletAccount> {
   id: "pjs-wallet";
   accounts$: DefaultedStateObservable<PjsWalletAccount[]>;
   accountGroups$: DefaultedStateObservable<Record<string, PjsWalletAccount[]>>;
@@ -62,11 +62,11 @@ export interface PjsWalletPlugin extends Plugin<PjsWalletAccount> {
   >;
 }
 
-export const pjsWallet = (
+export const createPjsWalletProvider = (
   opts?: Partial<{
     persist: PersistenceProvider;
   }>
-): PjsWalletPlugin => {
+): PjsWalletProvider => {
   const { persist } = {
     persist: localStorageProvider("pjs-wallet-plugin"),
     ...opts,

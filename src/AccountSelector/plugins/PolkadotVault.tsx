@@ -23,7 +23,7 @@ import {
 } from "./persist";
 import { Account, Plugin } from "./plugin";
 
-export interface AccountInfo {
+export interface VaultAccountInfo {
   address: SS58String;
   genesis: HexString;
 }
@@ -32,13 +32,13 @@ export interface PolkadotVaultAccount extends Account {
   genesis: HexString;
 }
 
-export interface PolkadotVaultPlugin extends Plugin<PolkadotVaultAccount> {
+export interface PolkadotVaultProvider extends Plugin<PolkadotVaultAccount> {
   id: "polkadot-vault";
   accounts$: DefaultedStateObservable<PolkadotVaultAccount[]>;
 
-  setAccounts: (payload: AccountInfo[]) => void;
-  addAccount: (payload: AccountInfo) => PolkadotVaultAccount;
-  removeAccount: (payload: AccountInfo) => void;
+  setAccounts: (payload: VaultAccountInfo[]) => void;
+  addAccount: (payload: VaultAccountInfo) => PolkadotVaultAccount;
+  removeAccount: (payload: VaultAccountInfo) => void;
 
   activeTx$: DefaultedStateObservable<Uint8Array<ArrayBufferLike> | null>;
   setTx: (payload: Uint8Array<ArrayBufferLike>) => void;
@@ -46,11 +46,11 @@ export interface PolkadotVaultPlugin extends Plugin<PolkadotVaultAccount> {
   cancelTx: () => void;
 }
 
-export const polkadotVaultPlugin = (
+export const createPolkadotVaultProvider = (
   opts?: Partial<{
     persist: PersistenceProvider;
   }>
-): PolkadotVaultPlugin => {
+): PolkadotVaultProvider => {
   const { persist } = {
     persist: localStorageProvider("polkadot-vault"),
     ...opts,
@@ -58,7 +58,7 @@ export const polkadotVaultPlugin = (
 
   const [vaultAccounts$, setVaultAccounts] = persistedState(
     persist,
-    [] as AccountInfo[]
+    [] as VaultAccountInfo[]
   );
 
   const [newTx$, setTx] = createSignal<Uint8Array>();
@@ -77,7 +77,7 @@ export const polkadotVaultPlugin = (
   const createVaultSigner = ({
     address,
     genesis,
-  }: AccountInfo): PolkadotSigner => {
+  }: VaultAccountInfo): PolkadotSigner => {
     const info = getSs58AddressInfo(address);
     if (!info.isValid) {
       throw new Error("Invalid SS58 address " + address);
@@ -88,8 +88,20 @@ export const polkadotVaultPlugin = (
     return {
       publicKey,
       async signBytes(data) {
-        // TODO
-        return data;
+        const qrPayload = createQrMessage(
+          VaultQrEncryption.Sr25519,
+          publicKey,
+          data,
+          Binary.fromHex(genesis).asBytes()
+        );
+        setTx(qrPayload);
+
+        const signature = await firstValueFrom(currentScannedSignature$);
+        if (!signature) {
+          throw new Error("Cancelled");
+        }
+
+        return signature;
       },
       async signTx(
         callData,
@@ -140,7 +152,9 @@ export const polkadotVaultPlugin = (
     };
   };
 
-  const accountInfoToAccount = (info: AccountInfo): PolkadotVaultAccount => ({
+  const accountInfoToAccount = (
+    info: VaultAccountInfo
+  ): PolkadotVaultAccount => ({
     provider: "polkadot-vault",
     address: info.address,
     genesis: info.genesis,
@@ -233,5 +247,21 @@ const createQrTransaction = (
     compact.enc(callData.length),
     callData,
     extensions,
+    genesisHash,
+  ]);
+
+const createQrMessage = (
+  encrpytion: VaultQrEncryption,
+  publicKey: Uint8Array,
+  data: Uint8Array,
+  genesisHash: Uint8Array
+) =>
+  mergeUint8([
+    VAULT_QR_HEADER,
+    new Uint8Array([encrpytion]),
+    new Uint8Array([VaultQrPayloadType.Message]),
+    publicKey,
+    compact.enc(data.length),
+    data,
     genesisHash,
   ]);
