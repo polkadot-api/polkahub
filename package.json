@@ -1,6 +1,6 @@
 {
   "name": "@polkadot-api/react-components",
-  "version": "0.2.0-local.4",
+  "version": "0.3.0",
   "type": "module",
   "private": false,
   "scripts": {
@@ -14,65 +14,42 @@
   "sideEffects": false,
   "exports": {
     ".": {
-      "node": {
-        "production": {
-          "import": "./dist/esm/index.mjs",
-          "require": "./dist/index.js",
-          "default": "./dist/index.js"
-        },
-        "import": "./dist/esm/index.mjs",
-        "require": "./dist/index.js",
-        "default": "./dist/index.js"
-      },
-      "types": "./dist/index.d.ts",
-      "module": "./dist/esm/index.mjs",
-      "import": "./dist/esm/index.mjs",
-      "require": "./dist/index.js",
-      "default": "./dist/index.js"
+      "types": "./dist/src/index.d.ts",
+      "module": "./dist/src/index.js",
+      "import": "./dist/src/index.js",
+      "default": "./dist/src/index.js"
     },
     "./package.json": "./package.json"
   },
-  "types": "./dist/index.d.ts",
-  "main": "./dist/index.js",
-  "module": "./dist/esm/index.mjs",
-  "browser": "./dist/esm/index.mjs",
+  "types": "./dist/src/index.d.ts",
+  "main": "./dist/src/index.js",
+  "module": "./dist/src/index.js",
+  "browser": "./dist/src/index.js",
   "dependencies": {
-    "@ledgerhq/hw-transport": "^6.31.12",
     "@noble/hashes": "^2.0.1",
-    "@polkadot-api/ledger-signer": "^0.2.12",
-    "@polkadot-api/meta-signers": "^0.1.16",
-    "@polkadot-api/pjs-signer": "^0.6.16",
-    "@polkadot-api/signers-common": "^0.1.17",
     "@polkadot-api/substrate-bindings": "^0.16.4",
-    "@react-rxjs/core": "^0.10.8",
-    "@react-rxjs/utils": "^0.9.7",
-    "@reown/appkit": "^1.8.11",
-    "@walletconnect/types": "^2.22.4",
-    "@walletconnect/universal-provider": "^2.22.4",
-    "@walletconnect/utils": "^2.22.4",
-    "buffer": "^6.0.3",
-    "polkadot-api": "^1.20.0",
-    "rxjs": "^7.8.2"
+    "lucide-react": "^0.548.0"
   },
   "peerDependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.37.0",
-    "@types/node": "^24.7.2",
+    "@eslint/js": "^9.38.0",
+    "@types/node": "^24.9.1",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
-    "@vitejs/plugin-react": "^5.0.4",
-    "eslint": "^9.37.0",
-    "eslint-plugin-react-hooks": "^7.0.0",
-    "eslint-plugin-react-refresh": "^0.4.23",
+    "@vitejs/plugin-react": "^5.1.0",
+    "eslint": "^9.38.0",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.4.0",
     "rollup": "^4.52.5",
     "rollup-plugin-dts": "^6.2.3",
     "rollup-plugin-esbuild": "^6.2.1",
+    "rollup-plugin-postcss": "^4.0.2",
     "typescript": "~5.9.3",
-    "typescript-eslint": "^8.46.1"
+    "typescript-eslint": "^8.46.2"
   },
   "packageManager": "pnpm@8.15.4+sha1.c85a4305534f76d461407b59277b954bac97b5c4"
 }

@@ -1,4 +1,10 @@
-import { PropsWithChildren, ReactNode, useEffect, useState } from "react";
+import {
+  PropsWithChildren,
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 export const CopyText: React.FC<
   PropsWithChildren<{
@@ -9,6 +15,8 @@ export const CopyText: React.FC<
   }>
 > = ({ text, className, children, copiedIndicator, disabled }) => {
   const [copied, setCopied] = useState(false);
+  const ref = useRef<HTMLButtonElement | null>(null);
+
   const copy = async (evt: React.MouseEvent) => {
     if (disabled) return;
     evt.stopPropagation();
@@ -22,8 +30,17 @@ export const CopyText: React.FC<
     }
   }, [copied]);
 
+  useEffect(() => {
+    if (!ref.current) return;
+    const element = ref.current;
+    const handleEvt = (evt: MouseEvent) => evt.preventDefault();
+    element.addEventListener("click", handleEvt);
+    return () => element.removeEventListener("click", handleEvt);
+  }, []);
+
   return (
     <button
+      ref={ref}
       aria-label="copy"
       disabled={disabled || copied}
       className={className}

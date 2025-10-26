@@ -1,0 +1,67 @@
+
+.AccountDisplay {
+    --ad-spacing: var(--spacing, 0.25rem);
+
+    padding: var(--ad-spacing);
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    gap: calc(var(--ad-spacing) * 2);
+    text-align: left;
+    line-height: 1;
+}
+
+.AccountDisplay .Identicon, .AccountDisplay_copied {
+    height: calc(var(--ad-spacing) * 8);
+    width: calc(var(--ad-spacing) * 8);
+}
+.AccountDisplay_copied {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.AccountDisplay .SplitText {
+    font-family: Courier, monospace;
+}
+
+.AccountDisplay_full-info .SplitText {
+    font-size: small;
+}
+
+
+.AccountDisplay_name {
+    font-weight: 500;
+}
+.AccountDisplay_subIdSeparator {
+    font-weight: lighter;
+}
+.AccountDisplay_subId {
+    font-weight: 300;
+}
+
+.AccountDisplay_name-display {
+    display: flex;
+    align-items: center;
+    gap: var(--ad-spacing);
+}
+
+
+.SplitText {
+    overflow: hidden;
+}
+.SplitText span {
+    display: inline-block;
+    max-width: 50%;
+    overflow: hidden;
+    white-space: pre;
+    vertical-align: middle;
+}
+.SplitText .first {
+    text-overflow: ellipsis;
+}
+
+.SplitText .second {
+    text-overflow: clip;
+    direction: rtl;
+}

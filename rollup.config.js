@@ -1,5 +1,6 @@
 import dts from "rollup-plugin-dts";
 import esbuild from "rollup-plugin-esbuild";
+import postcss from "rollup-plugin-postcss";
 
 const commonOptions = {
   input: "src/index.ts",
@@ -9,27 +10,29 @@ const commonOptions = {
 export default [
   {
     ...commonOptions,
-    plugins: [esbuild()],
+    plugins: [
+      postcss({
+        extract: false,
+        inject: true,
+        minimize: true,
+      }),
+      esbuild(),
+    ],
     output: [
       {
-        file: `dist/index.js`,
-        format: "cjs",
-        sourcemap: true,
-      },
-      {
-        dir: `dist/esm`,
+        dir: `dist`,
         format: "es",
         sourcemap: true,
         preserveModules: true,
-        entryFileNames: "[name].mjs",
+        entryFileNames: "[name].js",
       },
     ],
   },
   {
     ...commonOptions,
-    plugins: [dts()],
+    plugins: [postcss(), dts()],
     output: {
-      file: `dist/index.d.ts`,
+      file: `dist/src/index.d.ts`,
       format: "es",
     },
   },

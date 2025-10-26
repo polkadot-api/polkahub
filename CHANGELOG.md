@@ -1,3 +1,9 @@
+## 0.3.0 - 2025-10-26
+
+### Added
+
+- `AccountDisplay` component to show Identicon, name and address of an account.
+
 ## 0.2.0 - 2025-10-14
 
 ### Added
