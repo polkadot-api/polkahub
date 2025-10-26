@@ -1,6 +1,6 @@
 {
-  "name": "@polkahub/select-account",
-  "version": "0.1.0",
+  "name": "@polkahub/ui-components",
+  "version": "0.1.0-local.0",
   "license": "MIT",
   "sideEffects": false,
   "type": "module",
@@ -25,14 +25,10 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@polkadot-api/react-components": "^0.3.1",
-    "@polkadot-api/substrate-bindings": "^0.16.4",
-    "@polkahub/context": "workspace:*",
-    "@polkahub/plugin": "workspace:*",
-    "@polkahub/ui-components": "workspace:*",
-    "@react-rxjs/core": "^0.10.8",
-    "@react-rxjs/utils": "^0.9.7",
-    "rxjs": "^7.8.2"
+    "@radix-ui/react-slot": "^1.2.3",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.3.1"
   },
   "peerDependencies": {
     "@types/react": "^19.2.2",

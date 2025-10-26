@@ -1,15 +1,21 @@
 import { Plugin } from "@polkahub/plugin";
-import { RemoveSubscribe, Subscribe } from "@react-rxjs/core";
+import { state, useStateObservable } from "@react-rxjs/core";
 import type { SS58String } from "polkadot-api";
 import { FC, PropsWithChildren, useEffect, useId } from "react";
 import { EMPTY, merge } from "rxjs";
 import { Identity, PolkaHubContext } from "./context";
 import {
   addInstance,
+  availableAccounts$,
+  changeIdentityProvider,
   removeInstance,
   setPlugins,
-  subscription$,
 } from "./state";
+
+const defaultedAvailableAccounts$ = state(
+  (id: string) => availableAccounts$(id),
+  {}
+);
 
 type ProviderProps = PropsWithChildren<{
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -20,50 +26,14 @@ export const PolkaHubProvider: FC<ProviderProps> = ({
   children,
   plugins,
   getIdentity = async () => null,
-  ...rest
 }) => {
   const id = useId();
+  const availableAccounts = useStateObservable(defaultedAvailableAccounts$(id));
 
-  // TODO look performance implications of this double-render, if stuff unmounts and remounts or if it's properly reused
-  return (
-    <Subscribe
-      source$={subscription$(id)}
-      fallback={
-        <PolkaHubContext
-          value={{
-            getIdentity,
-            id,
-            plugins,
-            availableAccounts: {},
-          }}
-        >
-          <RemoveSubscribe>{children}</RemoveSubscribe>
-        </PolkaHubContext>
-      }
-    >
-      <InternalPolkaHubProvider
-        id={id}
-        plugins={plugins}
-        getIdentity={getIdentity}
-        {...rest}
-      >
-        <RemoveSubscribe>{children}</RemoveSubscribe>
-      </InternalPolkaHubProvider>
-    </Subscribe>
-  );
-};
-
-const InternalPolkaHubProvider: FC<
-  ProviderProps & {
-    id: string;
-  }
-> = ({ id, children, plugins, getIdentity = async () => null }) => {
   useEffect(() => {
     addInstance(id);
-    const sub = subscription$(id).subscribe();
     return () => {
       removeInstance(id);
-      sub.unsubscribe();
     };
   }, [id]);
 
@@ -74,13 +44,17 @@ const InternalPolkaHubProvider: FC<
     return () => sub.unsubscribe();
   }, [id, plugins]);
 
+  useEffect(() => {
+    changeIdentityProvider(id, getIdentity);
+  }, [id, getIdentity]);
+
   return (
     <PolkaHubContext
       value={{
         id,
         plugins,
         getIdentity,
-        availableAccounts: {},
+        availableAccounts,
       }}
     >
       {children}

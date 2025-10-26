@@ -1,3 +1,4 @@
+import type { Account, Plugin } from "@polkahub/plugin";
 import {
   DefaultedStateObservable,
   state,
@@ -9,8 +10,9 @@ import {
   createSignal,
   mergeWithKey,
 } from "@react-rxjs/utils";
-import { map, scan } from "rxjs";
-import type { Account, Plugin } from "@polkahub/plugin";
+import { SS58String } from "polkadot-api";
+import { distinctUntilChanged, map, merge, scan } from "rxjs";
+import { Identity } from "./context";
 
 const [addInstance$, addInstance] = createSignal<string>();
 const [removeInstance$, removeInstance] = createSignal<string>();
@@ -26,7 +28,6 @@ export const contextInstances$: DefaultedStateObservable<string[]> = state(
   ),
   []
 );
-contextInstances$.subscribe();
 
 const [pluginsChange$, changePlugins] = createKeyedSignal<string, Plugin[]>();
 export const setPlugins = (id: string, plugins: Plugin[]) => {
@@ -52,8 +53,18 @@ export const availableAccounts$: (
   )
 );
 
-export const subscription$: (
+export const [identityProviderChange$, changeIdentityProvider] =
+  createKeyedSignal<
+    string,
+    (address: SS58String) => Promise<Identity | null>
+  >();
+export const identityProvider$: (
   id: string
-) => StateObservable<Record<string, Account[]>> = state((id: string) =>
-  availableAccounts$(id)
+) => StateObservable<(address: SS58String) => Promise<Identity | null>> = state(
+  (id: string) => identityProviderChange$(id).pipe(distinctUntilChanged())
 );
+
+const subscription$: (id: string) => StateObservable<unknown> = state(
+  (id: string) => merge(availableAccounts$(id), identityProvider$(id))
+);
+combineKeys(contextInstances$, subscription$).subscribe();

@@ -1,3 +1,9 @@
 export * from "./context";
 export * from "./PolkaHubProvider";
-export * from "./state";
+export {
+  contextInstances$,
+  setPlugins,
+  plugins$,
+  availableAccounts$,
+  identityProvider$,
+} from "./state";

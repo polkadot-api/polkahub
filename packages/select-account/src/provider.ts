@@ -14,7 +14,7 @@ import {
   takeUntil,
   timeout,
 } from "rxjs";
-import { usePolkaHubContext } from "@polkahub/context";
+import { plugins$, usePolkaHubContext } from "@polkahub/context";
 import {
   localStorageProvider,
   PersistenceProvider,
@@ -133,3 +133,17 @@ export const useSelectedAccount = () => {
 
   return [selectedAccount, plugin.setAccount] as const;
 };
+
+export const selectedAccountPlugin$ = (id: string) =>
+  plugins$(id).pipe(
+    map(
+      (plugins) =>
+        plugins.find((plugin) => plugin.id === "select-account") as
+          | SelectedAccountPlugin
+          | undefined
+    )
+  );
+export const selectedAccount$ = (id: string) =>
+  selectedAccountPlugin$(id).pipe(
+    switchMap((v) => v?.selectedAccount$ ?? [null])
+  );
