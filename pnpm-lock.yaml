@@ -51,8 +51,8 @@ importers:
   packages/context:
     dependencies:
       '@polkadot-api/react-components':
-        specifier: ^0.3.1
-        version: 0.3.1(react-dom@19.2.0)(react@19.2.0)
+        specifier: ^0.3.2
+        version: 0.3.2(react-dom@19.2.0)(react@19.2.0)
       '@polkahub/plugin':
         specifier: workspace:*
         version: link:../plugin
@@ -325,8 +325,8 @@ importers:
   packages/select-account:
     dependencies:
       '@polkadot-api/react-components':
-        specifier: ^0.3.1
-        version: 0.3.1(react-dom@19.2.0)(react@19.2.0)
+        specifier: ^0.3.2
+        version: 0.3.2(react-dom@19.2.0)(react@19.2.0)
       '@polkadot-api/substrate-bindings':
         specifier: ^0.16.4
         version: 0.16.4
@@ -1317,8 +1317,8 @@ packages:
       '@polkadot-api/json-rpc-provider': 0.0.4
     dev: false
 
-  /@polkadot-api/react-components@0.3.1(react-dom@19.2.0)(react@19.2.0):
-    resolution: {integrity: sha512-DP9NjOQyLc+BrGJvnXhQUfdnf8OCyQKtnoaj2QdHmYfvA6mz0tE3U43bJPIAngjGlTCdzLFgS4pZOn3ZlLXUQg==}
+  /@polkadot-api/react-components@0.3.2(react-dom@19.2.0)(react@19.2.0):
+    resolution: {integrity: sha512-eg9JJmfuAt+Gndshc7IsTeqKY49VrdYHbRHgqthhXNShJAZbMKvkU5wSc3FYAsVBgv9xtYATmOOL0eQsTsyKRA==}
     peerDependencies:
       react: ^19.0.0
       react-dom: ^19.0.0

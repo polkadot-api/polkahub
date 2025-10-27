@@ -1,6 +1,6 @@
 {
   "name": "@polkahub/select-account",
-  "version": "0.1.0-pre.0",
+  "version": "0.1.0-pre.1",
   "license": "MIT",
   "sideEffects": false,
   "type": "module",
@@ -27,7 +27,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@polkadot-api/react-components": "^0.3.1",
+    "@polkadot-api/react-components": "^0.3.2",
     "@polkadot-api/substrate-bindings": "^0.16.4",
     "@polkahub/context": "workspace:*",
     "@polkahub/plugin": "workspace:*",

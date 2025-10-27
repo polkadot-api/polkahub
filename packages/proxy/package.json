@@ -1,6 +1,6 @@
 {
   "name": "@polkahub/proxy",
-  "version": "0.1.0-pre.0",
+  "version": "0.1.0-pre.1",
   "license": "MIT",
   "sideEffects": false,
   "type": "module",

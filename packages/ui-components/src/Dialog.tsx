@@ -1,7 +1,7 @@
-import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { XIcon } from "lucide-react";
-import { cn } from "@polkahub/ui-components";
+import * as React from "react";
+import { cn } from "./utils";
 
 function Dialog({
   ...props
@@ -142,6 +142,7 @@ function DialogBody({
 
 export {
   Dialog,
+  DialogBody,
   DialogClose,
   DialogContent,
   DialogDescription,
@@ -151,5 +152,4 @@ export {
   DialogPortal,
   DialogTitle,
   DialogTrigger,
-  DialogBody,
 };
