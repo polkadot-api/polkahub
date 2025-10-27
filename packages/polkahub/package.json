@@ -1,6 +1,6 @@
 {
   "name": "polkahub",
-  "version": "0.1.0",
+  "version": "0.1.0-pre.0",
   "license": "MIT",
   "sideEffects": false,
   "type": "module",
