@@ -1,6 +1,13 @@
+import {
+  Account,
+  localStorageProvider,
+  persistedState,
+  PersistenceProvider,
+  Plugin,
+} from "@polkahub/plugin";
 import { DefaultedStateObservable, state, withDefault } from "@react-rxjs/core";
 import { createSignal } from "@react-rxjs/utils";
-import { createAppKit } from "@reown/appkit/core";
+import { CaipNetwork, createAppKit } from "@reown/appkit/core";
 import { defineChain } from "@reown/appkit/networks";
 import { SessionTypes } from "@walletconnect/types";
 import UniversalProvider from "@walletconnect/universal-provider";
@@ -27,14 +34,8 @@ import {
   takeUntil,
   tap,
 } from "rxjs";
-import {
-  localStorageProvider,
-  persistedState,
-  PersistenceProvider,
-  Plugin,
-  Account,
-} from "@polkahub/plugin";
 
+export const walletConnectProviderId = "walletconnect";
 export interface WalletConnectAccount extends Account {
   provider: "walletconnect";
 }
@@ -59,50 +60,118 @@ export interface WalletConnectProvider extends Plugin<WalletConnectAccount> {
   walletConnectStatus$: DefaultedStateObservable<WalletConnectStatus>;
 }
 
+// https://docs.reown.com/appkit/upgrade/wcm#polkadot
+// https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-13.md
+export const createPolkadotChain = (
+  name: string,
+  genesis: string,
+  nativeCurrency: CaipNetwork["nativeCurrency"],
+  rpcUrl: string,
+  subscanUrl?: string
+) => {
+  const id = genesis.startsWith("0x")
+    ? genesis.slice(2, 34)
+    : genesis.slice(0, 32);
+  return defineChain({
+    id,
+    name,
+    nativeCurrency,
+    rpcUrls: {
+      default: {
+        http: [rpcUrl.replace(/^ws/, "http")],
+        wss: rpcUrl.replace(/^http/, "ws"),
+      },
+    },
+    blockExplorers: subscanUrl
+      ? {
+          default: {
+            name: "Subscan",
+            url: `https://${subscanUrl}/`,
+          },
+        }
+      : undefined,
+    chainNamespace: "polkadot",
+    caipNetworkId: `polkadot:${id}`,
+  });
+};
+
+export { defineChain as createGenericChain };
+
+export const knownCurrencies = {
+  DOT: { name: "Polkadot", symbol: "DOT", decimals: 10 },
+  KSM: { name: "Kusama", symbol: "KSM", decimals: 12 },
+  PAS: { name: "Paseo", symbol: "PAS", decimals: 12 },
+};
+export const knownChains = {
+  polkadot: createPolkadotChain(
+    "Polkadot",
+    "91b171bb158e2d3848fa23a9f1c25182",
+    knownCurrencies.DOT,
+    "wss://rpc.polkadot.io",
+    "https://polkadot.subscan.io/"
+  ),
+  polkadotAh: createPolkadotChain(
+    "Polkadot AssetHub",
+    "0x68d56f15f85d3136970ec16946040bc1",
+    knownCurrencies.DOT,
+    "wss://asset-hub-polkadot-rpc.dwellir.com",
+    "https://assethub-polkadot.subscan.io/"
+  ),
+  kusama: createPolkadotChain(
+    "Kusama",
+    "0xb0a8d493285c2df73290dfb7e61f870f",
+    knownCurrencies.KSM,
+    "wss://kusama-rpc.dwellir.com",
+    "https://kusama.subscan.io/"
+  ),
+  kusamaAh: createPolkadotChain(
+    "Kusama AssetHub",
+    "0x68d56f15f85d3136970ec16946040bc1",
+    knownCurrencies.KSM,
+    "wss://kusama-asset-hub-rpc.polkadot.io",
+    "https://assethub-kusama.subscan.io/"
+  ),
+  paseo: createPolkadotChain(
+    "paseo",
+    "0x77afd6190f1554ad45fd0d31aee62aac",
+    knownCurrencies.PAS,
+    "wss://paseo-rpc.dwellir.com",
+    "https://paseo.subscan.io/"
+  ),
+  paseoAh: createPolkadotChain(
+    "paseo AssetHub",
+    "0xd6eec26135305a8ad257a20d00335728",
+    knownCurrencies.PAS,
+    "wss://asset-hub-paseo-rpc.dwellir.com",
+    "https://assethub-paseo.subscan.io/"
+  ),
+};
+
 export const createWalletConnectProvider = (
   projectId: string,
+  networks: [CaipNetwork, ...CaipNetwork[]],
   opts?: Partial<{
     persist: PersistenceProvider;
+    relayUrl: string;
   }>
 ): WalletConnectProvider => {
-  const { persist } = {
+  const { persist, relayUrl } = {
     persist: localStorageProvider("walletconnect-plugin"),
+    relayUrl: "wss://relay.walletconnect.com",
     ...opts,
   };
 
   // https://docs.reown.com/advanced/multichain/polkadot/dapp-integration-guide
   const universalProvider = UniversalProvider.init({
     projectId,
-    relayUrl: "wss://relay.walletconnect.com",
-  });
-
-  // https://docs.reown.com/appkit/upgrade/wcm#polkadot
-  const polkadot = defineChain({
-    // https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-13.md
-    id: "91b171bb158e2d3848fa23a9f1c25182",
-    name: "Polkadot",
-    nativeCurrency: { name: "Polkadot", symbol: "DOT", decimals: 10 },
-    rpcUrls: {
-      default: {
-        http: ["https://rpc.polkadot.io"],
-        wss: "wss://rpc.polkadot.io",
-      },
-    },
-    blockExplorers: {
-      default: {
-        name: "Polkadot Explorer",
-        url: "https://polkadot.js.org/apps/",
-      },
-    },
-    chainNamespace: "polkadot",
-    caipNetworkId: "polkadot:91b171bb158e2d3848fa23a9f1c25182",
+    relayUrl,
   });
 
   const walletConnectModal = universalProvider.then((universalProvider) =>
     createAppKit({
       projectId,
       universalProvider,
-      networks: [polkadot],
+      networks,
       manualWCControl: true,
     })
   );
@@ -111,6 +180,8 @@ export const createWalletConnectProvider = (
     uri?: string;
     approval: () => Promise<SessionTypes.Struct>;
   }
+
+  const chains = networks.map((chain) => chain.caipNetworkId);
 
   const provider$ = from(universalProvider);
   const initializeSession$ = () =>
@@ -121,7 +192,7 @@ export const createWalletConnectProvider = (
             requiredNamespaces: {
               polkadot: {
                 methods: ["polkadot_signTransaction", "polkadot_signMessage"],
-                chains: [polkadot].map((chain) => chain.caipNetworkId),
+                chains,
                 events: ["chainChanged", "accountsChanged"],
               },
             },
@@ -141,10 +212,7 @@ export const createWalletConnectProvider = (
         (handler) => modal.subscribeState(handler),
         (_, fn) => fn()
       );
-      const closed$ = modal$.pipe(
-        tap((v) => console.log("modal event", v)),
-        filter(({ open }) => !open)
-      );
+      const closed$ = modal$.pipe(filter(({ open }) => !open));
 
       return from(approval()).pipe(
         takeUntil(closed$),
@@ -231,6 +299,7 @@ export const createWalletConnectProvider = (
     Object.values(session.namespaces)
       .map((namespace) => namespace.accounts)
       .flat()
+      // Format: `polkadot:{genesis_hash}:{account_id}`
       .map((wcAccount) => wcAccount.split(":")[2]);
 
   const getSigner = (session: SessionTypes.Struct, address: string) =>
@@ -279,10 +348,9 @@ export const createWalletConnectProvider = (
   ): WalletConnectAccount[] => {
     const accounts = getAccounts(session);
     return accounts.map((address) => ({
-      provider: "walletconnect",
+      provider: walletConnectProviderId,
       address,
       signer: getSigner(session, address),
-      // TODO name?
     }));
   };
 
@@ -294,7 +362,7 @@ export const createWalletConnectProvider = (
   );
 
   return {
-    id: "walletconnect",
+    id: walletConnectProviderId,
     deserialize: (account) =>
       firstValueFrom(
         accounts$.pipe(

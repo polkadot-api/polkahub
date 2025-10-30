@@ -26,7 +26,9 @@
   },
   "dependencies": {
     "@polkadot-api/substrate-bindings": "^0.16.4",
+    "@polkahub/context": "workspace:*",
     "@polkahub/plugin": "workspace:*",
+    "@polkahub/select-account": "workspace:*",
     "@react-rxjs/core": "^0.10.8",
     "@react-rxjs/utils": "^0.9.7",
     "@reown/appkit": "^1.8.11",
