@@ -7,11 +7,9 @@ import {
 } from "@polkahub/plugin";
 import { DefaultedStateObservable, state, withDefault } from "@react-rxjs/core";
 import { createSignal } from "@react-rxjs/utils";
-import { CaipNetwork, createAppKit } from "@reown/appkit/core";
+import type { CaipNetwork } from "@reown/appkit/core";
 import { defineChain } from "@reown/appkit/networks";
-import { SessionTypes } from "@walletconnect/types";
-import UniversalProvider from "@walletconnect/universal-provider";
-import { getSdkError } from "@walletconnect/utils";
+import type { SessionTypes } from "@walletconnect/types";
 import { getPolkadotSignerFromPjs } from "polkadot-api/pjs-signer";
 import {
   catchError,
@@ -28,6 +26,7 @@ import {
   Observable,
   of,
   scan,
+  shareReplay,
   startWith,
   switchMap,
   take,
@@ -161,19 +160,30 @@ export const createWalletConnectProvider = (
     ...opts,
   };
 
-  // https://docs.reown.com/advanced/multichain/polkadot/dapp-integration-guide
-  const universalProvider = UniversalProvider.init({
-    projectId,
-    relayUrl,
-  });
+  const provider$ = defer(() =>
+    import("@walletconnect/universal-provider").then((mod) =>
+      mod.default.init({
+        projectId,
+        relayUrl,
+      })
+    )
+  ).pipe(shareReplay(1));
 
-  const walletConnectModal = universalProvider.then((universalProvider) =>
-    createAppKit({
-      projectId,
-      universalProvider,
-      networks,
-      manualWCControl: true,
-    })
+  const walletConnectModal$ = combineLatest([
+    provider$,
+    defer(() =>
+      import("@reown/appkit/core").then(({ createAppKit }) => createAppKit)
+    ),
+  ]).pipe(
+    map(([universalProvider, createAppKit]) =>
+      createAppKit({
+        projectId,
+        universalProvider,
+        networks,
+        manualWCControl: true,
+      })
+    ),
+    shareReplay(1)
   );
 
   interface InitializedSession {
@@ -183,7 +193,6 @@ export const createWalletConnectProvider = (
 
   const chains = networks.map((chain) => chain.caipNetworkId);
 
-  const provider$ = from(universalProvider);
   const initializeSession$ = () =>
     provider$.pipe(
       switchMap(
@@ -202,7 +211,7 @@ export const createWalletConnectProvider = (
 
   const connect$ = combineLatest([
     defer(initializeSession$),
-    walletConnectModal,
+    walletConnectModal$,
   ]).pipe(
     switchMap(([{ uri, approval }, modal]) => {
       if (!uri) return approval();
@@ -226,9 +235,12 @@ export const createWalletConnectProvider = (
     }),
     startWith({ type: "connecting" } satisfies WalletConnectStatus)
   );
-  const disconnect$ = provider$.pipe(
+  const disconnect$ = combineLatest([
+    provider$,
+    import("@walletconnect/utils").then(({ getSdkError }) => getSdkError),
+  ]).pipe(
     take(1),
-    switchMap((provider) =>
+    switchMap(([provider, getSdkError]) =>
       provider.session
         ? provider.client.disconnect({
             topic: provider.session.topic,

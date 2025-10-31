@@ -40,6 +40,8 @@ import {
   timer,
 } from "rxjs";
 
+export const pjsWalletProviderId = "pjs-wallet";
+
 export interface PjsWalletAccount extends Account {
   provider: "pjs-wallet";
   extensionId: string;
@@ -169,7 +171,7 @@ export const createPjsWalletProvider = (
         extension,
         accounts: extension.getAccounts().map(
           (acc): PjsWalletAccount => ({
-            provider: "pjs-wallet",
+            provider: pjsWalletProviderId,
             address: acc.address,
             name: acc.name,
             signer: acc.polkadotSigner,
@@ -201,7 +203,7 @@ export const createPjsWalletProvider = (
   );
 
   return {
-    id: "pjs-wallet",
+    id: pjsWalletProviderId,
     serialize: ({ provider, address, name, extensionId }) => ({
       provider,
       address,
@@ -239,7 +241,7 @@ export const pjsWalletPlugin$ = (id: string) =>
   plugins$(id).pipe(
     map(
       (plugins) =>
-        plugins.find((plugin) => plugin.id === "pjs-wallet") as
+        plugins.find((plugin) => plugin.id === pjsWalletProviderId) as
           | PjsWalletProvider
           | undefined
     )
