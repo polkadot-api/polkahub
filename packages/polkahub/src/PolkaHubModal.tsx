@@ -19,7 +19,10 @@ const [openChange$, setOpen] = createSignal<boolean>();
 export const openSelectAccount = () => setOpen(true);
 const open$ = state(openChange$, false);
 
-export const PolkaHubModal: FC<PropsWithChildren> = ({ children }) => {
+export const PolkaHubModal: FC<PropsWithChildren<{ className?: string }>> = ({
+  children,
+  className,
+}) => {
   const open = useStateObservable(open$);
 
   const [content, setContent] = useState<ReactNode | null>(null);
@@ -40,7 +43,7 @@ export const PolkaHubModal: FC<PropsWithChildren> = ({ children }) => {
       }}
     >
       <DialogTrigger asChild>
-        <SelectedAccountButton />
+        <SelectedAccountButton className={className} />
       </DialogTrigger>
       <DialogContent
         onInteractOutside={(evt) => {

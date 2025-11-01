@@ -174,12 +174,15 @@ const pageAccounts$ = state(
             return { ...value };
           }),
           startWith({ ...value }),
-          catchError((ex) => [
-            {
-              ...value,
-              error: ex.message,
-            },
-          ])
+          catchError((ex) => {
+            console.error(ex);
+            return [
+              {
+                ...value,
+                error: ex.message,
+              },
+            ];
+          })
         );
       })
     ),

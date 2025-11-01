@@ -1,4 +1,4 @@
-import { plugin$, usePlugin } from "@polkahub/context";
+import { plugin$, usePlugin, usePolkaHubContext } from "@polkahub/context";
 import {
   Account,
   localStorageProvider,
@@ -125,13 +125,19 @@ const deselectWhenRemoved$ = (value: Account, plugin: Plugin) =>
     endWith(null)
   );
 
-const null$ = state(of(null), null);
+const defaultedSelectedAccount$ = state(
+  (id: string) => selectedAccount$(id),
+  null
+);
+
 export const useSelectedAccount = (): [
   Account | null,
   (value: Account | null) => void
 ] => {
+  const { id } = usePolkaHubContext();
   const plugin = usePlugin<SelectedAccountPlugin>(selectedAccountPluginId);
-  const selectedAccount = useStateObservable(plugin?.selectedAccount$ ?? null$);
+  const selectedAccount = useStateObservable(defaultedSelectedAccount$(id));
+
   if (!plugin) {
     console.warn("Plugin SelectedAccount not found");
     return [null, () => {}];
