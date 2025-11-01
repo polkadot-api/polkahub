@@ -13,14 +13,17 @@ import { useContext, useState, type FC } from "react";
 import { ReadOnlyProvider, readOnlyProviderId } from "./provider";
 
 export const ManageReadOnly: FC = () => {
-  const { setContent } = useContext(ModalContext)!;
+  const { pushContent } = useContext(ModalContext)!;
   const readOnlyProvider = usePlugin<ReadOnlyProvider>(readOnlyProviderId);
 
   return (
     <SourceButton
       label="Address"
       onClick={() =>
-        setContent(<ManageAddresses onClose={() => setContent(null)} />)
+        pushContent({
+          title: "Read-only accounts",
+          element: <ManageAddresses />,
+        })
       }
       disabled={!readOnlyProvider}
     >
@@ -31,9 +34,7 @@ export const ManageReadOnly: FC = () => {
   );
 };
 
-const ManageAddresses: FC<{
-  onClose: () => void;
-}> = ({ onClose }) => {
+const ManageAddresses = () => {
   const [addressInput, setAddressInput] = useState("");
   const availableAccounts = useAvailableAccounts();
   const readOnlyProvider = usePlugin<ReadOnlyProvider>(readOnlyProviderId)!;
@@ -106,9 +107,6 @@ const ManageAddresses: FC<{
           </ul>
         </div>
       ) : null}
-      <Button onClick={onClose} variant="secondary" type="button">
-        Back
-      </Button>
     </div>
   );
 };

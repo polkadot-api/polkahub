@@ -9,10 +9,13 @@ import {
   useState,
 } from "react";
 
-export const ModalContext = createContext<{
+export interface ModalContext {
   closeModal: () => void;
-  setContent: (element: ReactNode) => void;
-} | null>(null);
+  replaceContent: (element: { title?: string; element: ReactNode }) => void;
+  pushContent: (element: { title?: string; element: ReactNode }) => void;
+  popContent: () => void;
+}
+export const ModalContext = createContext<ModalContext | null>(null);
 
 export interface Identity {
   value: string;

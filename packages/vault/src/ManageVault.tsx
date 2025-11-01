@@ -7,15 +7,15 @@ import {
 import { useSetSelectedAccount } from "@polkahub/select-account";
 import { Button, SourceButton } from "@polkahub/ui-components";
 import { useStateObservable } from "@react-rxjs/core";
-import { Camera, ChevronLeft, Trash2 } from "lucide-react";
+import { Camera, Trash2 } from "lucide-react";
 import { getSs58AddressInfo } from "polkadot-api";
-import { ReactNode, useCallback, useContext, useEffect, type FC } from "react";
+import { useCallback, useContext, type FC } from "react";
 import vaultImg from "./assets/vault.webp";
 import { PolkadotVaultProvider, polkadotVaultProviderId } from "./provider";
 import { QrCamera } from "./QrCamera";
 
 export const ManageVault: FC = () => {
-  const { setContent } = useContext(ModalContext)!;
+  const { pushContent } = useContext(ModalContext)!;
   const polkadotVaultProvider = usePlugin<PolkadotVaultProvider>(
     polkadotVaultProviderId
   );
@@ -23,7 +23,9 @@ export const ManageVault: FC = () => {
   return (
     <SourceButton
       label="Vault"
-      onClick={() => setContent(<VaultAccounts setContent={setContent} />)}
+      onClick={() =>
+        pushContent({ title: "Vault Accounts", element: <VaultAccounts /> })
+      }
       disabled={!polkadotVaultProvider}
     >
       <img src={vaultImg} alt="Vault" className="h-10 rounded" />
@@ -31,27 +33,13 @@ export const ManageVault: FC = () => {
   );
 };
 
-const VaultAccounts: FC<{
-  setContent: (element: ReactNode) => void;
-}> = ({ setContent }) => {
+const VaultAccounts = () => {
+  const { pushContent, popContent } = useContext(ModalContext)!;
   const polkadotVaultProvider = usePlugin<PolkadotVaultProvider>(
     polkadotVaultProviderId
   )!;
   const vaultAccounts = useStateObservable(polkadotVaultProvider.accounts$);
   const selectAccount = useSetSelectedAccount();
-
-  useEffect(() => {
-    if (vaultAccounts.length === 0) {
-      setContent(
-        <ScanAccount
-          onScanned={() =>
-            setContent(<VaultAccounts setContent={setContent} />)
-          }
-          onClose={() => setContent(null)}
-        />
-      );
-    }
-  }, [vaultAccounts, setContent]);
 
   return (
     <div className="space-y-4">
@@ -89,29 +77,19 @@ const VaultAccounts: FC<{
             ))}
           </ul>
         </div>
-      ) : null}
-      <div className="flex items-center justify-between">
-        <Button
-          onClick={() => setContent(null)}
-          variant="secondary"
-          type="button"
-        >
-          <ChevronLeft />
-          Back
-        </Button>
+      ) : (
+        <div className="text-sm text-muted-foreground text-center">
+          No accounts imported
+        </div>
+      )}
+      <div className="flex justify-end">
         <Button
           type="button"
           onClick={() =>
-            setContent(
-              <ScanAccount
-                onScanned={() =>
-                  setContent(<VaultAccounts setContent={setContent} />)
-                }
-                onClose={() =>
-                  setContent(<VaultAccounts setContent={setContent} />)
-                }
-              />
-            )
+            pushContent({
+              title: "Scan Account",
+              element: <ScanAccount onScanned={popContent} />,
+            })
           }
         >
           <Camera />
@@ -122,10 +100,7 @@ const VaultAccounts: FC<{
   );
 };
 
-const ScanAccount: FC<{ onScanned: () => void; onClose: () => void }> = ({
-  onScanned,
-  onClose,
-}) => {
+const ScanAccount: FC<{ onScanned: () => void }> = ({ onScanned }) => {
   const polkadotVaultProvider = usePlugin<PolkadotVaultProvider>(
     polkadotVaultProviderId
   )!;
@@ -160,10 +135,6 @@ const ScanAccount: FC<{ onScanned: () => void; onClose: () => void }> = ({
           [onScanned, polkadotVaultProvider]
         )}
       />
-      <Button onClick={onClose} variant="secondary" type="button">
-        <ChevronLeft />
-        Back
-      </Button>
     </div>
   );
 };

@@ -15,8 +15,14 @@ import {
 } from "@polkahub/ui-components";
 import { state, useStateObservable } from "@react-rxjs/core";
 import { createSignal } from "@react-rxjs/utils";
-import { ChevronLeft, Trash2, Usb } from "lucide-react";
-import { FC, ReactElement, useContext, useEffect } from "react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Trash2,
+  TriangleAlert,
+  Usb,
+} from "lucide-react";
+import { FC, useContext } from "react";
 import {
   catchError,
   concatMap,
@@ -30,20 +36,21 @@ import {
 } from "rxjs";
 import ledgerImg from "./assets/ledger.webp";
 import {
-  LedgerAccount,
   LedgerAccountInfo,
   LedgerProvider,
   ledgerProviderId,
 } from "./provider";
 
 export const ManageLedger = () => {
-  const { setContent } = useContext(ModalContext)!;
+  const { pushContent } = useContext(ModalContext)!;
   const ledgerProvider = usePlugin<LedgerProvider>(ledgerProviderId);
 
   return (
     <SourceButton
       label="Ledger"
-      onClick={() => setContent(<LedgerAccounts setContent={setContent} />)}
+      onClick={() =>
+        pushContent({ title: "Ledger Accounts", element: <LedgerAccounts /> })
+      }
       disabled={!ledgerProvider}
     >
       <img src={ledgerImg} alt="Ledger" className="h-10 rounded" />
@@ -51,28 +58,11 @@ export const ManageLedger = () => {
   );
 };
 
-const LedgerAccounts: FC<{
-  setContent: (element: ReactElement | null) => void;
-}> = ({ setContent }) => {
+const LedgerAccounts: FC = () => {
+  const { pushContent, popContent } = useContext(ModalContext)!;
   const ledgerProvider = usePlugin<LedgerProvider>(ledgerProviderId)!;
   const ledgerAccounts = useStateObservable(ledgerProvider.accounts$);
   const setAccount = useSetSelectedAccount();
-
-  useEffect(() => {
-    if (ledgerAccounts.length === 0) {
-      setContent(
-        <ImportAccounts
-          onClose={(accounts) =>
-            setContent(
-              accounts.length ? (
-                <LedgerAccounts setContent={setContent} />
-              ) : null
-            )
-          }
-        />
-      );
-    }
-  }, [ledgerAccounts, setContent]);
 
   return (
     <div className="space-y-4">
@@ -110,26 +100,19 @@ const LedgerAccounts: FC<{
             ))}
           </ul>
         </div>
-      ) : null}
-      <div className="flex items-center justify-between flex-wrap-reverse gap-2">
-        <Button
-          onClick={() => setContent(null)}
-          variant="secondary"
-          type="button"
-        >
-          <ChevronLeft />
-          Back
-        </Button>
+      ) : (
+        <div className="text-sm text-muted-foreground text-center">
+          No accounts imported
+        </div>
+      )}
+      <div className="flex justify-end">
         <Button
           type="button"
           onClick={() =>
-            setContent(
-              <ImportAccounts
-                onClose={() =>
-                  setContent(<LedgerAccounts setContent={setContent} />)
-                }
-              />
-            )
+            pushContent({
+              title: "Import Ledger Accounts",
+              element: <ImportAccounts onClose={popContent} />,
+            })
           }
         >
           <Usb />
@@ -192,9 +175,7 @@ const pageAccounts$ = state(
   } as PageAccounts
 );
 
-const ImportAccounts: FC<{ onClose: (accounts: LedgerAccount[]) => void }> = ({
-  onClose,
-}) => {
+const ImportAccounts: FC<{ onClose: () => void }> = ({ onClose }) => {
   const { id } = usePolkaHubContext();
   const ledgerProvider = usePlugin<LedgerProvider>(ledgerProviderId)!;
   const ledgerAccounts = useStateObservable(ledgerProvider.accounts$);
@@ -204,12 +185,22 @@ const ImportAccounts: FC<{ onClose: (accounts: LedgerAccount[]) => void }> = ({
   const allLoading = accounts.every((v) => v == null);
   const allLoaded = accounts.every((v) => v != null);
 
+  const PLACEHOLDER_HEIGHT = 232;
+
   return (
     <div className="space-y-2">
       {error ? (
-        <div>Error: {error}</div>
+        <div className="space-y-2" style={{ height: PLACEHOLDER_HEIGHT }}>
+          <p className="flex items-center gap-1">
+            <TriangleAlert className="text-destructive" />
+            <div>Error: {error}</div>
+          </p>
+          <Button type="button" onClick={() => setPage(page)}>
+            Retry
+          </Button>
+        </div>
       ) : allLoading ? (
-        <CardPlaceholder height={152} />
+        <CardPlaceholder height={PLACEHOLDER_HEIGHT} />
       ) : (
         <ul className="space-y-2">
           {accounts.map((acc, i) => (
@@ -239,30 +230,36 @@ const ImportAccounts: FC<{ onClose: (accounts: LedgerAccount[]) => void }> = ({
                   <AddressBalance addr={acc.address} />
                 </>
               ) : (
-                <div className="bg-muted w-full rounded shadow animate-pulse h-6" />
+                <div className="bg-muted w-full rounded shadow animate-pulse h-10" />
               )}
             </li>
           ))}
         </ul>
       )}
       <div className="flex items-center justify-between">
-        <Button
-          onClick={() => onClose(ledgerAccounts)}
-          variant="secondary"
-          type="button"
-        >
-          <ChevronLeft />
-          Back
-        </Button>
-        {allLoaded ? (
+        <div className="flex items-center gap-2">
+          <Button
+            onClick={() => setPage(page - 1)}
+            variant="secondary"
+            type="button"
+            disabled={!allLoaded || page == 0}
+          >
+            <ChevronLeft />
+            Prev
+          </Button>
           <Button
             onClick={() => setPage(page + 1)}
             variant="secondary"
             type="button"
+            disabled={!allLoaded}
           >
-            Next Page
+            Next
+            <ChevronRight />
           </Button>
-        ) : null}
+        </div>
+        <Button onClick={onClose} type="button">
+          Done
+        </Button>
       </div>
     </div>
   );

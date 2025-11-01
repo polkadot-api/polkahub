@@ -203,8 +203,10 @@ export const createPolkadotVaultProvider = (
       });
       return accountInfoToAccount(account);
     },
-    removeAccount: (addr) =>
-      setVaultAccounts((v) => v.filter((acc) => acc !== addr)),
+    removeAccount: (account) =>
+      setVaultAccounts((v) =>
+        v.filter((acc) => acc.address !== account.address)
+      ),
   };
 };
 

@@ -8,6 +8,7 @@ import { Button, cn } from "@polkahub/ui-components";
 import {
   forwardRef,
   ForwardRefExoticComponent,
+  ReactNode,
   RefAttributes,
   type ComponentProps,
 } from "react";
@@ -16,13 +17,9 @@ import { useSelectedAccount } from "./provider";
 export const SelectedAccountButton: ForwardRefExoticComponent<
   ComponentProps<typeof Button> & {
     loading?: boolean;
+    noAccountContent?: ReactNode;
   } & RefAttributes<HTMLButtonElement>
-> = forwardRef<
-  HTMLButtonElement,
-  ComponentProps<typeof Button> & {
-    loading?: boolean;
-  }
->(({ loading, ...props }, ref) => {
+> = forwardRef(({ loading, noAccountContent, ...props }, ref) => {
   const [selectedAccount] = useSelectedAccount();
   const identity = useIdentity(selectedAccount?.address ?? null);
   const identityName = identity
@@ -32,7 +29,7 @@ export const SelectedAccountButton: ForwardRefExoticComponent<
   if (!selectedAccount)
     return (
       <Button ref={ref} {...props}>
-        Connect
+        {noAccountContent ?? "Connect"}
       </Button>
     );
 
