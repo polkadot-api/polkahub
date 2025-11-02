@@ -23,7 +23,7 @@ export const SelectedAccountButton: ForwardRefExoticComponent<
   const [selectedAccount] = useSelectedAccount();
   const identity = useIdentity(selectedAccount?.address ?? null);
   const identityName = identity
-    ? identity.value + (identity.subId ? `/${identity.subId}` : "")
+    ? identity.name + (identity.subId ? `/${identity.subId}` : "")
     : null;
 
   if (!selectedAccount)

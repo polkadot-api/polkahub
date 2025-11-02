@@ -47,11 +47,11 @@ Create the providers you want to expose. Each provider is optional — pick only
 ```ts
 // file: account-providers.ts
 import {
-  createLedgerProvider,
   createPjsWalletProvider,
   createPolkadotVaultProvider,
   createReadOnlyProvider,
   createSelectedAccountPlugin,
+  createPolkaHub,
 } from "polkahub";
 
 const selectedAccountPlugin = createSelectedAccountPlugin();
@@ -59,40 +59,43 @@ const pjsWalletProvider = createPjsWalletProvider();
 const polkadotVaultProvider = createPolkadotVaultProvider();
 const readOnlyProvider = createReadOnlyProvider();
 
-export const accountProviders = [
-  selectedAccountPlugin,
-  pjsWalletProvider,
-  polkadotVaultProvider,
-  readOnlyProvider,
-];
+export const polkaHub = createPolkaHub(
+  [
+    selectedAccountPlugin,
+    pjsWalletProvider,
+    polkadotVaultProvider,
+    readOnlyProvider,
+  ],
+  // Optional
+  {
+    getBalance: async (address) => {
+      // Some plugins show the balance of an account for reference.
+      // Use your polkadot client, or ignore / return null to disable.
+      return null;
+    },
+    getIdentity: async (address) => {
+      // Some plugins show the identity of an account for reference.
+      // Use your polkadot client, or ignore / return null to disable.
+      return null;
+    },
+  }
+);
 ```
 
 ### 3. Wrap your app
 
-Provide the plugins and any optional data fetchers (balance, identity, etc.) through the `PolkaHubProvider`.
+Provide the polkaHub instance through the `PolkaHubProvider`.
 
 ```tsx
 import { createRoot } from "react-dom/client";
 import { PolkaHubProvider } from "polkahub";
 import { StrictMode } from "react";
 import App from "./App.tsx";
-import { accountProviders } from "./account-providers";
+import { polkaHub } from "./account-providers";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <PolkaHubProvider
-      plugins={accountProviders}
-      getBalance={async (address: SS58String) => {
-        // Some plugins show the balance of an account for reference.
-        // Use your polkadot client, or ignore / return null to disable.
-        return null;
-      }}
-      getIdentity={async (address: SS58String) => {
-        // Some plugins show the identity of an account for reference.
-        // Use your polkadot client, or ignore / return null to disable.
-        return null;
-      }}
-    >
+    <PolkaHubProvider polkaHub={polkaHub}>
       <App />
     </PolkaHubProvider>
   </StrictMode>
@@ -116,7 +119,6 @@ export const ConnectButton = () => (
   <PolkaHubModal>
     <SelectAccountField />
     <ManagePjsWallets />
-    <ConnectSource />
     <div>
       <h3>Manage Connections</h3>
       <div className="flex gap-2 flex-wrap items-center justify-center">
@@ -188,24 +190,6 @@ interface Plugin<A extends Account = Account> {
   receivePlugins?: (plugins: Plugin[]) => void;
   subscription$?: Observable<unknown>;
 }
-```
-
-If you are not using React, wire the plugins manually and manage the observables yourself:
-
-```ts
-import { merge, EMPTY } from "rxjs";
-import { addInstance, setPlugins } from "polkahub";
-import type { Plugin } from "polkahub";
-
-const instanceId = "my-app";
-const setupPlugins = (plugins: Plugin<any>) => {
-  const sub = merge(plugins.map((p) => p.subscription$ ?? EMPTY)).subscribe();
-
-  addInstance(instanceId);
-  setPlugins(instanceId, plugins);
-
-  return sub;
-};
 ```
 
 Each bundled plugin exposes observables to allow for reactive workflows. Docs for individual plugins are in progress; peek at the source to explore their state shape in the meantime.

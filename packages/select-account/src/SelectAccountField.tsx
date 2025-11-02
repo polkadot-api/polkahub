@@ -1,5 +1,4 @@
-import { AccountDisplay } from "@polkadot-api/react-components";
-import { useAvailableAccounts, useIdentity } from "@polkahub/context";
+import { AddressIdentity, useAvailableAccounts } from "@polkahub/context";
 import {
   Button,
   cn,
@@ -57,7 +56,11 @@ export const SelectAccountField: FC<{
               )}
             >
               {account?.address != null ? (
-                <AddressIdentity addr={account.address} name={account?.name} />
+                <AddressIdentity
+                  addr={account.address}
+                  name={account?.name}
+                  copyable={false}
+                />
               ) : (
                 <span className="opacity-80">Select…</span>
               )}
@@ -124,30 +127,3 @@ const AccountOption: FC<{
     <AddressIdentity addr={account} name={name} />
   </CommandItem>
 );
-
-const AddressIdentity: FC<{
-  addr: string;
-  name?: string;
-}> = ({ addr, name }) => {
-  let identity = useIdentity(addr);
-
-  if (name && !identity) {
-    identity = {
-      value: name,
-      verified: false,
-    };
-  }
-
-  return (
-    <AccountDisplay
-      account={{
-        address: addr,
-        name: identity?.value ?? name,
-        subId: identity?.subId,
-        verified: identity?.verified,
-      }}
-      copyable={false}
-      maxAddrLength={12}
-    />
-  );
-};

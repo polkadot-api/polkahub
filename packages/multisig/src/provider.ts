@@ -10,6 +10,7 @@ import {
 } from "@polkadot-api/substrate-bindings";
 import {
   Account,
+  AccountAddress,
   localStorageProvider,
   persistedState,
   PersistenceProvider,
@@ -17,12 +18,12 @@ import {
   SerializableAccount,
 } from "@polkahub/plugin";
 import { DefaultedStateObservable, state } from "@react-rxjs/core";
-import { Binary, PolkadotSigner, SS58String } from "polkadot-api";
+import { Binary, PolkadotSigner } from "polkadot-api";
 import { BehaviorSubject, combineLatest, switchMap } from "rxjs";
 
 export interface MultisigInfo {
   threshold: number;
-  signatories: SS58String[];
+  signatories: AccountAddress[];
   // If not set, it will be a read-only account.
   // But with the advantage that it will still figure out the resulting address
   parentSigner?: SerializableAccount;
@@ -39,12 +40,12 @@ export interface MultisigProvider extends Plugin<MultisigAccount> {
 
   setMultisigs: (multisigs: MultisigInfo[]) => void;
   addMultisig: (multisig: MultisigInfo) => Promise<MultisigAccount>;
-  removeMultisig: (addr: SS58String) => void;
+  removeMultisig: (addr: AccountAddress) => void;
 }
 
 export const createMultisigProvider = (
   getMultisigInfo: (
-    multisig: SS58String,
+    multisig: AccountAddress,
     callHash: FixedSizeBinary<32>
   ) => Promise<
     | {
@@ -52,7 +53,7 @@ export const createMultisigProvider = (
           height: number;
           index: number;
         };
-        approvals: Array<SS58String>;
+        approvals: Array<AccountAddress>;
       }
     | undefined
   >,
@@ -68,7 +69,7 @@ export const createMultisigProvider = (
   opts?: Partial<
     {
       persist: PersistenceProvider;
-    } & MultisigSignerOptions<SS58String>
+    } & MultisigSignerOptions<AccountAddress>
   >
 ): MultisigProvider => {
   const { persist } = {

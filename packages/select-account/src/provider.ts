@@ -1,4 +1,4 @@
-import { plugin$, usePlugin, usePolkaHubContext } from "@polkahub/context";
+import { externalizePlugin, usePlugin } from "@polkahub/context";
 import {
   Account,
   localStorageProvider,
@@ -125,8 +125,12 @@ const deselectWhenRemoved$ = (value: Account, plugin: Plugin) =>
     endWith(null)
   );
 
+const [selectedAccount$, useSelectedAccountPlugin] =
+  externalizePlugin<SelectedAccountPlugin>(selectedAccountPluginId);
+
 const defaultedSelectedAccount$ = state(
-  (id: string) => selectedAccount$(id),
+  (id: string) =>
+    selectedAccount$(id).pipe(switchMap((plugin) => plugin.selectedAccount$)),
   null
 );
 
@@ -134,8 +138,7 @@ export const useSelectedAccount = (): [
   Account | null,
   (value: Account | null) => void
 ] => {
-  const { id } = usePolkaHubContext();
-  const plugin = usePlugin<SelectedAccountPlugin>(selectedAccountPluginId);
+  const [id, plugin] = useSelectedAccountPlugin();
   const selectedAccount = useStateObservable(defaultedSelectedAccount$(id));
 
   if (!plugin) {
@@ -150,11 +153,3 @@ export const useSetSelectedAccount = () => {
   const plugin = usePlugin<SelectedAccountPlugin>(selectedAccountPluginId);
   return plugin?.setAccount ?? null;
 };
-
-export const selectedAccountPlugin$ = (id: string) =>
-  plugin$<SelectedAccountPlugin>(id, selectedAccountPluginId);
-
-export const selectedAccount$ = (id: string) =>
-  selectedAccountPlugin$(id).pipe(
-    switchMap((v) => v?.selectedAccount$ ?? [null])
-  );

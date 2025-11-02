@@ -1,12 +1,13 @@
 import {
   Account,
+  AccountAddress,
   localStorageProvider,
   persistedState,
   PersistenceProvider,
   Plugin,
 } from "@polkahub/plugin";
 import { DefaultedStateObservable, withDefault } from "@react-rxjs/core";
-import { AccountId, SS58String } from "polkadot-api";
+import { AccountId } from "polkadot-api";
 import { getPolkadotSigner } from "polkadot-api/signer";
 import { map } from "rxjs";
 
@@ -14,10 +15,10 @@ export const readOnlyProviderId = "readonly";
 export interface ReadOnlyProvider extends Plugin {
   id: "readonly";
   accounts$: DefaultedStateObservable<Account[]>;
-  setAccounts: (payload: SS58String[]) => void;
-  addAccount: (address: SS58String) => Account;
-  removeAccount: (address: SS58String) => void;
-  toAccount: (address: SS58String) => Account;
+  setAccounts: (payload: AccountAddress[]) => void;
+  addAccount: (address: AccountAddress) => Account;
+  removeAccount: (address: AccountAddress) => void;
+  toAccount: (address: AccountAddress) => Account;
 }
 
 export const createReadOnlyProvider = (
@@ -34,10 +35,10 @@ export const createReadOnlyProvider = (
 
   const [persistedAccounts$, setPersistedAccounts] = persistedState(
     persist,
-    [] as SS58String[]
+    [] as AccountAddress[]
   );
 
-  const getAccount = (address: SS58String): Account => ({
+  const getAccount = (address: AccountAddress): Account => ({
     provider: readOnlyProviderId,
     address,
     signer: fakeSigner ? createFakeSigner(address) : undefined,
@@ -67,7 +68,7 @@ export const createReadOnlyProvider = (
   };
 };
 
-const createFakeSigner = (address: SS58String) =>
+const createFakeSigner = (address: AccountAddress) =>
   getPolkadotSigner(AccountId().enc(address)!, "Sr25519", () => {
     // From https://wiki.acala.network/build/sdks/homa
     const signature = new Uint8Array(64);

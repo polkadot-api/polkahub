@@ -2,13 +2,14 @@ import type Transport from "@ledgerhq/hw-transport";
 import { LedgerSigner } from "@polkadot-api/ledger-signer";
 import {
   Account,
+  AccountAddress,
   localStorageProvider,
   persistedState,
   PersistenceProvider,
   Plugin,
 } from "@polkahub/plugin";
 import { DefaultedStateObservable, withDefault } from "@react-rxjs/core";
-import { AccountId, type PolkadotSigner, type SS58String } from "polkadot-api";
+import { AccountId, type PolkadotSigner } from "polkadot-api";
 import {
   catchError,
   combineLatest,
@@ -23,7 +24,7 @@ import {
 export const ledgerProviderId = "ledger";
 
 export interface LedgerAccountInfo {
-  address: SS58String;
+  address: AccountAddress;
   deviceId: number;
   index: number;
 }

@@ -36,6 +36,7 @@
     "@polkahub/proxy": "workspace:*",
     "@polkahub/read-only": "workspace:*",
     "@polkahub/select-account": "workspace:*",
+    "@polkahub/state": "workspace:*",
     "@polkahub/ui-components": "workspace:*",
     "@polkahub/vault": "workspace:*",
     "@polkahub/wallet-connect": "workspace:*",

@@ -132,6 +132,9 @@ importers:
       '@polkahub/plugin':
         specifier: workspace:*
         version: link:../plugin
+      '@polkahub/state':
+        specifier: workspace:*
+        version: link:../state
       '@react-rxjs/core':
         specifier: ^0.10.8
         version: 0.10.8(react@19.2.0)(rxjs@7.8.2)
@@ -353,6 +356,9 @@ importers:
       '@polkahub/select-account':
         specifier: workspace:*
         version: link:../select-account
+      '@polkahub/state':
+        specifier: workspace:*
+        version: link:../state
       '@polkahub/ui-components':
         specifier: workspace:*
         version: link:../ui-components
@@ -486,6 +492,24 @@ importers:
       react:
         specifier: ^19.2.0
         version: 19.2.0
+
+  packages/state:
+    dependencies:
+      '@polkahub/plugin':
+        specifier: workspace:*
+        version: link:../plugin
+      '@react-rxjs/utils':
+        specifier: ^0.9.7
+        version: 0.9.7(@react-rxjs/core@0.10.8)(react@19.2.0)(rxjs@7.8.2)
+      '@rx-state/core':
+        specifier: ^0.1.4
+        version: 0.1.4(rxjs@7.8.2)
+      polkadot-api:
+        specifier: ^1.20.0
+        version: 1.20.0(postcss@8.5.6)(rxjs@7.8.2)
+      rxjs:
+        specifier: ^7.8.2
+        version: 7.8.2
 
   packages/ui-components:
     dependencies:

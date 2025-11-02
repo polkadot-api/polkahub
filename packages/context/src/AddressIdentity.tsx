@@ -1,6 +1,6 @@
 import { AccountDisplay } from "@polkadot-api/react-components";
 import { FC } from "react";
-import { useIdentity } from "./context";
+import { useIdentity } from "./polkahubContext";
 
 export const AddressIdentity: FC<{
   addr: string;
@@ -10,18 +10,11 @@ export const AddressIdentity: FC<{
 }> = ({ addr, name, className, copyable = true }) => {
   let identity = useIdentity(addr);
 
-  if (name && !identity) {
-    identity = {
-      value: name,
-      verified: false,
-    };
-  }
-
   return (
     <AccountDisplay
       account={{
         address: addr,
-        name: identity?.value ?? name,
+        name: identity?.name ?? name,
         subId: identity?.subId,
         verified: identity?.verified,
       }}

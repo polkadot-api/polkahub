@@ -4,7 +4,6 @@ import {
   type InjectedExtension,
   type InjectedPolkadotAccount,
 } from "@polkadot-api/pjs-signer";
-import { plugins$ } from "@polkahub/context";
 import {
   Account,
   localStorageProvider,
@@ -236,13 +235,3 @@ export const createPjsWalletProvider = (
     setConnectedExtensions,
   };
 };
-
-export const pjsWalletPlugin$ = (id: string) =>
-  plugins$(id).pipe(
-    map(
-      (plugins) =>
-        plugins.find((plugin) => plugin.id === pjsWalletProviderId) as
-          | PjsWalletProvider
-          | undefined
-    )
-  );

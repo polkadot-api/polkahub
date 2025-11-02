@@ -2,6 +2,7 @@ import {
   createLedgerProvider,
   createPjsWalletProvider,
   createPolkadotVaultProvider,
+  createPolkaHub,
   createReadOnlyProvider,
   createSelectedAccountPlugin,
   createWalletConnectProvider,
@@ -34,11 +35,11 @@ const walletConnectProvider = createWalletConnectProvider(
   [knownChains.polkadot]
 );
 
-export const polkahubPlugins = [
+export const polkaHub = createPolkaHub([
   selectedAccountPlugin,
   pjsWalletProvider,
   polkadotVaultProvider,
   readOnlyProvider,
   ledgerAccountProvider,
   walletConnectProvider,
-];
+]);

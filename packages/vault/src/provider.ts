@@ -6,6 +6,7 @@ import {
 } from "@polkadot-api/substrate-bindings";
 import {
   Account,
+  AccountAddress,
   localStorageProvider,
   persistedState,
   PersistenceProvider,
@@ -18,14 +19,13 @@ import {
   getSs58AddressInfo,
   HexString,
   PolkadotSigner,
-  SS58String,
 } from "polkadot-api";
 import { mergeUint8 } from "polkadot-api/utils";
 import { firstValueFrom, map, merge, race } from "rxjs";
 
 export const polkadotVaultProviderId = "polkadot-vault";
 export interface VaultAccountInfo {
-  address: SS58String;
+  address: AccountAddress;
   genesis: HexString;
 }
 export interface PolkadotVaultAccount extends Account {

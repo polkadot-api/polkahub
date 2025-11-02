@@ -1,10 +1,9 @@
 import {
   AddressBalance,
   AddressIdentity,
+  externalizePlugin,
   ModalContext,
-  plugin$,
   usePlugin,
-  usePolkaHubContext,
 } from "@polkahub/context";
 import { useSetSelectedAccount } from "@polkahub/select-account";
 import {
@@ -131,6 +130,10 @@ type PageAccounts = {
   accounts: Array<LedgerAccountInfo | null>;
   error: string | null;
 };
+
+const [plugin$, useLedgerProvider] =
+  externalizePlugin<LedgerProvider>(ledgerProviderId);
+
 const pageAccounts$ = state(
   (ctxId: string) =>
     page$.pipe(
@@ -145,7 +148,7 @@ const pageAccounts$ = state(
           error: null,
         };
 
-        return plugin$<LedgerProvider>(ctxId, ledgerProviderId).pipe(
+        return plugin$(ctxId).pipe(
           filter((v) => v != null),
           take(1),
           switchMap((ledgerProvider) =>
@@ -176,9 +179,8 @@ const pageAccounts$ = state(
 );
 
 const ImportAccounts: FC<{ onClose: () => void }> = ({ onClose }) => {
-  const { id } = usePolkaHubContext();
-  const ledgerProvider = usePlugin<LedgerProvider>(ledgerProviderId)!;
-  const ledgerAccounts = useStateObservable(ledgerProvider.accounts$);
+  const [id, ledgerProvider] = useLedgerProvider();
+  const ledgerAccounts = useStateObservable(ledgerProvider!.accounts$);
   const page = useStateObservable(page$);
   const { accounts, error } = useStateObservable(pageAccounts$(id));
 
@@ -219,9 +221,9 @@ const ImportAccounts: FC<{ onClose: () => void }> = ({ onClose }) => {
                     )}
                     onCheckedChange={(chk) => {
                       if (chk) {
-                        ledgerProvider.addAccount(acc);
+                        ledgerProvider!.addAccount(acc);
                       } else {
-                        ledgerProvider.removeAccount(acc);
+                        ledgerProvider!.removeAccount(acc);
                       }
                     }}
                   />

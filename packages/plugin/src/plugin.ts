@@ -1,16 +1,18 @@
-import { PolkadotSigner, SS58String } from 'polkadot-api';
-import type { Observable } from 'rxjs';
+import type { HexString, PolkadotSigner, SS58String } from "polkadot-api";
+import type { Observable } from "rxjs";
+
+export type AccountAddress = SS58String | HexString;
 
 export interface Account {
   provider: string;
-  address: SS58String;
+  address: AccountAddress;
   signer?: PolkadotSigner;
   name?: string;
 }
 
 export interface SerializableAccount<T = unknown> {
   provider: string;
-  address: SS58String;
+  address: AccountAddress;
   name?: string;
   extra?: T;
 }

@@ -1,18 +1,19 @@
 import { getProxySigner } from "@polkadot-api/meta-signers";
-import { DefaultedStateObservable, state } from "@react-rxjs/core";
-import { PolkadotSigner, SS58String } from "polkadot-api";
-import { BehaviorSubject, combineLatest, map, switchMap } from "rxjs";
 import {
+  Account,
+  AccountAddress,
   localStorageProvider,
   persistedState,
   PersistenceProvider,
-  Account,
   Plugin,
   SerializableAccount,
 } from "@polkahub/plugin";
+import { DefaultedStateObservable, state } from "@react-rxjs/core";
+import { PolkadotSigner } from "polkadot-api";
+import { BehaviorSubject, combineLatest, map, switchMap } from "rxjs";
 
 export interface ProxyInfo {
-  real: SS58String;
+  real: AccountAddress;
   type?: {
     type: string;
     value?: unknown;

@@ -1,4 +1,4 @@
-import { usePolkaHubContext } from "@polkahub/context";
+import { externalizePlugin, usePlugin } from "@polkahub/context";
 import { cn, SourceButton } from "@polkahub/ui-components";
 import { state, useStateObservable } from "@react-rxjs/core";
 import { CircleQuestionMark } from "lucide-react";
@@ -8,7 +8,7 @@ import nova from "./assets/nova.webp";
 import pjs from "./assets/pjs.webp";
 import subwallet from "./assets/subwallet.webp";
 import talisman from "./assets/talisman.webp";
-import { pjsWalletPlugin$, PjsWalletProvider } from "./provider";
+import { PjsWalletProvider, pjsWalletProviderId } from "./provider";
 
 const knownExtensions: Record<string, { name: string; logo: string }> = {
   "polkadot-js": {
@@ -29,6 +29,9 @@ const knownExtensions: Record<string, { name: string; logo: string }> = {
   },
 };
 
+const [pjsWalletPlugin$, useExternalizedPlugin] =
+  externalizePlugin<PjsWalletProvider>(pjsWalletProviderId);
+
 const availableExtensions$ = state(
   (id: string) =>
     pjsWalletPlugin$(id).pipe(
@@ -39,7 +42,7 @@ const availableExtensions$ = state(
 );
 
 export const ManagePjsWallets: FC = () => {
-  const { id } = usePolkaHubContext();
+  const [id] = useExternalizedPlugin();
   const availableExtensions = useStateObservable(availableExtensions$(id)).sort(
     (a, b) => (b in knownExtensions ? 1 : 0) - (a in knownExtensions ? 1 : 0)
   );
@@ -55,8 +58,10 @@ export const ManagePjsWallets: FC = () => {
 };
 
 export const PjsWalletButtons: FC<{ className?: string }> = ({ className }) => {
-  const { id } = usePolkaHubContext();
-  const availableExtensions = useStateObservable(availableExtensions$(id)).sort(
+  const [ctxId] = useExternalizedPlugin();
+  const availableExtensions = useStateObservable(
+    availableExtensions$(ctxId)
+  ).sort(
     (a, b) => (b in knownExtensions ? 1 : 0) - (a in knownExtensions ? 1 : 0)
   );
 
@@ -71,7 +76,7 @@ export const PjsWalletButtons: FC<{ className?: string }> = ({ className }) => {
     >
       {availableExtensions.map((id) => (
         <li key={id}>
-          <ExtensionButton id={id} />
+          <ExtensionButton id={id} ctxId={ctxId} />
         </li>
       ))}
     </ul>
@@ -89,20 +94,18 @@ const connectedExtensions$ = state(
 
 const ExtensionButton: FC<{
   id: string;
-}> = ({ id }) => {
-  const ctx = usePolkaHubContext();
+  ctxId: string;
+}> = ({ id, ctxId }) => {
+  const provider = usePlugin<PjsWalletProvider>(pjsWalletProviderId);
   const knownExtension = knownExtensions[id];
-  const connectedExtensions = useStateObservable(connectedExtensions$(ctx.id));
+  const connectedExtensions = useStateObservable(connectedExtensions$(ctxId));
   const isSelected = connectedExtensions.includes(id);
 
   const setConnectedExtensions = (extensions: string[]) => {
-    const plugin = ctx.plugins.find((p) => p.id === "pjs-wallet") as
-      | PjsWalletProvider
-      | undefined;
-    if (!plugin) {
+    if (!provider) {
       throw new Error("PjsWallet provider not found");
     }
-    plugin.setConnectedExtensions(extensions);
+    provider.setConnectedExtensions(extensions);
   };
 
   return (
