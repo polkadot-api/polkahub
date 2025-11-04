@@ -1,5 +1,6 @@
 import { AccountDisplay } from "@polkadot-api/react-components";
 import {
+  AccountInput,
   ManageLedger,
   ManagePjsWallets,
   ManageReadOnly,
@@ -10,16 +11,19 @@ import {
   useSelectedAccount,
   WalletConnectButton,
 } from "polkahub";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Card } from "./Card";
 
 function App() {
+  const [value, setValue] = useState<string | null>(null);
+
   return (
     <div className="container m-auto">
       <div className="space-y-4 p-4">
         <ConnectButton />
         <SelectedAccount />
         <AvailableAccounts />
+        <AccountInput value={value} onChange={setValue} />
       </div>
     </div>
   );
