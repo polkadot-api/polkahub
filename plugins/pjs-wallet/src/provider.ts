@@ -29,7 +29,9 @@ import {
   interval,
   map,
   NEVER,
+  Observable,
   retry,
+  scan,
   shareReplay,
   startWith,
   switchMap,
@@ -157,28 +159,39 @@ export const createPjsWalletProvider = (
     });
   });
 
-  const injectedExtensions$ = state(
-    combineKeys(connectedExtensions$, extension$).pipe(
-      // Prevent getting it ref-counted, as it disconnects from the extensions
-      shareReplay(1)
+  const extensionAccounts$ = combineKeys(connectedExtensions$, (id) =>
+    extension$(id).pipe(
+      map((extension) => ({
+        extension,
+        accounts: extension.getAccounts(),
+      }))
     )
+  ).pipe(
+    // Prevent getting it ref-counted, as it disconnects from the extensions
+    shareReplay(1)
   );
 
-  const connectedExtensionsAccounts$ = injectedExtensions$.pipeState(
-    map((extensions) =>
-      Array.from(extensions.values()).map((extension) => ({
-        extension,
-        accounts: extension.getAccounts().map(
-          (acc): PjsWalletAccount => ({
-            provider: pjsWalletProviderId,
-            address: acc.address,
-            name: acc.name,
-            signer: acc.polkadotSigner,
-            extensionId: extension.name,
-            injectedAccount: acc,
-          })
-        ),
-      }))
+  const injectedExtensions$ = state(
+    extensionAccounts$.pipe(mapMapWithChanges((v) => v.extension))
+  );
+
+  const connectedExtensionsAccounts$ = state(
+    extensionAccounts$.pipe(
+      map((extensions) =>
+        Array.from(extensions.values()).map(({ extension, accounts }) => ({
+          extension,
+          accounts: accounts.map(
+            (acc): PjsWalletAccount => ({
+              provider: pjsWalletProviderId,
+              address: acc.address,
+              name: acc.name,
+              signer: acc.polkadotSigner,
+              extensionId: extension.name,
+              injectedAccount: acc,
+            })
+          ),
+        }))
+      )
     )
   );
 
@@ -235,3 +248,27 @@ export const createPjsWalletProvider = (
     setConnectedExtensions,
   };
 };
+
+const mapMapWithChanges =
+  <T, R, K>(mapFn: (value: T) => R) =>
+  (
+    source: Observable<MapWithChanges<K, T>>
+  ): Observable<MapWithChanges<K, R>> =>
+    source.pipe(
+      scan(
+        (acc: MapWithChanges<K, R>, v) => {
+          v.changes.forEach((key) => {
+            if (!v.has(key)) {
+              acc.delete(key);
+            } else {
+              acc.set(key, mapFn(v.get(key)!));
+            }
+          });
+          acc.changes = v.changes;
+          return acc;
+        },
+        Object.assign(new Map<K, R>(), {
+          changes: new Set<K>(),
+        })
+      )
+    );
