@@ -31,3 +31,4 @@ export * from "@polkahub/state";
 export * from "@polkahub/vault";
 export * from "@polkahub/wallet-connect";
 export * from "./PolkaHubModal";
+export * from "./AddressInput";

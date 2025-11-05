@@ -27,7 +27,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@polkadot-api/react-components": "^0.3.2",
+    "@polkadot-api/react-components": "^0.4.0",
     "@polkadot-api/substrate-bindings": "^0.16.4",
     "@polkahub/context": "workspace:*",
     "@polkahub/plugin": "workspace:*",

@@ -1,5 +1,6 @@
 import {
   PolkadotIdenticon,
+  EthIdenticon,
   sliceMiddleStr,
 } from "@polkadot-api/react-components";
 import { AccountId } from "@polkadot-api/substrate-bindings";
@@ -33,8 +34,14 @@ export const SelectedAccountButton: ForwardRefExoticComponent<
       </Button>
     );
 
-  const publicKey = AccountId().enc(selectedAccount.address);
-
+  const identicon = selectedAccount.address.startsWith("0x") ? (
+    <EthIdenticon address={selectedAccount.address} className="size-6" />
+  ) : (
+    <PolkadotIdenticon
+      publicKey={AccountId().enc(selectedAccount.address)}
+      className="size-6"
+    />
+  );
   const name = selectedAccount?.name ?? identityName;
 
   return (
@@ -44,7 +51,7 @@ export const SelectedAccountButton: ForwardRefExoticComponent<
       {...props}
       className={cn(loading ? "cursor-wait" : null, props.className)}
     >
-      <PolkadotIdenticon publicKey={publicKey} className="size-6" />
+      {identicon}
       {name ? (
         <div>{name}</div>
       ) : (

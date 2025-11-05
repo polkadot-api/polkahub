@@ -25,7 +25,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@polkadot-api/react-components": "^0.3.2",
+    "@polkadot-api/react-components": "^0.4.0",
     "@polkahub/plugin": "workspace:*",
     "@polkahub/state": "workspace:*",
     "@react-rxjs/core": "^0.10.8",

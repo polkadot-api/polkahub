@@ -18,6 +18,7 @@ import {
   withDefault,
 } from "@react-rxjs/core";
 import { combineKeys, MapWithChanges } from "@react-rxjs/utils";
+import { getSs58AddressInfo } from "polkadot-api";
 import {
   catchError,
   concat,
@@ -71,10 +72,12 @@ export interface PjsWalletProvider extends Plugin<PjsWalletAccount> {
 export const createPjsWalletProvider = (
   opts?: Partial<{
     persist: PersistenceProvider;
+    accountFormat?: "ss58" | "eth" | "all";
   }>
 ): PjsWalletProvider => {
-  const { persist } = {
+  const { persist, accountFormat } = {
     persist: localStorageProvider("pjs-wallet-plugin"),
+    accountFormat: "all" as const,
     ...opts,
   };
 
@@ -164,7 +167,20 @@ export const createPjsWalletProvider = (
       map((extension) => ({
         extension,
         accounts: extension.getAccounts(),
-      }))
+      })),
+      map((extWithAccounts) => {
+        if (accountFormat === "ss58") {
+          extWithAccounts.accounts = extWithAccounts.accounts.filter(
+            (v) => getSs58AddressInfo(v.address).isValid
+          );
+        }
+        if (accountFormat === "eth") {
+          extWithAccounts.accounts = extWithAccounts.accounts.filter((v) =>
+            v.address.startsWith("0x")
+          );
+        }
+        return extWithAccounts;
+      })
     )
   ).pipe(
     // Prevent getting it ref-counted, as it disconnects from the extensions
