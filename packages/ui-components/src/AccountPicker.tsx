@@ -134,7 +134,7 @@ const AccountOption: FC<
     keywords={[typeof group === "string" ? group : null, account.name].filter(
       (v) => v != null
     )}
-    value={account.address}
+    value={[group, account.address].filter((v) => v != null).join(" ")}
     onSelect={onSelect}
     className="flex flex-row items-center gap-2 p-1"
   >

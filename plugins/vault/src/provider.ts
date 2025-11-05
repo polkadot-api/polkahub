@@ -77,7 +77,7 @@ export const createPolkadotVaultProvider = (
 
   const createVaultSigner = ({
     address,
-    genesis,
+    genesis: accountGenesis,
   }: VaultAccountInfo): PolkadotSigner => {
     const info = getSs58AddressInfo(address);
     if (!info.isValid) {
@@ -93,7 +93,7 @@ export const createPolkadotVaultProvider = (
           VaultQrEncryption.Sr25519,
           publicKey,
           data,
-          Binary.fromHex(genesis).asBytes()
+          Binary.fromHex(accountGenesis).asBytes()
         );
         setTx(qrPayload);
 
@@ -117,12 +117,16 @@ export const createPolkadotVaultProvider = (
         });
         const extensions = mergeUint8([...extra, ...additionalSigned]);
 
+        const genesis =
+          signedExtensions.CheckGenesis?.additionalSigned ??
+          Binary.fromHex(accountGenesis).asBytes();
+
         const qrPayload = createQrTransaction(
           VaultQrEncryption.Sr25519,
           publicKey,
           callData,
           extensions,
-          Binary.fromHex(genesis).asBytes()
+          genesis
         );
         setTx(qrPayload);
 
