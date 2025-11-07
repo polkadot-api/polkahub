@@ -35,11 +35,16 @@ const walletConnectProvider = createWalletConnectProvider(
   [knownChains.polkadot]
 );
 
-export const polkaHub = createPolkaHub([
-  selectedAccountPlugin,
-  pjsWalletProvider,
-  polkadotVaultProvider,
-  readOnlyProvider,
-  ledgerAccountProvider,
-  walletConnectProvider,
-]);
+export const polkaHub = createPolkaHub(
+  [
+    selectedAccountPlugin,
+    pjsWalletProvider,
+    polkadotVaultProvider,
+    readOnlyProvider,
+    ledgerAccountProvider,
+    walletConnectProvider,
+  ],
+  {
+    ss58Format: 0,
+  }
+);

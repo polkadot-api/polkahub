@@ -11,6 +11,7 @@ import {
 import {
   Account,
   AccountAddress,
+  addrEq,
   localStorageProvider,
   persistedState,
   PersistenceProvider,
@@ -137,10 +138,10 @@ export const createMultisigProvider = (
       extra: info,
     }),
     eq: (a, b) =>
-      a.address === b.address &&
-      a.info.parentSigner?.address === b.info.parentSigner?.address,
+      addrEq(a.address, b.address) &&
+      addrEq(a.info.parentSigner?.address, b.info.parentSigner?.address),
     accounts$,
-    receivePlugins: (plugins) => plugins$.next(plugins),
+    receiveContext: (ctx) => plugins$.next(ctx.plugins),
     subscription$: accounts$,
     setMultisigs: setPersistedAccounts,
     addMultisig: (multisig) => {

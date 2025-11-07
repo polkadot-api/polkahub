@@ -1,7 +1,6 @@
-import type { HexString, PolkadotSigner, SS58String } from "polkadot-api";
+import type { PolkadotSigner } from "polkadot-api";
 import type { Observable } from "rxjs";
-
-export type AccountAddress = SS58String | HexString;
+import { AccountAddress } from "./addr";
 
 export interface Account {
   provider: string;
@@ -15,6 +14,11 @@ export interface SerializableAccount<T = unknown> {
   address: AccountAddress;
   name?: string;
   extra?: T;
+}
+
+export interface PluginContext {
+  plugins: Plugin[];
+  ss58Format: number;
 }
 
 export interface Plugin<A extends Account = Account> {
@@ -33,6 +37,6 @@ export interface Plugin<A extends Account = Account> {
   accountGroups$?: Observable<Record<string, A[]>>;
 
   // Hooks
-  receivePlugins?: (plugins: Plugin[]) => void;
+  receiveContext?: (context: PluginContext) => void;
   subscription$?: Observable<unknown>;
 }

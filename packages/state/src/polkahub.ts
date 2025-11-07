@@ -1,4 +1,9 @@
-import type { Account, AccountAddress, Plugin } from "@polkahub/plugin";
+import {
+  ss58Reformat,
+  type Account,
+  type AccountAddress,
+  type Plugin,
+} from "@polkahub/plugin";
 import { combineKeys, createSignal } from "@react-rxjs/utils";
 import { DefaultedStateObservable, state } from "@rx-state/core";
 import {
@@ -36,6 +41,7 @@ interface PolkaHubOptions {
   getBalance: (
     address: AccountAddress
   ) => Promise<Balance | null> | Observable<Balance | null>;
+  ss58Format?: number | Promise<number> | Observable<number>;
 }
 
 type PluginInput =
@@ -59,6 +65,7 @@ export interface PolkaHub {
   balanceProvider$: DefaultedStateObservable<
     ((address: AccountAddress) => Observable<Balance | null>) | null
   >;
+  ss58Format$: DefaultedStateObservable<number>;
 
   setPlugins: (plugins: PluginInput) => void;
   setOptions: (opts: Partial<PolkaHubOptions>) => void;
@@ -95,16 +102,37 @@ export function createPolkaHub(
     id: string
   ) => DefaultedStateObservable<T | null>;
 
-  const pluginAccountGroups = (plugin: Plugin) =>
-    (
+  const pluginAccountGroups = state((plugin: Plugin) =>
+    combineLatest([
       plugin.accountGroups$ ??
-      plugin.accounts$.pipe(map((accounts) => ({ [plugin.id]: accounts })))
-    ).pipe(
+        plugin.accounts$.pipe(map((accounts) => ({ [plugin.id]: accounts }))),
+      ss58Format$,
+    ]).pipe(
+      map(([groups, ss58Format]) =>
+        Object.fromEntries(
+          Object.entries(groups).map(([name, group]) => [
+            name,
+            group
+              .map((account): Account | null => {
+                try {
+                  return {
+                    ...account,
+                    address: ss58Reformat(account.address, ss58Format),
+                  };
+                } catch (ex) {
+                  return account;
+                }
+              })
+              .filter((v) => v != null),
+          ])
+        )
+      ),
       catchError((ex) => {
         console.error(`Plugin ${plugin.id} accounts observable crashed`, ex);
         return of({});
       })
-    );
+    )
+  );
   const availableAccounts$ = state(
     combineKeys(plugins$, pluginAccountGroups).pipe(
       map((pluginMap) => Array.from(pluginMap.values())),
@@ -135,6 +163,7 @@ export function createPolkaHub(
   ) as <A extends Account>(id: string) => DefaultedStateObservable<A[]>;
 
   const [optionsChange$, setOptions] = createSignal<Partial<PolkaHubOptions>>();
+
   const asyncFnToObservableFn =
     <T, A extends any[]>(fn: (...args: A) => Promise<T> | Observable<T>) =>
     (...args: A) =>
@@ -159,6 +188,24 @@ export function createPolkaHub(
     asyncFnToObservableFn(opts?.getBalance ?? (async () => null))
   );
 
+  const initialAddrFormat = opts?.ss58Format ?? 42;
+  const initialAddrFormat$ =
+    typeof initialAddrFormat === "number"
+      ? of(initialAddrFormat)
+      : initialAddrFormat;
+  const ss58Format$ = state(
+    merge(
+      initialAddrFormat$,
+      optionsChange$.pipe(
+        map((v) => v.ss58Format),
+        filter((v) => v != null),
+        distinctUntilChanged(),
+        switchMap((v) => (typeof v === "number" ? of(v) : v))
+      )
+    ).pipe(distinctUntilChanged()),
+    42
+  );
+
   const sub = merge(
     combineKeys(
       plugins$,
@@ -170,9 +217,13 @@ export function createPolkaHub(
           })
         ) ?? EMPTY
     ),
-    plugins$.pipe(
-      tap((plugins) => {
-        plugins.forEach((p) => p.receivePlugins?.(plugins));
+    combineLatest([plugins$, ss58Format$]).pipe(
+      tap(([plugins, ss58Format]) => {
+        const context = {
+          plugins,
+          ss58Format,
+        };
+        plugins.forEach((p) => p.receiveContext?.(context));
       })
     ),
     availableAccounts$,
@@ -187,6 +238,7 @@ export function createPolkaHub(
   return {
     availableAccounts$,
     balanceProvider$,
+    ss58Format$,
     destroy,
     identityProvider$,
     plugin$,

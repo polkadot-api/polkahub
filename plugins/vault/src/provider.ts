@@ -7,6 +7,7 @@ import {
 import {
   Account,
   AccountAddress,
+  addrEq,
   localStorageProvider,
   persistedState,
   PersistenceProvider,
@@ -179,7 +180,7 @@ export const createPolkadotVaultProvider = (
             (accounts) =>
               accounts.find(
                 (acc) =>
-                  acc.address === account.address &&
+                  addrEq(acc.address, account.address) &&
                   acc.genesis === account.extra
               ) ?? null
           ),

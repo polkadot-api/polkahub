@@ -7,5 +7,5 @@ export * from "./Input";
 export * from "./Popover";
 export * from "./Button";
 export * from "./SourceButton";
-export * from "./AddressInput";
+export { AddressInput } from "./AddressInput";
 export * from "./AccountPicker";

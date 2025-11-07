@@ -2,6 +2,7 @@ import { getProxySigner } from "@polkadot-api/meta-signers";
 import {
   Account,
   AccountAddress,
+  addrEq,
   localStorageProvider,
   persistedState,
   PersistenceProvider,
@@ -90,10 +91,10 @@ export const createProxyProvider = (
       extra: info,
     }),
     eq: (a, b) =>
-      a.address === b.address &&
-      a.info.parentSigner?.address === b.info.parentSigner?.address,
+      addrEq(a.address, b.address) &&
+      addrEq(a.info.parentSigner?.address, b.info.parentSigner?.address),
     accounts$,
-    receivePlugins: (plugins) => plugins$.next(plugins),
+    receiveContext: (ctx) => plugins$.next(ctx.plugins),
     subscription$: accounts$,
     setProxies: setPersistedAccounts,
     addProxy: (proxy) => {
@@ -101,8 +102,8 @@ export const createProxyProvider = (
         if (
           prev.some(
             (v) =>
-              v.real === proxy.real &&
-              v.parentSigner.address === proxy.parentSigner.address
+              addrEq(v.real, proxy.real) &&
+              addrEq(v.parentSigner.address, proxy.parentSigner.address)
           )
         )
           return prev;
@@ -115,8 +116,8 @@ export const createProxyProvider = (
         prev.filter(
           (v) =>
             !(
-              v.real === proxy.real &&
-              v.parentSigner.address === proxy.parentSigner.address
+              addrEq(v.real, proxy.real) &&
+              addrEq(v.parentSigner.address, proxy.parentSigner.address)
             )
         )
       ),

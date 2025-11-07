@@ -12,8 +12,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@polkahub/ui-components";
+import { defaultFilter } from "cmdk";
 import { Check, ChevronsUpDown, X } from "lucide-react";
 import { PropsWithChildren, ReactNode, useState, type FC } from "react";
+import { addrEq } from "./AddressInput";
 
 export function AccountPicker<T extends AccountInfo = never>({
   className,
@@ -91,7 +93,14 @@ export function AccountPicker<T extends AccountInfo = never>({
         ) : null}
       </div>
       <PopoverContent className="w-96 p-0">
-        <Command>
+        <Command
+          filter={(value, search, keywords) => {
+            const [addr] = keywords ?? [];
+            if (addr && addrEq(search, addr)) return search === addr ? 1 : 0.9;
+
+            return defaultFilter(value, search, keywords);
+          }}
+        >
           <CommandInput placeholder="Search and select…" />
           <CommandList>
             <CommandEmpty>
@@ -107,6 +116,7 @@ export function AccountPicker<T extends AccountInfo = never>({
                     group={group.name}
                     account={account}
                     selected={value === account}
+                    selectedValue={value}
                     onSelect={() => {
                       onChange?.(account);
                       setOpen(false);
@@ -129,13 +139,16 @@ const AccountOption: FC<
     group?: ReactNode;
     account: AccountInfo;
     selected: boolean;
+    selectedValue?: AccountInfo | null;
     onSelect: () => void;
   }>
 > = ({ account, group, selected, onSelect, children }) => (
   <CommandItem
-    keywords={[typeof group === "string" ? group : null, account.name].filter(
-      (v) => v != null
-    )}
+    keywords={[
+      account.address,
+      typeof group === "string" ? group : null,
+      account.name,
+    ].filter((v) => v != null)}
     value={[group, account.address].filter((v) => v != null).join(" ")}
     onSelect={onSelect}
     className="flex flex-row items-center gap-2 p-1"

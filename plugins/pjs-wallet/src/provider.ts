@@ -6,6 +6,7 @@ import {
 } from "@polkadot-api/pjs-signer";
 import {
   Account,
+  addrEq,
   localStorageProvider,
   persistedState,
   PersistenceProvider,
@@ -245,8 +246,9 @@ export const createPjsWalletProvider = (
             (cea) =>
               cea
                 .find((ext) => ext.extension.name === account.extra)
-                ?.accounts.find((acc) => acc.address === account.address) ??
-              null
+                ?.accounts.find((acc) =>
+                  addrEq(acc.address, account.address)
+                ) ?? null
           ),
           filter((v) => v != null),
           timeout({
@@ -254,7 +256,8 @@ export const createPjsWalletProvider = (
           })
         )
       ),
-    eq: (a, b) => a.address === b.address && a.extensionId === b.extensionId,
+    eq: (a, b) =>
+      addrEq(a.address, b.address) && a.extensionId === b.extensionId,
     accountGroups$,
     accounts$,
     availableExtensions$,

@@ -1,7 +1,17 @@
-import type { AccountAddress, Plugin } from "@polkahub/plugin";
+import {
+  ss58Reformat,
+  type AccountAddress,
+  type Plugin,
+} from "@polkahub/plugin";
 import type { Balance, Identity, PolkaHub } from "@polkahub/state";
 import { useStateObservable } from "@react-rxjs/core";
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { from, Observable, of } from "rxjs";
 
 export interface PolkaHubContext {
@@ -62,4 +72,22 @@ export const useBalance = (address: AccountAddress | null): Balance | null => {
 export const usePlugin = <T extends Plugin<any>>(id: string): T | null => {
   const { polkaHub } = usePolkaHubContext();
   return useStateObservable(polkaHub.plugin$(id));
+};
+
+export const useSS58Format = () => {
+  const { polkaHub } = usePolkaHubContext();
+  return useStateObservable(polkaHub.ss58Format$);
+};
+export const useSS58Formatter = () => {
+  const format = useSS58Format();
+  return useCallback(
+    (address: AccountAddress): AccountAddress => {
+      try {
+        return ss58Reformat(address, format);
+      } catch (ex) {
+        return address;
+      }
+    },
+    [format]
+  );
 };

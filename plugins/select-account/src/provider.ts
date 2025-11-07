@@ -1,6 +1,7 @@
 import { externalizePlugin, usePlugin } from "@polkahub/context";
 import {
   Account,
+  addrEq,
   localStorageProvider,
   PersistenceProvider,
   Plugin,
@@ -13,6 +14,7 @@ import {
   catchError,
   concat,
   defer,
+  distinctUntilChanged,
   endWith,
   filter,
   map,
@@ -50,6 +52,7 @@ export const createSelectedAccountPlugin = (
     if (!persisted) return of(null);
 
     return plugins$.pipe(
+      distinctUntilChanged(),
       map((plugins) =>
         plugins.find((plugin) => plugin.id === persisted.provider)
       ),
@@ -78,6 +81,7 @@ export const createSelectedAccountPlugin = (
           }
 
           return plugins$.pipe(
+            distinctUntilChanged(),
             map((plugins) => plugins.find((p) => p.id === account.provider)),
             switchMap((plugin) => {
               if (!plugin) return [null];
@@ -103,8 +107,8 @@ export const createSelectedAccountPlugin = (
     id: selectedAccountPluginId,
     deserialize: () => null,
     accounts$: of([]),
-    receivePlugins(plugins) {
-      plugins$.next(plugins);
+    receiveContext(context) {
+      plugins$.next(context.plugins);
     },
     subscription$: selectedAccount$,
     selectedAccount$,
@@ -117,7 +121,7 @@ const deselectWhenRemoved$ = (value: Account, plugin: Plugin) =>
     takeUntil(
       plugin.accounts$.pipe(
         filter((accounts) => {
-          const eqFn = plugin.eq ?? ((a, b) => a.address === b.address);
+          const eqFn = plugin.eq ?? ((a, b) => addrEq(a.address, b.address));
           return accounts.every((acc) => !eqFn(acc, value));
         })
       )

@@ -46,7 +46,6 @@ export interface LedgerProvider extends Plugin<LedgerAccount> {
 }
 
 export type NetworkInfo = {
-  ss58Format: number;
   decimals: number;
   tokenSymbol: string;
 };
@@ -62,6 +61,7 @@ export const createLedgerProvider = (
     persist: localStorageProvider("ledger-acc"),
     ...opts,
   };
+  let ss58Format = 42;
 
   const [ledgerAccounts$, setLedgerAccounts] = persistedState(
     persist,
@@ -76,7 +76,6 @@ export const createLedgerProvider = (
         combineLatest({
           ledger: [ledger],
           deviceId: ledger.ledgerSigner.deviceId(),
-          ss58Format: getNetworkInfo().then((r) => r.ss58Format),
         }).pipe(
           catchError((ex) => {
             ledger.close();
@@ -84,7 +83,7 @@ export const createLedgerProvider = (
           })
         )
       ),
-      switchMap(({ ledger, deviceId, ss58Format }) =>
+      switchMap(({ ledger, deviceId }) =>
         from(idxs).pipe(
           concatMap(async (idx) => {
             const pk = await ledger.ledgerSigner.getPubkey(idx);
@@ -174,6 +173,9 @@ export const createLedgerProvider = (
     removeAccount: (account) =>
       setLedgerAccounts((v) => v.filter((acc) => !accountEq(acc, account))),
     getLedgerAccounts$,
+    receiveContext(context) {
+      ss58Format = context.ss58Format;
+    },
   };
 };
 

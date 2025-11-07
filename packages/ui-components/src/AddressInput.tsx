@@ -65,7 +65,7 @@ export function AddressInput<T extends AccountInfo = never>({
   }, [hinted]);
 
   const cleanHintedValue = value
-    ? cleanHinted.find((acc) => addrEq(acc.address, value))
+    ? cleanHinted.find((acc) => acc.address === value)
     : null;
   const hintedValue =
     cleanHintedValue &&
@@ -77,7 +77,7 @@ export function AddressInput<T extends AccountInfo = never>({
   const queryMatchesHint =
     queryIsValidAddr &&
     ((value && addrEq(query, value)) ||
-      cleanHinted.some((acc) => addrEq(acc.address, query)));
+      cleanHinted.some((acc) => acc.address === query));
 
   if (value != null) {
     cleanHinted.sort((a, b) =>
@@ -202,7 +202,7 @@ const AccountOption: FC<
 );
 
 const [ss58ToBin] = AccountId();
-const addrEq = (a: string, b: string) => {
+export const addrEq = (a: string, b: string) => {
   if (!a.startsWith("0x")) {
     try {
       a = toHex(ss58ToBin(a));

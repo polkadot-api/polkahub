@@ -39,6 +39,7 @@ import {
   LedgerProvider,
   ledgerProviderId,
 } from "./provider";
+import { addrEq } from "@polkahub/plugin";
 
 export const ManageLedger = () => {
   const { pushContent } = useContext(ModalContext)!;
@@ -217,7 +218,7 @@ const ImportAccounts: FC<{ onClose: () => void }> = ({ onClose }) => {
                       (v) =>
                         v.deviceId === acc.deviceId &&
                         v.index === acc.index &&
-                        v.address === acc.address
+                        addrEq(v.address, acc.address)
                     )}
                     onCheckedChange={(chk) => {
                       if (chk) {

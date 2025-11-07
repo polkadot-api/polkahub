@@ -2,6 +2,7 @@ import { isMimirReady, MIMIR_REGEXP } from "@mimirdev/apps-inject";
 import { MimirPAPISigner } from "@mimirdev/papi-signer";
 import {
   Account,
+  addrEq,
   localStorageProvider,
   persistedState,
   PersistenceProvider,
@@ -84,7 +85,7 @@ export const createMimirProvider = (
       firstValueFrom(
         accounts$.pipe(
           map((accounts) =>
-            accounts.find((acc) => acc.address === account.address)
+            accounts.find((acc) => addrEq(acc.address, account.address))
           ),
           filter((v) => v != null)
         )

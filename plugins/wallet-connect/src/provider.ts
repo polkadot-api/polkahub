@@ -1,5 +1,6 @@
 import {
   Account,
+  addrEq,
   localStorageProvider,
   persistedState,
   PersistenceProvider,
@@ -380,7 +381,8 @@ export const createWalletConnectProvider = (
         accounts$.pipe(
           map(
             (accounts) =>
-              accounts.find((acc) => acc.address === account.address) ?? null
+              accounts.find((acc) => addrEq(acc.address, account.address)) ??
+              null
           )
         )
       ),
