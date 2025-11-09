@@ -1,8 +1,10 @@
 import { AccountDisplay } from "@polkadot-api/react-components";
+import type { SS58String } from "polkadot-api";
 import {
   AddressInput,
   ManageLedger,
   ManagePjsWallets,
+  ManageProxy,
   ManageReadOnly,
   ManageVault,
   PolkaHubModal,
@@ -13,6 +15,7 @@ import {
 } from "polkahub";
 import { useMemo, useState } from "react";
 import { Card } from "./Card";
+import { dotApi } from "./client";
 
 function App() {
   const [value, setValue] = useState<string | null>(
@@ -35,6 +38,11 @@ function App() {
   );
 }
 
+const getDelegates = async (addr: SS58String) => {
+  const [result] = await dotApi.query.Proxy.Proxies.getValue(addr);
+  return result;
+};
+
 const ConnectButton = () => (
   <Card className="text-center">
     <PolkaHubModal>
@@ -47,6 +55,7 @@ const ConnectButton = () => (
           <ManageLedger />
           <ManageVault />
           <WalletConnectButton />
+          <ManageProxy getDelegates={getDelegates} />
         </div>
       </div>
     </PolkaHubModal>

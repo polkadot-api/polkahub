@@ -1,3 +1,4 @@
+export * from "./AlertBox";
 export * from "./utils";
 export * from "./CardPlaceholder";
 export * from "./Checkbox";
@@ -9,3 +10,4 @@ export * from "./Button";
 export * from "./SourceButton";
 export { AddressInput } from "./AddressInput";
 export * from "./AccountPicker";
+export * from "./InlineAddressInput";

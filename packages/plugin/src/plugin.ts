@@ -40,3 +40,13 @@ export interface Plugin<A extends Account = Account> {
   receiveContext?: (context: PluginContext) => void;
   subscription$?: Observable<unknown>;
 }
+
+export const defaultSerialize: NonNullable<Plugin["serialize"]> = ({
+  provider,
+  address,
+  name,
+}) => ({
+  provider,
+  address,
+  name,
+});

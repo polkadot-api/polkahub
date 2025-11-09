@@ -3,16 +3,20 @@ import {
   createPjsWalletProvider,
   createPolkadotVaultProvider,
   createPolkaHub,
+  createProxyProvider,
   createReadOnlyProvider,
   createSelectedAccountPlugin,
   createWalletConnectProvider,
   knownChains,
 } from "polkahub";
+import { dotApi, identitySdk } from "./client";
 
 const selectedAccountPlugin = createSelectedAccountPlugin();
 const pjsWalletProvider = createPjsWalletProvider();
 const polkadotVaultProvider = createPolkadotVaultProvider();
-const readOnlyProvider = createReadOnlyProvider();
+const readOnlyProvider = createReadOnlyProvider({
+  fakeSigner: true,
+});
 const ledgerAccountProvider = createLedgerProvider(
   async () => {
     // Ledger requires `Buffer` polyfill.
@@ -34,11 +38,34 @@ const walletConnectProvider = createWalletConnectProvider(
   [knownChains.polkadot]
 );
 
-export const polkaHub = createPolkaHub([
-  selectedAccountPlugin,
-  pjsWalletProvider,
-  polkadotVaultProvider,
-  readOnlyProvider,
-  ledgerAccountProvider,
-  walletConnectProvider,
-]);
+export const polkaHub = createPolkaHub(
+  [
+    createProxyProvider(),
+    selectedAccountPlugin,
+    pjsWalletProvider,
+    polkadotVaultProvider,
+    readOnlyProvider,
+    ledgerAccountProvider,
+    walletConnectProvider,
+  ],
+  {
+    async getIdentity(address) {
+      const id = await identitySdk.getIdentity(address);
+      return id?.info.display
+        ? {
+            name: id.info.display,
+            verified: id.verified,
+            subId: id.subIdentity,
+          }
+        : null;
+    },
+    async getBalance(address) {
+      const account = await dotApi.query.System.Account.getValue(address);
+      return {
+        value: account.data.free,
+        decimals: 10,
+        symbol: "DOT",
+      };
+    },
+  }
+);

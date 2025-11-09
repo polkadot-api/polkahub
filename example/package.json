@@ -7,14 +7,18 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "postinstall": "papi --whitelist ./.papi/whitelist.ts"
   },
   "dependencies": {
     "@ledgerhq/hw-transport-webhid": "^6.30.9",
+    "@polkadot-api/descriptors": "file:.papi/descriptors",
     "@polkadot-api/react-components": "^0.4.1",
+    "@polkadot-api/sdk-accounts": "^0.5.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.552.0",
+    "polkadot-api": "^1.20.1",
     "polkahub": "workspace:*",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",

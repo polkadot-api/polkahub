@@ -53,9 +53,15 @@ importers:
       '@ledgerhq/hw-transport-webhid':
         specifier: ^6.30.9
         version: 6.30.9
+      '@polkadot-api/descriptors':
+        specifier: file:.papi/descriptors
+        version: file:example/.papi/descriptors(polkadot-api@1.20.1)
       '@polkadot-api/react-components':
         specifier: ^0.4.1
         version: 0.4.1(react-dom@19.2.0)(react@19.2.0)
+      '@polkadot-api/sdk-accounts':
+        specifier: ^0.5.1
+        version: 0.5.1(@react-rxjs/core@0.10.8)(polkadot-api@1.20.1)(react@19.2.0)(rxjs@7.8.2)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -65,6 +71,9 @@ importers:
       lucide-react:
         specifier: ^0.552.0
         version: 0.552.0(react@19.2.0)
+      polkadot-api:
+        specifier: ^1.20.1
+        version: 1.20.1(postcss@8.5.6)(rxjs@7.8.2)
       polkahub:
         specifier: workspace:*
         version: link:../packages/polkahub
@@ -490,15 +499,27 @@ importers:
       '@polkadot-api/meta-signers':
         specifier: ^0.1.17
         version: 0.1.17
+      '@polkahub/context':
+        specifier: workspace:*
+        version: link:../../packages/context
       '@polkahub/plugin':
         specifier: workspace:*
         version: link:../../packages/plugin
+      '@polkahub/select-account':
+        specifier: workspace:*
+        version: link:../select-account
+      '@polkahub/ui-components':
+        specifier: workspace:*
+        version: link:../../packages/ui-components
       '@react-rxjs/core':
         specifier: ^0.10.8
         version: 0.10.8(react@19.2.0)(rxjs@7.8.2)
       '@react-rxjs/utils':
         specifier: ^0.9.7
         version: 0.9.7(@react-rxjs/core@0.10.8)(react@19.2.0)(rxjs@7.8.2)
+      lucide-react:
+        specifier: ^0.552.0
+        version: 0.552.0(react@19.2.0)
       polkadot-api:
         specifier: ^1.20.1
         version: 1.20.1(postcss@8.5.6)(rxjs@7.8.2)
@@ -1463,6 +1484,16 @@ packages:
       '@polkadot-api/utils': 0.2.0
     dev: false
 
+  /@polkadot-api/common-sdk-utils@0.1.0(polkadot-api@1.20.1)(rxjs@7.8.2):
+    resolution: {integrity: sha512-cgA9fh8dfBai9b46XaaQmj9vwzyHStQjc/xrAvQksgF6SqvZ0yAfxVqLvGrsz/Xi3dsAdKLg09PybC7MUAMv9w==}
+    peerDependencies:
+      polkadot-api: ^1.8.1
+      rxjs: '>=7.8.1'
+    dependencies:
+      polkadot-api: 1.20.1(postcss@8.5.6)(rxjs@7.8.2)
+      rxjs: 7.8.2
+    dev: false
+
   /@polkadot-api/ink-contracts@0.4.2:
     resolution: {integrity: sha512-F0wPAFT4wSr4ot0/WccW4vz9vGqLI2izHs6Dde+M7r9VG9+Fv+WjKAfOYxCo1Ep1tfuIK2dQ2qEKt1wpWLJIlw==}
     dependencies:
@@ -1596,6 +1627,22 @@ packages:
       lucide-react: 0.548.0(react@19.2.0)
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
+    dev: false
+
+  /@polkadot-api/sdk-accounts@0.5.1(@react-rxjs/core@0.10.8)(polkadot-api@1.20.1)(react@19.2.0)(rxjs@7.8.2):
+    resolution: {integrity: sha512-AKpjWku2mup/S6YcgFkIpCNu52Ruv6ICurDsqOXS+Jtf6Pn3eZw8ZsiU2EmapF/nTQNYAbi7yZ4ejMA01PRCbQ==}
+    peerDependencies:
+      polkadot-api: '>=1.12.0'
+      rxjs: '>=7.8.0'
+    dependencies:
+      '@polkadot-api/common-sdk-utils': 0.1.0(polkadot-api@1.20.1)(rxjs@7.8.2)
+      '@polkadot-api/substrate-bindings': 0.16.5
+      '@react-rxjs/utils': 0.9.7(@react-rxjs/core@0.10.8)(react@19.2.0)(rxjs@7.8.2)
+      polkadot-api: 1.20.1(postcss@8.5.6)(rxjs@7.8.2)
+      rxjs: 7.8.2
+    transitivePeerDependencies:
+      - '@react-rxjs/core'
+      - react
     dev: false
 
   /@polkadot-api/signer@0.2.11:
@@ -7044,3 +7091,13 @@ packages:
 
   /zod@4.1.12:
     resolution: {integrity: sha512-JInaHOamG8pt5+Ey8kGmdcAcg3OL9reK8ltczgHTAwNhMys/6ThXHityHxVV2p3fkw/c+MAvBHFVYHFZDmjMCQ==}
+
+  file:example/.papi/descriptors(polkadot-api@1.20.1):
+    resolution: {directory: example/.papi/descriptors, type: directory}
+    id: file:example/.papi/descriptors
+    name: '@polkadot-api/descriptors'
+    peerDependencies:
+      polkadot-api: '>=1.11.2'
+    dependencies:
+      polkadot-api: 1.20.1(postcss@8.5.6)(rxjs@7.8.2)
+    dev: false

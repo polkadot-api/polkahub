@@ -5,10 +5,15 @@ import {
   useAvailableAccounts,
   usePlugin,
 } from "@polkahub/context";
+import { AccountAddress } from "@polkahub/plugin";
 import { useSetSelectedAccount } from "@polkahub/select-account";
-import { Button, Input, SourceButton } from "@polkahub/ui-components";
+import {
+  Button,
+  InlineAddressInput,
+  Input,
+  SourceButton,
+} from "@polkahub/ui-components";
 import { Eye, Trash2 } from "lucide-react";
-import { getSs58AddressInfo } from "polkadot-api";
 import { useContext, useState, type FC } from "react";
 import { ReadOnlyProvider, readOnlyProviderId } from "./provider";
 
@@ -35,40 +40,41 @@ export const ManageReadOnly: FC = () => {
 };
 
 const ManageAddresses = () => {
-  const [addressInput, setAddressInput] = useState("");
+  const [address, setAddress] = useState<AccountAddress | null>(null);
+  const [name, setName] = useState("");
   const availableAccounts = useAvailableAccounts();
   const readOnlyProvider = usePlugin<ReadOnlyProvider>(readOnlyProviderId)!;
   const readOnlyAccounts = availableAccounts[readOnlyProviderId] ?? [];
   const setAccount = useSetSelectedAccount();
-
-  const isAddrValid = (() => {
-    try {
-      return getSs58AddressInfo(addressInput).isValid;
-    } catch {
-      return false;
-    }
-  })();
 
   return (
     <div className="space-y-4">
       <form
         onSubmit={(evt) => {
           evt.preventDefault();
-          if (!isAddrValid) return;
-          readOnlyProvider.addAccount(addressInput);
-          setAddressInput("");
+          if (!address) return;
+          readOnlyProvider.addAccount(address);
+          setAddress(null);
         }}
       >
         <h3 className="font-medium text-muted-foreground">
           Add read-only address
         </h3>
         <div className="flex gap-2 items-center">
-          <Input
+          <InlineAddressInput
             name="address"
-            value={addressInput}
-            onChange={(evt) => setAddressInput(evt.target.value)}
+            value={address}
+            onChange={setAddress}
+            className="shrink-[2]"
           />
-          <Button disabled={!isAddrValid}>Add</Button>
+          <Input
+            name="name"
+            value={name}
+            onChange={(evt) => setName(evt.target.value)}
+            placeholder="Name (optional)"
+            className="shrink-[3]"
+          />
+          <Button disabled={!address}>Add</Button>
         </div>
       </form>
       {readOnlyAccounts.length ? (

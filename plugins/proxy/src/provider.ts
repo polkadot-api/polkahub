@@ -15,13 +15,11 @@ import { BehaviorSubject, combineLatest, map, switchMap } from "rxjs";
 
 export interface ProxyInfo {
   real: AccountAddress;
-  type?: {
-    type: string;
-    value?: unknown;
-  };
   parentSigner: SerializableAccount;
+  name?: string;
 }
 
+export const proxyProviderId = "proxy";
 export interface ProxyAccount extends Account {
   provider: "proxy";
   info: ProxyInfo;
@@ -56,9 +54,10 @@ export const createProxyProvider = (
     info: ProxyInfo,
     parentSigner: PolkadotSigner
   ): ProxyAccount => ({
-    provider: "proxy",
+    provider: proxyProviderId,
     address: info.real,
     signer: getProxySigner(info, parentSigner),
+    name: info.name,
     info,
   });
 
@@ -80,7 +79,7 @@ export const createProxyProvider = (
   );
 
   return {
-    id: "proxy",
+    id: proxyProviderId,
     deserialize: (account) => {
       const extra = account.extra as ProxyInfo;
       return proxyInfoToAccount(extra);

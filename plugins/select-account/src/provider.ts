@@ -2,6 +2,7 @@ import { externalizePlugin, usePlugin } from "@polkahub/context";
 import {
   Account,
   addrEq,
+  defaultSerialize,
   localStorageProvider,
   PersistenceProvider,
   Plugin,
@@ -90,13 +91,7 @@ export const createSelectedAccountPlugin = (
             switchMap((plugin) => {
               if (!plugin) return [null];
 
-              const serializeFn =
-                plugin.serialize ??
-                (({ provider, address, name }) => ({
-                  provider,
-                  address,
-                  name,
-                }));
+              const serializeFn = plugin.serialize ?? defaultSerialize;
               persist.save(JSON.stringify(serializeFn(account)));
 
               return deselectWhenRemoved$(account, plugin);
