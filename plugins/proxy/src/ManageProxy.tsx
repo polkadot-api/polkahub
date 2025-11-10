@@ -8,14 +8,13 @@ import {
 import { Button, SourceButton } from "@polkahub/ui-components";
 import { Trash2, UserLock } from "lucide-react";
 import { useContext, type FC } from "react";
-import { AddProxy, AddProxyProps, GetDelegates } from "./AddProxy";
+import { AddProxy, AddProxyProps } from "./AddProxy";
 import { ProxyProvider, proxyProviderId } from "./provider";
 import { useStateObservable } from "@react-rxjs/core";
 import { useSetSelectedAccount } from "@polkahub/select-account";
 
 export const ManageProxy: FC<{
   maxAddrLength?: number;
-  getDelegates?: GetDelegates;
 }> = ({ ...props }) => {
   const { pushContent } = useContext(ModalContext)!;
   const proxyProvider = usePlugin<ProxyProvider>(proxyProviderId);

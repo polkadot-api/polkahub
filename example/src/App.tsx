@@ -1,8 +1,9 @@
 import { AccountDisplay } from "@polkadot-api/react-components";
-import type { SS58String } from "polkadot-api";
 import {
+  addrEq,
   AddressInput,
   ManageLedger,
+  ManageMultisig,
   ManagePjsWallets,
   ManageProxy,
   ManageReadOnly,
@@ -15,7 +16,6 @@ import {
 } from "polkahub";
 import { useMemo, useState } from "react";
 import { Card } from "./Card";
-import { dotApi } from "./client";
 
 function App() {
   const [value, setValue] = useState<string | null>(
@@ -38,11 +38,6 @@ function App() {
   );
 }
 
-const getDelegates = async (addr: SS58String) => {
-  const [result] = await dotApi.query.Proxy.Proxies.getValue(addr);
-  return result;
-};
-
 const ConnectButton = () => (
   <Card className="text-center">
     <PolkaHubModal>
@@ -55,7 +50,25 @@ const ConnectButton = () => (
           <ManageLedger />
           <ManageVault />
           <WalletConnectButton />
-          <ManageProxy getDelegates={getDelegates} />
+          <ManageProxy />
+          <ManageMultisig
+            getMultisigDetails={async (addr) => {
+              console.log("gmd", addr);
+              if (
+                addrEq("12R1XCdgkHysv8Y4ntiXguo4eUYHXjQTmfRjL8FbmezsG71j", addr)
+              ) {
+                return {
+                  addresses: [
+                    "15roJ4ZrgrZam5BQWJgiGHpgp7ShFQBRNLq6qUfiNqXDZjMK",
+                    "16AQJHpSRMh5X1mULm4dCgYxrQLsrnK3uwCQ436iitYk1ru7",
+                    "16JGzEsi8gcySKjpmxHVrkLTHdFHodRepEz8n244gNZpr9J",
+                  ],
+                  threshold: 2,
+                };
+              }
+              return null;
+            }}
+          />
         </div>
       </div>
     </PolkaHubModal>

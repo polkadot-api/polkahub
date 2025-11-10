@@ -4,4 +4,6 @@
 @import "@polkahub/select-account";
 @import "@polkahub/ui-components";
 @import "@polkahub/vault";
+@import "@polkahub/proxy";
+@import "@polkahub/multisig";
 @source "./dist";

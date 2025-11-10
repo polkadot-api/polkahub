@@ -11,3 +11,4 @@ export * from "./SourceButton";
 export { AddressInput } from "./AddressInput";
 export * from "./AccountPicker";
 export * from "./InlineAddressInput";
+export * from "./Slider";

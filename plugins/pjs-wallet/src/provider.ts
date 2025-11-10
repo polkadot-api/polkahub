@@ -39,7 +39,6 @@ import {
   switchMap,
   take,
   tap,
-  timeout,
   timer,
 } from "rxjs";
 
@@ -250,10 +249,7 @@ export const createPjsWalletProvider = (
                   addrEq(acc.address, account.address)
                 ) ?? null
           ),
-          filter((v) => v != null),
-          timeout({
-            first: 3000,
-          })
+          filter((v) => v != null)
         )
       ),
     eq: (a, b) =>

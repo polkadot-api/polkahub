@@ -1,5 +1,6 @@
 import {
   createLedgerProvider,
+  createMultisigProvider,
   createPjsWalletProvider,
   createPolkadotVaultProvider,
   createPolkaHub,
@@ -7,9 +8,11 @@ import {
   createReadOnlyProvider,
   createSelectedAccountPlugin,
   createWalletConnectProvider,
+  directMultisigSigner,
   knownChains,
 } from "polkahub";
 import { dotApi, identitySdk } from "./client";
+import type { SS58String } from "polkadot-api";
 
 const selectedAccountPlugin = createSelectedAccountPlugin();
 const pjsWalletProvider = createPjsWalletProvider();
@@ -38,9 +41,20 @@ const walletConnectProvider = createWalletConnectProvider(
   [knownChains.polkadot]
 );
 
+const getDelegates = async (addr: SS58String) => {
+  const [result] = await dotApi.query.Proxy.Proxies.getValue(addr);
+  return result;
+};
+
 export const polkaHub = createPolkaHub(
   [
-    createProxyProvider(),
+    createProxyProvider({ getDelegates }),
+    createMultisigProvider(
+      directMultisigSigner(
+        dotApi.query.Multisig.Multisigs.getValue,
+        dotApi.apis.TransactionPaymentApi.query_info
+      )
+    ),
     selectedAccountPlugin,
     pjsWalletProvider,
     polkadotVaultProvider,
