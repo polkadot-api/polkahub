@@ -8,7 +8,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@polkahub/ui-components";
+} from "./Command";
 import {
   PropsWithChildren,
   ReactNode,

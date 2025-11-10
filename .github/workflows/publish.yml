@@ -52,7 +52,7 @@ jobs:
         uses: EndBug/version-check@v2
         with:
           diff-search: true
-          file-name: ./packages/${{ matrix.value }}/package.json
+          file-name: ./${{ matrix.value }}/package.json
       - uses: pnpm/action-setup@v3
         if: steps.check.outputs.changed == 'true'
       - name: Setup Node.js 22.x
@@ -70,7 +70,7 @@ jobs:
         run: pnpm build
       - name: Publish
         if: steps.check.outputs.changed == 'true'
-        working-directory: packages/${{ matrix.value }}
+        working-directory: ${{ matrix.value }}
         run: |
           pnpm publish --no-git-checks --access=public --tag latest
         env:

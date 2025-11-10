@@ -3,7 +3,6 @@ import {
   PolkadotIdenticon,
 } from "@polkadot-api/react-components";
 import { AccountId } from "@polkadot-api/substrate-bindings";
-import { cn, inputClassNames } from "@polkahub/ui-components";
 import {
   type MouseEvent,
   type ReactNode,
@@ -12,6 +11,8 @@ import {
   useRef,
   useState,
 } from "react";
+import { inputClassNames } from "./Input";
+import { cn } from "./utils";
 
 export function InlineAddressInput({
   value,

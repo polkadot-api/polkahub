@@ -1,18 +1,18 @@
 import { AccountDisplay, AccountInfo } from "@polkadot-api/react-components";
+import { defaultFilter } from "cmdk";
+import { Check } from "lucide-react";
+import { PropsWithChildren, ReactNode, type FC } from "react";
+import { addrEq } from "./AddressInput";
+import { AddressInputPopover } from "./AddressInputPopover";
 import {
-  cn,
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
   CommandList,
-} from "@polkahub/ui-components";
-import { defaultFilter } from "cmdk";
-import { Check } from "lucide-react";
-import { PropsWithChildren, ReactNode, type FC } from "react";
-import { addrEq } from "./AddressInput";
-import { AddressInputPopover } from "./AddressInputPopover";
+} from "./Command";
+import { cn } from "./utils";
 
 export function AccountPicker<T extends AccountInfo = never>({
   value,

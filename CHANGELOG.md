@@ -1,5 +1,23 @@
 ## Unreleased
 
+## 0.3.0 2025-11-10
+
+### Added
+
+- Manage proxy accounts.
+- Manage multisig accounts.
+- Add `name` field to read-only manager.
+- `@polkahub-ui/components`
+  - `Slider` component from shadcn/ui
+  - `InlineAddressInput`: An address input without a popover.
+
+### Changed
+
+- Replace `maxAddrLength` properties for `MaxAddrLengthContext`.
+- Multisig: provider now takes a `CreateMultisigSigner` parameter, to customize signer behaviour.
+  - Use `multisigDirectSigner` for the default behaviour.
+- Proxy: provider now requres a `GetDelegates` parameter.
+
 ## 0.2.2 2025-11-08
 
 ### Fixed

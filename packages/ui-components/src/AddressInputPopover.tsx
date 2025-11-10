@@ -1,12 +1,8 @@
-import {
-  Button,
-  cn,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@polkahub/ui-components";
 import { ChevronsUpDown, X } from "lucide-react";
 import { ReactNode, useState } from "react";
+import { Button } from "./Button";
+import { Popover, PopoverContent, PopoverTrigger } from "./Popover";
+import { cn } from "./utils";
 
 export type AddressInputPopoverProps = {
   hasValue: boolean;
