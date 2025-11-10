@@ -28,8 +28,15 @@ export interface MultisigInfo {
   // If not set, it will be a read-only account.
   // But with the advantage that it will still figure out the resulting address
   parentSigner?: SerializableAccount;
+  name?: string;
 }
 
+export type CreateMultisigSigner = (
+  info: MultisigInfo,
+  parentSigner: PolkadotSigner
+) => PolkadotSigner;
+
+export const multisigProviderId = "multisig";
 export interface MultisigAccount extends Account {
   provider: "multisig";
   info: MultisigInfo;
@@ -45,33 +52,10 @@ export interface MultisigProvider extends Plugin<MultisigAccount> {
 }
 
 export const createMultisigProvider = (
-  getMultisigInfo: (
-    multisig: AccountAddress,
-    callHash: FixedSizeBinary<32>
-  ) => Promise<
-    | {
-        when: {
-          height: number;
-          index: number;
-        };
-        approvals: Array<AccountAddress>;
-      }
-    | undefined
-  >,
-  txPaymentInfo: (
-    uxt: Binary,
-    len: number
-  ) => Promise<{
-    weight: {
-      ref_time: bigint;
-      proof_size: bigint;
-    };
-  }>,
-  opts?: Partial<
-    {
-      persist: PersistenceProvider;
-    } & MultisigSignerOptions<AccountAddress>
-  >
+  createMultisigSigner: CreateMultisigSigner,
+  opts?: Partial<{
+    persist: PersistenceProvider;
+  }>
 ): MultisigProvider => {
   const { persist } = {
     persist: localStorageProvider("multisigs"),
@@ -88,22 +72,11 @@ export const createMultisigProvider = (
     info: MultisigInfo,
     parentSigner: PolkadotSigner | undefined
   ): MultisigAccount => ({
-    provider: "multisig",
+    provider: multisigProviderId,
     address: getMultisigAddress(info),
-    signer: parentSigner
-      ? getMultisigSigner(
-          info,
-          getMultisigInfo,
-          txPaymentInfo,
-          parentSigner,
-          opts?.method
-            ? {
-                method: opts.method,
-              }
-            : undefined
-        )
-      : undefined,
+    signer: parentSigner ? createMultisigSigner(info, parentSigner) : undefined,
     info,
+    name: info.name,
   });
 
   const multisigInfoToAccount = async (info: MultisigInfo) => {
@@ -127,7 +100,7 @@ export const createMultisigProvider = (
   );
 
   return {
-    id: "multisig",
+    id: multisigProviderId,
     deserialize: (account) => {
       const extra = account.extra as MultisigInfo;
       return multisigInfoToAccount(extra);
@@ -171,3 +144,32 @@ const getMultisigAddress = (info: MultisigInfo) => {
   }
   return AccountId(addrInfo.ss58Format).dec(accountId);
 };
+
+export const directMultisigSigner =
+  (
+    getMultisigInfo: (
+      multisig: AccountAddress,
+      callHash: FixedSizeBinary<32>
+    ) => Promise<
+      | {
+          when: {
+            height: number;
+            index: number;
+          };
+          approvals: Array<AccountAddress>;
+        }
+      | undefined
+    >,
+    txPaymentInfo: (
+      uxt: Binary,
+      len: number
+    ) => Promise<{
+      weight: {
+        ref_time: bigint;
+        proof_size: bigint;
+      };
+    }>,
+    opts?: MultisigSignerOptions<AccountAddress>
+  ): CreateMultisigSigner =>
+  (info, parentSigner) =>
+    getMultisigSigner(info, getMultisigInfo, txPaymentInfo, parentSigner, opts);

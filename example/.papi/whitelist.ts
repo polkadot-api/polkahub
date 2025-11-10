@@ -4,4 +4,5 @@ export const whitelist: DotPplWhitelistEntry[] = [
   "query.Identity.IdentityOf",
   "query.Identity.SuperOf",
   "query.System.Account",
+  "query.Proxy.Proxies",
 ];

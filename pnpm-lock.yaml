@@ -434,15 +434,30 @@ importers:
       '@polkadot-api/substrate-bindings':
         specifier: ^0.16.4
         version: 0.16.5
+      '@polkahub/context':
+        specifier: workspace:*
+        version: link:../../packages/context
       '@polkahub/plugin':
         specifier: workspace:*
         version: link:../../packages/plugin
+      '@polkahub/proxy':
+        specifier: workspace:*
+        version: link:../proxy
+      '@polkahub/select-account':
+        specifier: workspace:*
+        version: link:../select-account
+      '@polkahub/ui-components':
+        specifier: workspace:*
+        version: link:../../packages/ui-components
       '@react-rxjs/core':
         specifier: ^0.10.8
         version: 0.10.8(react@19.2.0)(rxjs@7.8.2)
       '@react-rxjs/utils':
         specifier: ^0.9.7
         version: 0.9.7(@react-rxjs/core@0.10.8)(react@19.2.0)(rxjs@7.8.2)
+      lucide-react:
+        specifier: ^0.552.0
+        version: 0.552.0(react@19.2.0)
       polkadot-api:
         specifier: ^1.20.1
         version: 1.20.1(postcss@8.5.6)(rxjs@7.8.2)

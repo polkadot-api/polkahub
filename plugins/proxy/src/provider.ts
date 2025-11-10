@@ -25,6 +25,32 @@ export interface ProxyAccount extends Account {
   info: ProxyInfo;
 }
 
+export type ProxyType =
+  | "Any"
+  | "Assets"
+  | "Auction"
+  | "Collator"
+  | "Governance"
+  | "Staking"
+  | "AssetManager"
+  | "AssetOwner"
+  | "CancelProxy"
+  | "NominationPools"
+  | "NonTransfer"
+  | "ParaRegistration";
+
+export type ProxyEntry = {
+  delegate: AccountAddress;
+  proxy_type: {
+    type: ProxyType;
+  };
+  delay: number;
+};
+
+export type GetDelegates = (
+  address: AccountAddress
+) => Promise<Array<ProxyEntry> | null>;
+
 export interface ProxyProvider extends Plugin<ProxyAccount> {
   id: "proxy";
   accounts$: DefaultedStateObservable<ProxyAccount[]>;
@@ -32,15 +58,19 @@ export interface ProxyProvider extends Plugin<ProxyAccount> {
   setProxies: (proxies: ProxyInfo[]) => void;
   addProxy: (proxy: ProxyInfo) => Promise<ProxyAccount | null>;
   removeProxy: (proxy: ProxyInfo) => void;
+
+  getDelegates: GetDelegates;
 }
 
 export const createProxyProvider = (
   opts?: Partial<{
     persist: PersistenceProvider;
+    getDelegates: GetDelegates;
   }>
 ): ProxyProvider => {
-  const { persist } = {
+  const { persist, getDelegates } = {
     persist: localStorageProvider("proxies"),
+    getDelegates: async () => null,
     ...opts,
   };
 
@@ -120,5 +150,6 @@ export const createProxyProvider = (
             )
         )
       ),
+    getDelegates,
   };
 };

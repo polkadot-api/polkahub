@@ -16,14 +16,8 @@ import {
 import { AccountId } from "polkadot-api";
 import { toHex } from "polkadot-api/utils";
 import { useEffect, useMemo, useState, type FC } from "react";
-import {
-  ProxyEntry,
-  ProxyProvider,
-  proxyProviderId,
-  ProxyType,
-} from "./provider";
 
-const proxyTypeText: Record<ProxyType, string> = {
+const proxyTypeText = {
   Any: "Any",
   AssetManager: "Asset Manager",
   AssetOwner: "Asset Owner",
@@ -37,14 +31,29 @@ const proxyTypeText: Record<ProxyType, string> = {
   ParaRegistration: "Para Registration",
   Staking: "Staking",
 };
+type ProxyType = keyof typeof proxyTypeText;
+
+export type ProxyEntry = {
+  delegate: AccountAddress;
+  proxy_type: {
+    type: ProxyType;
+  };
+  delay: number;
+};
+
+export type GetDelegates = (
+  address: AccountAddress
+) => Promise<Array<ProxyEntry> | null>;
 
 export type AddProxyProps = {
   maxAddrLength?: number;
+  getDelegates?: GetDelegates;
   blockLength?: number;
 };
 
 export const AddProxy: FC<AddProxyProps> = ({
   maxAddrLength = 12,
+  getDelegates,
   blockLength,
 }) => {
   const { popContent } = useModalContext();
@@ -111,6 +120,7 @@ export const AddProxy: FC<AddProxyProps> = ({
             value={selectedAccount}
             onChange={setSelectedAccount}
             proxy={proxyAddress}
+            getDelegates={getDelegates}
           />
         </div>
       ) : null}
@@ -120,7 +130,7 @@ export const AddProxy: FC<AddProxyProps> = ({
           <ul className="flex flex-wrap gap-2">
             {selectedAccount.delegate.map((entry, i) => (
               <li key={i} className="border rounded px-2 py-1">
-                {proxyTypeText[entry.proxy_type.type as ProxyType]}
+                {proxyTypeText[entry.proxy_type.type]}
                 {entry.delay
                   ? ` (${getDelayLength(entry.delay, blockLength)})`
                   : ""}
@@ -203,13 +213,16 @@ const ProxySignerPicker: FC<{
   onChange: (value: AccountWithProxy | null) => void;
   proxy: AccountAddress;
   maxAddrLength: number;
-}> = ({ value, onChange, maxAddrLength, proxy }) => {
-  const proxyProvider = usePlugin<ProxyProvider>(proxyProviderId)!;
+  getDelegates?: GetDelegates;
+}> = ({
+  value,
+  onChange,
+  maxAddrLength,
+  proxy,
+  getDelegates = async () => null,
+}) => {
   const availableAccounts = useAvailableAccounts();
-  const delegatesResult = useAsync(
-    () => proxyProvider.getDelegates(proxy),
-    [proxy]
-  );
+  const delegatesResult = useAsync(() => getDelegates(proxy), [proxy]);
   const availableSigners = useMemo(
     () =>
       Object.entries(availableAccounts)
