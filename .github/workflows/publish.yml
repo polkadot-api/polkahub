@@ -22,56 +22,8 @@ jobs:
       - name: Install deps
         run: pnpm install
       - name: Build
-        run: pnpm build
-  publish:
-    needs: [build]
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        value:
-          [
-            packages/context,
-            packages/plugin,
-            packages/polkahub,
-            packages/state,
-            packages/ui-components,
-            plugins/ledger,
-            plugins/mimir,
-            plugins/multisig,
-            plugins/pjs-wallet,
-            plugins/proxy,
-            plugins/read-only,
-            plugins/select-account,
-            plugins/vault,
-            plugins/wallet-connect,
-          ]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Check if version has been updated
-        id: check
-        uses: EndBug/version-check@v2
-        with:
-          diff-search: true
-          file-name: ./${{ matrix.value }}/package.json
-      - uses: pnpm/action-setup@v3
-        if: steps.check.outputs.changed == 'true'
-      - name: Setup Node.js 22.x
-        if: steps.check.outputs.changed == 'true'
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22.x
-          cache: pnpm
-          registry-url: https://registry.npmjs.org
-      - name: Install deps
-        if: steps.check.outputs.changed == 'true'
-        run: pnpm install
-      - name: Build
-        if: steps.check.outputs.changed == 'true'
-        run: pnpm build
-      - name: Publish
-        if: steps.check.outputs.changed == 'true'
-        working-directory: ${{ matrix.value }}
-        run: |
-          pnpm publish --no-git-checks --access=public --tag latest
+        run: pnpm -r build
+      - name: publish
+        run: pnpm -r publish --access=public --tag latest
         env:
           NODE_AUTH_TOKEN: ${{ secrets.POLKAHUB_PUBLISH_AUTOMATION_TOKEN }}
