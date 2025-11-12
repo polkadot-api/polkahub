@@ -263,7 +263,10 @@ const createQrMessage = (
     new Uint8Array([encrpytion]),
     new Uint8Array([VaultQrPayloadType.Message]),
     publicKey,
-    compact.enc(data.length),
-    data,
+    mergeUint8([
+      Binary.fromText("<Bytes>").asBytes(),
+      data,
+      Binary.fromText("</Bytes>").asBytes(),
+    ]),
     genesisHash,
   ]);
