@@ -93,7 +93,11 @@ export const createPolkadotVaultProvider = (
         const qrPayload = createQrMessage(
           VaultQrEncryption.Sr25519,
           publicKey,
-          data,
+          mergeUint8([
+            Binary.fromText("<Bytes>").asBytes(),
+            data,
+            Binary.fromText("</Bytes>").asBytes(),
+          ]),
           Binary.fromHex(accountGenesis).asBytes()
         );
         setTx(qrPayload);
@@ -263,7 +267,6 @@ const createQrMessage = (
     new Uint8Array([encrpytion]),
     new Uint8Array([VaultQrPayloadType.Message]),
     publicKey,
-    compact.enc(data.length),
     data,
     genesisHash,
   ]);
