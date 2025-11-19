@@ -121,13 +121,19 @@ export const createPolkadotVaultProvider = (
         const extra: Array<Uint8Array> = [];
         const additionalSigned: Array<Uint8Array> = [];
         for (const { identifier } of decMeta.extrinsic.signedExtensions) {
-          if (identifier === "CheckMetadataHash" && getNetworkInfo) {
-            merkleizer = merkleizeMetadata(metadata, await getNetworkInfo());
-            extra.push(Uint8Array.from([1]));
-            additionalSigned.push(
-              mergeUint8([Uint8Array.from([1]), merkleizer.digest()])
-            );
-            continue;
+          if (identifier === "CheckMetadataHash") {
+            if (getNetworkInfo) {
+              merkleizer = merkleizeMetadata(metadata, await getNetworkInfo());
+              extra.push(Uint8Array.from([1]));
+              additionalSigned.push(
+                mergeUint8([Uint8Array.from([1]), merkleizer.digest()])
+              );
+              continue;
+            } else {
+              console.warn(
+                "The chain supports `CheckMetadataHash`, but `getNetworkInfo` was not provided. Polkadot Vault will need the whole metadata downloaded beforehand."
+              );
+            }
           }
           const signedExtension = signedExtensions[identifier];
           if (!signedExtension)
