@@ -8,6 +8,8 @@ import nova from "./assets/nova.webp";
 import pjs from "./assets/pjs.webp";
 import subwallet from "./assets/subwallet.webp";
 import talisman from "./assets/talisman.webp";
+import polkagate from "./assets/polkagate.webp"
+import fearless from "./assets/fearless.webp"
 import { PjsWalletProvider, pjsWalletProviderId } from "./provider";
 
 const knownExtensions: Record<string, { name: string; logo: string }> = {
@@ -27,6 +29,14 @@ const knownExtensions: Record<string, { name: string; logo: string }> = {
     name: "Subwallet",
     logo: subwallet,
   },
+  "polkagate": {
+    name: "Polkagate",
+    logo: polkagate
+  },
+  "fearless-wallet": {
+    name: "Fearless Wallet",
+    logo: fearless
+  }
 };
 
 const [pjsWalletPlugin$, useExternalizedPlugin] =
