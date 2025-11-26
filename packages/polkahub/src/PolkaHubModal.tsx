@@ -35,9 +35,16 @@ export const openSelectAccount = () => setOpen(true);
 const open$ = state(openChange$, false);
 const close = () => setOpen(false);
 
+export type PolkaHubModalClassnames = {
+  button?: string
+  modalContent?: string
+  modalHeader?: string
+  modalBody?: string
+}
+
 export const PolkaHubModal: FC<
   PropsWithChildren<{
-    className?: string;
+    className?: PolkaHubModalClassnames;
     buttonProps?: ComponentProps<typeof SelectedAccountButton>;
     title?: string;
   }>
@@ -80,9 +87,9 @@ export const PolkaHubModal: FC<
       }
     >
       <DialogTrigger asChild>
-        <SelectedAccountButton className={className} {...buttonProps} />
+        <SelectedAccountButton className={className?.button} {...buttonProps} />
       </DialogTrigger>
-      <DialogContent
+      <DialogContent className={className?.modalContent}
         onInteractOutside={(evt) => {
           if (
             evt.target instanceof HTMLElement &&
@@ -91,7 +98,7 @@ export const PolkaHubModal: FC<
             evt.preventDefault();
         }}
       >
-        <DialogHeader className="flex-row items-center">
+        <DialogHeader className={"flex-row items-center ".concat(className?.modalHeader || "")}>
           {contentStack.length ? (
             <Button
               className="has-[>svg]:px-1"
@@ -104,7 +111,7 @@ export const PolkaHubModal: FC<
           ) : null}
           <DialogTitle>{activeContent?.title ?? title}</DialogTitle>
         </DialogHeader>
-        <DialogBody>
+        <DialogBody className={className?.modalBody}>
           <ModalContext value={contextValue}>
             {activeContent ? (
               activeContent.element

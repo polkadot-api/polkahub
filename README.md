@@ -132,6 +132,48 @@ export const ConnectButton = () => (
 );
 ```
 
+**Note:** With `PolkaHubModalClassnames` user can add a small “styling hook” that lets you inject your own CSS classes into specific parts of the PolkaHubModal without having to re-implement the whole component:
+
+```ts
+type PolkaHubModalClassnames = {
+  button?: string;
+  modalContent?: string;
+  modalHeader?: string;
+  modalBody?: string;
+};
+```
+
+User can pass this single className object - the modal spreads those classes onto:
+
+```
+button → the trigger button (SelectedAccountButton)
+modalContent → the outer dialog content (DialogContent)
+modalHeader → the header row (DialogHeader)
+modalBody → the body area (DialogBody)
+```
+
+Each is optional; if user doesn’t provide it, the default styles stay as they are. e.g.:
+
+```tsx
+import { PolkaHubModal } from "./PolkaHubModal";
+
+export const ConnectWalletSection = () => {
+  return (
+    <PolkaHubModal
+      title="Connect your wallet"
+      className={{
+        button: "rounded-full px-4 py-2 text-sm font-medium",
+        modalContent: "max-w-md w-full",
+        modalHeader: "border-b px-4 py-3",
+        modalBody: "px-4 py-4 space-y-3",
+      }}
+    >
+      {/* rest content goes here */}
+    </PolkaHubModal>
+  );
+};
+```
+
 ### 5. Consume accounts
 
 Use the provided hooks anywhere under the provider to access the available accounts.
