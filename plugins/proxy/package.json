@@ -28,7 +28,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@polkadot-api/meta-signers": "^0.1.17",
+    "@polkadot-api/meta-signers": "canary",
     "@polkahub/context": "workspace:*",
     "@polkahub/plugin": "workspace:*",
     "@polkahub/select-account": "workspace:*",
@@ -36,7 +36,7 @@
     "@react-rxjs/core": "^0.10.8",
     "@react-rxjs/utils": "^0.9.7",
     "lucide-react": "^0.554.0",
-    "polkadot-api": "^1.20.7",
+    "polkadot-api": "canary",
     "rxjs": "^7.8.2"
   },
   "peerDependencies": {

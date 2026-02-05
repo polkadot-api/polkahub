@@ -104,7 +104,7 @@ export const createPolkadotVaultProvider = (
           VaultQrEncryption.Sr25519,
           publicKey,
           data,
-          Binary.fromHex(accountGenesis).asBytes()
+          Binary.fromHex(accountGenesis)
         );
         setTx(qrPayload);
 
@@ -120,7 +120,8 @@ export const createPolkadotVaultProvider = (
         const decMeta = unifyMetadata(decAnyMetadata(metadata));
         const extra: Array<Uint8Array> = [];
         const additionalSigned: Array<Uint8Array> = [];
-        for (const { identifier } of decMeta.extrinsic.signedExtensions) {
+        // TODO use the best version
+        for (const { identifier } of decMeta.extrinsic.signedExtensions[0]) {
           if (identifier === "CheckMetadataHash") {
             if (getNetworkInfo) {
               merkleizer = merkleizeMetadata(metadata, await getNetworkInfo());
@@ -145,7 +146,7 @@ export const createPolkadotVaultProvider = (
 
         const genesis =
           signedExtensions.CheckGenesis?.additionalSigned ??
-          Binary.fromHex(accountGenesis).asBytes();
+          Binary.fromHex(accountGenesis);
 
         const qrPayload = merkleizer
           ? createQrProofedTransaction(
@@ -322,10 +323,6 @@ const createQrMessage = (
     new Uint8Array([encrpytion]),
     new Uint8Array([VaultQrPayloadType.Message]),
     publicKey,
-    mergeUint8([
-      Binary.fromText("<Bytes>").asBytes(),
-      data,
-      Binary.fromText("</Bytes>").asBytes(),
-    ]),
+    mergeUint8([Binary.fromText("<Bytes>"), data, Binary.fromText("</Bytes>")]),
     genesisHash,
   ]);
