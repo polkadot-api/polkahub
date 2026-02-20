@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@ledgerhq/hw-transport": "^6.31.13",
-    "@polkadot-api/ledger-signer": "canary",
+    "@polkadot-api/ledger-signer": "^0.2.17",
     "@polkahub/context": "workspace:*",
     "@polkahub/plugin": "workspace:*",
     "@polkahub/select-account": "workspace:*",
@@ -37,7 +37,7 @@
     "@react-rxjs/utils": "^0.9.7",
     "buffer": "^6.0.3",
     "lucide-react": "^0.554.0",
-    "polkadot-api": "canary",
+    "polkadot-api": "2.0.0-rc.2",
     "rxjs": "^7.8.2"
   },
   "peerDependencies": {

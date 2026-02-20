@@ -25,7 +25,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@polkadot-api/substrate-bindings": "canary",
+    "@polkadot-api/substrate-bindings": "^0.19.0",
     "@polkahub/context": "workspace:*",
     "@polkahub/plugin": "workspace:*",
     "@polkahub/select-account": "workspace:*",
@@ -36,7 +36,7 @@
     "@walletconnect/types": "2.23.0",
     "@walletconnect/universal-provider": "2.23.0",
     "@walletconnect/utils": "2.23.0",
-    "polkadot-api": "canary",
+    "polkadot-api": "2.0.0-rc.2",
     "rxjs": "^7.8.2"
   },
   "peerDependencies": {
