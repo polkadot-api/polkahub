@@ -21,8 +21,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc -b && rollup -c ../../rollup.config.js",
-    "lint": "eslint ."
+    "build": "tsc -b && rollup -c ../../rollup.config.js"
   },
   "dependencies": {
     "@react-rxjs/utils": "^0.9.7",

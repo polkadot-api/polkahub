@@ -24,8 +24,7 @@
     "index.css"
   ],
   "scripts": {
-    "build": "tsc -b && rollup -c ../../rollup.config.js",
-    "lint": "eslint ."
+    "build": "tsc -b && rollup -c ../../rollup.config.js"
   },
   "dependencies": {
     "@polkadot-api/meta-signers": "^0.1.21",
