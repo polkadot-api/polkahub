@@ -31,11 +31,11 @@
     "@polkahub/ui-components": "workspace:*",
     "@react-rxjs/core": "^0.10.8",
     "@react-rxjs/utils": "^0.9.7",
-    "@reown/appkit": "1.8.14",
-    "@walletconnect/types": "2.23.0",
-    "@walletconnect/universal-provider": "2.23.0",
-    "@walletconnect/utils": "2.23.0",
-    "polkadot-api": "2.0.0-rc.2",
+    "@reown/appkit": "1.8.18",
+    "@walletconnect/types": "2.23.6",
+    "@walletconnect/universal-provider": "2.23.6",
+    "@walletconnect/utils": "2.23.6",
+    "polkadot-api": "^2.0.0-rc.2",
     "rxjs": "^7.8.2"
   },
   "peerDependencies": {
@@ -43,7 +43,7 @@
     "react": "^19.2.0"
   },
   "devDependencies": {
-    "@types/react": "^19.2.6",
-    "react": "^19.2.0"
+    "@types/react": "^19.2.14",
+    "react": "^19.2.4"
   }
 }

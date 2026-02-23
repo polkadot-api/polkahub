@@ -24,13 +24,13 @@
     "build": "tsc -b && rollup -c ../../rollup.config.js"
   },
   "dependencies": {
-    "@polkadot-api/react-components": "^0.4.1",
+    "@polkadot-api/react-components": "^0.4.2",
     "@polkahub/plugin": "workspace:*",
     "@polkahub/state": "workspace:*",
     "@react-rxjs/core": "^0.10.8",
     "@react-rxjs/utils": "^0.9.7",
     "@rx-state/core": "^0.1.4",
-    "polkadot-api": "canary",
+    "polkadot-api": "^2.0.0-rc.2",
     "rxjs": "^7.8.2"
   },
   "peerDependencies": {
@@ -38,7 +38,7 @@
     "react": "^19.2.0"
   },
   "devDependencies": {
-    "@types/react": "^19.2.6",
-    "react": "^19.2.0"
+    "@types/react": "^19.2.14",
+    "react": "^19.2.4"
   }
 }
