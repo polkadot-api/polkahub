@@ -10,20 +10,25 @@ jobs:
   build:
     timeout-minutes: 10
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version:
+          - "24"
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v3
-      - name: Setup Node.js 22.x
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v6
         with:
-          node-version: 22.x
+          node-version: ${{ matrix.node-version }}
           cache: pnpm
           registry-url: https://registry.npmjs.org
       - name: Install deps
         run: pnpm install
       - name: Build
-        run: pnpm -r build
+        run: pnpm build
       - name: publish
-        run: pnpm -r publish --access=public --tag latest
+        run: pnpm -r publish --no-git-checks --access=public --tag latest
         env:
           NODE_AUTH_TOKEN: ${{ secrets.POLKAHUB_PUBLISH_AUTOMATION_TOKEN }}
+          NPM_CONFIG_PROVENANCE: "true"
