@@ -4,9 +4,9 @@ import {
 } from "@polkadot-api/meta-signers";
 import {
   AccountId,
-  FixedSizeBinary,
   getMultisigAccountId,
   getSs58AddressInfo,
+  SizedHex,
 } from "@polkadot-api/substrate-bindings";
 import {
   Account,
@@ -19,7 +19,7 @@ import {
   SerializableAccount,
 } from "@polkahub/plugin";
 import { DefaultedStateObservable, state } from "@react-rxjs/core";
-import { Binary, PolkadotSigner } from "polkadot-api";
+import { PolkadotSigner } from "polkadot-api";
 import {
   BehaviorSubject,
   combineLatest,
@@ -172,7 +172,7 @@ export const multisigDirectSigner =
   (
     getMultisigInfo: (
       multisig: AccountAddress,
-      callHash: FixedSizeBinary<32>
+      callHash: SizedHex<32>
     ) => Promise<
       | {
           when: {
@@ -184,7 +184,7 @@ export const multisigDirectSigner =
       | undefined
     >,
     txPaymentInfo: (
-      uxt: Binary,
+      uxt: Uint8Array,
       len: number
     ) => Promise<{
       weight: {

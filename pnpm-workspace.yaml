@@ -2,9 +2,13 @@ packages:
   - packages/*
   - plugins/*
   - example
+
 onlyBuiltDependencies:
-  - "@swc/core"
+  - '@reown/appkit'
+  - '@swc/core'
+  - bufferutil
   - esbuild
   - node-hid
   - sqlite3
   - usb
+  - utf-8-validate

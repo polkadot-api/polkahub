@@ -41,7 +41,7 @@ export const multisigExternalSigner =
         throw new Error("Raw bytes can't be signed with a multisig");
       },
       async signTx(callData) {
-        const url = getMultisigUrl(info, Binary.fromBytes(callData).asHex());
+        const url = getMultisigUrl(info, Binary.toHex(callData));
         setUrl(url);
         try {
           await firstValueFrom(url$.pipe(filter((v) => !v)));

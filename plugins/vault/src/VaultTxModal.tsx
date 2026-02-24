@@ -45,8 +45,7 @@ const VaultTxContent: FC<{
   const [mode, setMode] = useState<"tx" | "sig">("tx");
 
   const onRead = useCallback(
-    (res: string) =>
-      polkadotVaultProvider.setSignature(Binary.fromHex(res).asBytes()),
+    (res: string) => polkadotVaultProvider.setSignature(Binary.fromHex(res)),
     [polkadotVaultProvider]
   );
 
@@ -144,8 +143,8 @@ const createFrames = (payload: Uint8Array): Uint8Array[] => {
     (f, i): Uint8Array =>
       mergeUint8([
         new Uint8Array([0x00]),
-        Binary.fromHex(frames.length.toString(16).padStart(4, "0")).asBytes(),
-        Binary.fromHex(i.toString(16).padStart(4, "0")).asBytes(),
+        Binary.fromHex(frames.length.toString(16).padStart(4, "0")),
+        Binary.fromHex(i.toString(16).padStart(4, "0")),
         f,
       ])
   );
