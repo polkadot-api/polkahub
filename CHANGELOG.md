@@ -1,5 +1,11 @@
 ## Unreleased
 
+## 0.5.0 2026-02-24
+
+### Changed
+
+- Use `polkadot-api@2` libraries
+
 ## 0.4.0 2025-11-20
 
 ### Added
