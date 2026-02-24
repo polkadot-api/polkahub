@@ -1,6 +1,11 @@
 {
   "name": "@polkahub/context",
   "version": "0.5.0",
+  "author": "Victor Oliva (https://github.com/voliva)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/polkadot-api/polkahub.git"
+  },
   "license": "MIT",
   "sideEffects": false,
   "type": "module",
