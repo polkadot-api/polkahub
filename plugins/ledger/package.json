@@ -31,7 +31,6 @@
     "build": "tsc -b && rollup -c ../../rollup.config.js"
   },
   "dependencies": {
-    "@ledgerhq/hw-transport": "^6.32.0",
     "@polkadot-api/ledger-signer": "^0.2.17",
     "@polkahub/context": "workspace:*",
     "@polkahub/plugin": "workspace:*",
@@ -40,15 +39,17 @@
     "@react-rxjs/core": "^0.10.8",
     "@react-rxjs/utils": "^0.9.7",
     "buffer": "^6.0.3",
-    "lucide-react": "^0.575.0",
-    "polkadot-api": "^2.0.0-rc.2",
+    "lucide-react": "^0.577.0",
+    "polkadot-api": "^2.0.0-rc.5",
     "rxjs": "^7.8.2"
   },
   "peerDependencies": {
+    "@ledgerhq/hw-transport": "^6.33.0",
     "@types/react": "^19.2.2",
     "react": "^19.2.0"
   },
   "devDependencies": {
+    "@ledgerhq/hw-transport": "^6.33.0",
     "@types/react": "^19.2.14",
     "react": "^19.2.4"
   }

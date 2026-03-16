@@ -32,7 +32,7 @@
     "@polkahub/plugin": "workspace:*",
     "@react-rxjs/utils": "^0.9.7",
     "@rx-state/core": "^0.1.4",
-    "polkadot-api": "^2.0.0-rc.2",
+    "polkadot-api": "^2.0.0-rc.5",
     "rxjs": "^7.8.2"
   }
 }
