@@ -14,7 +14,8 @@ import {
 import { ProxyProvider, proxyProviderId } from "@polkahub/proxy";
 import {
   AccountPicker,
-  AlertBox,
+  Alert,
+  AlertDescription,
   Button,
   InlineAddressInput,
   Input,
@@ -30,6 +31,7 @@ import {
   switchMap,
 } from "rxjs";
 import { MultisigProvider, multisigProviderId } from "./provider";
+import { OctagonX, TriangleAlert } from "lucide-react";
 
 type AccountWithMultisig = Account & {
   multisig: {
@@ -198,24 +200,30 @@ const IndexedMultisigInfo: FC<{
   if (multisigDetails.type === "loading") return null;
   if (multisigDetails.value == null)
     return (
-      <AlertBox variant="error">
-        Multisig details not found. Try manual input.
-      </AlertBox>
+      <Alert variant="destructive">
+        <OctagonX />
+        <AlertDescription>
+          Multisig details not found. Try manual input.
+        </AlertDescription>
+      </Alert>
     );
 
   const details = multisigDetails.value;
   const notice = details.proxy ? (
-    <AlertBox>
-      <p>
-        The address you entered was detected as a <strong>proxy</strong>, not a
-        multisig.
-      </p>
-      <p>
-        Both signers will be created, but your entered address will appear under
-        the <strong>Proxies</strong> group instead of <strong>Multisigs</strong>
-        .
-      </p>
-    </AlertBox>
+    <Alert>
+      <TriangleAlert />
+      <AlertDescription>
+        <p>
+          The address you entered was detected as a <strong>proxy</strong>, not
+          a multisig.
+        </p>
+        <p>
+          Both signers will be created, but your entered address will appear
+          under the <strong>Proxies</strong> group instead of{" "}
+          <strong>Multisigs</strong>.
+        </p>
+      </AlertDescription>
+    </Alert>
   ) : null;
 
   const selectableSigners = availableSigners
@@ -271,13 +279,16 @@ const IndexedMultisigInfo: FC<{
             )}
           />
         ) : (
-          <AlertBox variant="error">
-            <p>
-              None of the signatories in this multisig match your configured
-              signers.
-            </p>
-            <p>Please configure a signer account first.</p>
-          </AlertBox>
+          <Alert variant="destructive">
+            <OctagonX />
+            <AlertDescription>
+              <p>
+                None of the signatories in this multisig match your configured
+                signers.
+              </p>
+              <p>Please configure a signer account first.</p>
+            </AlertDescription>
+          </Alert>
         )}
       </div>
     </div>

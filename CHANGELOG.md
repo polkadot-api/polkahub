@@ -1,5 +1,40 @@
 ## Unreleased
 
+## 0.5.2 2026-04-29
+
+### Fixed
+
+- Update dependencies
+
+- `@polkahub/multisig`
+
+  - Display account name on multisig account list.
+  - Fix link visual overflow on `MultisigExternalSignerModal`.
+  - Improve dark mode support.
+
+- `@polkahub/proxy`
+
+  - Display account name on proxy account list.
+  - Improve dark mode support.
+
+- `@polkahub/read-only`
+
+  - Display account name on read-only account list.
+
+- `@polkahub/vault`
+
+  - Display account name on vault account list.
+
+### Changed
+
+- `@polkahub/ui-components`
+
+  - Remove `Alert`, replace with newer `AlertBox` from shadcn/ui
+
+- `@polkahub/multisig`
+
+  - `MultisigExternalSignerModal.getMultisigUrl` can also return `Promise<string>`.
+
 ## 0.5.1 2026-03-17
 
 ### Fixed

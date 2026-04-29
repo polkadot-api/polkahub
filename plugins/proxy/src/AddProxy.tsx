@@ -8,7 +8,8 @@ import {
 import { Account, AccountAddress, defaultSerialize } from "@polkahub/plugin";
 import {
   AccountPicker,
-  AlertBox,
+  Alert,
+  AlertDescription,
   Button,
   InlineAddressInput,
   Input,
@@ -17,6 +18,7 @@ import { AccountId } from "polkadot-api";
 import { toHex } from "polkadot-api/utils";
 import { useEffect, useMemo, useState, type FC } from "react";
 import { ProxyEntry, ProxyProvider, proxyProviderId } from "./provider";
+import { OctagonX } from "lucide-react";
 
 const proxyTypeText: Record<string, string | undefined> = {
   AssetManager: "Asset Manager",
@@ -247,7 +249,12 @@ const ProxySignerPicker: FC<{
         ? `This account doesn't appear to be a proxy.`
         : `None of your connected signers are recognized as delegates of this proxy. Please configure the real signer account and try again`;
 
-    return <AlertBox variant="error">{reason}</AlertBox>;
+    return (
+      <Alert variant="destructive">
+        <OctagonX />
+        <AlertDescription>{reason}</AlertDescription>
+      </Alert>
+    );
   }
 
   return (

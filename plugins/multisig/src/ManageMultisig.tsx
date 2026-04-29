@@ -64,7 +64,7 @@ const ManageAddresses: FC<{ getMultisigDetails?: GetMultisigDetails }> = ({
                 >
                   <Trash2 />
                 </Button>
-                <AddressIdentity addr={account.address} />
+                <AddressIdentity addr={account.address} name={account.name} />
                 <div className="grow" />
                 <AddressBalance addr={account.address} />
                 {setAccount ? (
