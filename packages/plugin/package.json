@@ -1,6 +1,6 @@
 {
   "name": "@polkahub/plugin",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "author": "Victor Oliva (https://github.com/voliva)",
   "repository": {
     "type": "git",
@@ -31,7 +31,7 @@
   "dependencies": {
     "@react-rxjs/utils": "^0.9.7",
     "@rx-state/core": "^0.1.4",
-    "polkadot-api": "^2.0.0-rc.5",
+    "polkadot-api": "^2.1.0",
     "rxjs": "^7.8.2"
   }
 }

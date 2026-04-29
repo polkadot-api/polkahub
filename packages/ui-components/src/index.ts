@@ -1,4 +1,4 @@
-export * from "./AlertBox";
+export * from "./Alert";
 export * from "./utils";
 export * from "./CardPlaceholder";
 export * from "./Checkbox";

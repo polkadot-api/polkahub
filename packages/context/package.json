@@ -1,6 +1,6 @@
 {
   "name": "@polkahub/context",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "author": "Victor Oliva (https://github.com/voliva)",
   "repository": {
     "type": "git",
@@ -35,7 +35,7 @@
     "@react-rxjs/core": "^0.10.8",
     "@react-rxjs/utils": "^0.9.7",
     "@rx-state/core": "^0.1.4",
-    "polkadot-api": "^2.0.0-rc.5",
+    "polkadot-api": "^2.1.0",
     "rxjs": "^7.8.2"
   },
   "peerDependencies": {
@@ -44,6 +44,6 @@
   },
   "devDependencies": {
     "@types/react": "^19.2.14",
-    "react": "^19.2.4"
+    "react": "^19.2.5"
   }
 }

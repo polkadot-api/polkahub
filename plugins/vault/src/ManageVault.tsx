@@ -60,7 +60,7 @@ const VaultAccounts = () => {
                 >
                   <Trash2 />
                 </Button>
-                <AddressIdentity addr={acc.address} />
+                <AddressIdentity addr={acc.address} name={acc.name} />
                 <div className="grow" />
                 <AddressBalance addr={acc.address} />
                 {selectAccount && (

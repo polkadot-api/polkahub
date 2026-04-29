@@ -191,9 +191,10 @@ let usingLedger = false;
 async function initializeLedgerSigner(
   createTransport: () => Promise<Transport>
 ) {
-  if (!globalThis.Buffer) {
+  if (!(globalThis as any).Buffer) {
     const bufferModule = await import("buffer");
-    globalThis.Buffer = bufferModule.default?.Buffer ?? bufferModule.Buffer;
+    (globalThis as any).Buffer =
+      bufferModule.default?.Buffer ?? bufferModule.Buffer;
   }
 
   if (usingLedger) throw new AlreadyInUseError();

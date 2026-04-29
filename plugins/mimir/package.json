@@ -1,6 +1,6 @@
 {
   "name": "@polkahub/mimir",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "author": "Victor Oliva (https://github.com/voliva)",
   "repository": {
     "type": "git",
@@ -34,8 +34,8 @@
     "@mimirdev/apps-inject": "^3.2.0",
     "@mimirdev/papi-signer": "^3.1.0",
     "@polkadot-api/polkadot-signer": "^0.1.6",
-    "@polkadot-api/substrate-bindings": "^0.19.0",
-    "@polkadot-api/utils": "^0.3.0",
+    "@polkadot-api/substrate-bindings": "^0.20.1",
+    "@polkadot-api/utils": "^0.4.0",
     "@polkahub/context": "workspace:*",
     "@polkahub/plugin": "workspace:*",
     "@polkahub/ui-components": "workspace:*",
@@ -48,6 +48,6 @@
   },
   "devDependencies": {
     "@types/react": "^19.2.14",
-    "react": "^19.2.4"
+    "react": "^19.2.5"
   }
 }

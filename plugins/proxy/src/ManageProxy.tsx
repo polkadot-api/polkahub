@@ -57,7 +57,7 @@ const ManageAddresses: FC<AddProxyProps> = (props) => {
                 >
                   <Trash2 />
                 </Button>
-                <AddressIdentity addr={account.address} />
+                <AddressIdentity addr={account.address} name={account.name} />
                 <div className="grow" />
                 <AddressBalance addr={account.address} />
                 {setAccount ? (

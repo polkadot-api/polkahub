@@ -16,6 +16,7 @@ import {
   DialogTitle,
   DialogBody,
 } from "@polkahub/ui-components";
+import { Link } from "lucide-react";
 
 const [urlChange$, setUrl] = createSignal<string | null>();
 const url$ = state(urlChange$, null);
@@ -23,7 +24,10 @@ const url$ = state(urlChange$, null);
 const [enc] = AccountId();
 export const multisigExternalSigner =
   (
-    getMultisigUrl: (info: MultisigInfo, callData: HexString) => string,
+    getMultisigUrl: (
+      info: MultisigInfo,
+      callData: HexString
+    ) => string | Promise<string>,
     thresholdOneFallback?: CreateMultisigSigner
   ): CreateMultisigSigner =>
   (info, signer) => {
@@ -41,7 +45,7 @@ export const multisigExternalSigner =
         throw new Error("Raw bytes can't be signed with a multisig");
       },
       async signTx(callData) {
-        const url = getMultisigUrl(info, Binary.toHex(callData));
+        const url = await getMultisigUrl(info, Binary.toHex(callData));
         setUrl(url);
         try {
           await firstValueFrom(url$.pipe(filter((v) => !v)));
@@ -64,16 +68,15 @@ export const MultisigExternalSignerModal: FC = () => {
         </DialogHeader>
         <DialogBody>
           <div>
-            <p>
-              To sign this multisig transaction, please share the following URL
-              with the signatories
-            </p>
+            To sign this multisig transaction, please share the following URL
+            with the signatories:
             <a
               href={activeTx ?? ""}
               target="_blank"
               className="cursor-pointer underline"
             >
-              {activeTx}
+              <Link size={16} className="inline-block mx-0.5" />
+              Link
             </a>
           </div>
         </DialogBody>
