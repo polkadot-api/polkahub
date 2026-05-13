@@ -1,5 +1,9 @@
 ## Unreleased
 
+### Added
+
+- `AddressInput` optional prop `format?: "ss58" | "eth"` to filter accounts for an specific format.
+
 ## 0.6.0 2026-04-29
 
 ### Fixed

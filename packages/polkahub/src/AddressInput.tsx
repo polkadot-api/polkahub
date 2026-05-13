@@ -1,6 +1,7 @@
 import { AddressIdentity, useAvailableAccounts } from "@polkahub/context";
 import { Account, AccountAddress } from "@polkahub/plugin";
 import { AddressInput as AddressInputComponent } from "@polkahub/ui-components";
+import { getSs58AddressInfo } from "polkadot-api";
 import { FC, useMemo } from "react";
 
 export const AddressInput: FC<{
@@ -9,7 +10,9 @@ export const AddressInput: FC<{
   disableClear?: boolean;
   className?: string;
   triggerClassName?: string;
+  format?: "ss58" | "eth";
 }> = (props) => {
+  const { format } = props;
   const availableAccounts = useAvailableAccounts();
 
   const hints = useMemo(() => {
@@ -17,6 +20,12 @@ export const AddressInput: FC<{
     Object.values(availableAccounts)
       .flat()
       .forEach((acc) => {
+        if (
+          (format === "ss58" && !getSs58AddressInfo(acc.address).isValid) ||
+          (format === "eth" &&
+            !(acc.address.startsWith("0x") && acc.address.length === 42))
+        )
+          return;
         addressToAccounts[acc.address] ??= [];
         addressToAccounts[acc.address].push(acc);
       });
@@ -26,7 +35,7 @@ export const AddressInput: FC<{
         (v.name?.length ?? 0) > (acc.name?.length ?? 0) ? v : acc
       )
     );
-  }, [availableAccounts]);
+  }, [availableAccounts, format]);
 
   return (
     <AddressInputComponent

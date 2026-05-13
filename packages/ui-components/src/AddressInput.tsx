@@ -2,14 +2,6 @@ import { AccountDisplay, AccountInfo } from "@polkadot-api/react-components";
 import { AccountId } from "@polkadot-api/substrate-bindings";
 import { toHex } from "@polkadot-api/utils";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "./Command";
-import {
   PropsWithChildren,
   ReactNode,
   useMemo,
@@ -17,6 +9,14 @@ import {
   type FC,
 } from "react";
 import { AddressInputPopover } from "./AddressInputPopover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "./Command";
 
 export function AddressInput<T extends AccountInfo = never>({
   value,
@@ -30,6 +30,7 @@ export function AddressInput<T extends AccountInfo = never>({
     />
   ),
   hinted = [],
+  format,
   ...props
 }: {
   value?: string | null;
@@ -39,9 +40,10 @@ export function AddressInput<T extends AccountInfo = never>({
   triggerClassName?: string;
   hinted?: Array<T | string>;
   renderAddress?: (value: T | string) => ReactNode;
+  format?: "ss58" | "eth";
 }) {
   const [query, setQuery] = useState("");
-  const queryIsValidAddr = isValidAddr(query);
+  const queryIsValidAddr = isValidAddr(query, format);
 
   const cleanHinted = useMemo(() => {
     const mapped = hinted.map((v) =>
@@ -176,12 +178,25 @@ export const addrEq = (a: string, b: string) => {
   }
   return a === b;
 };
-const isValidAddr = (value: string) => {
-  if (value.startsWith("0x")) return value.length === 42;
+
+const isValidEthAddr = (value: string) =>
+  value.startsWith("0x") && value.length === 42;
+const isValidSs58Addr = (value: string) => {
   try {
     ss58ToBin(value);
     return true;
-  } catch (ex) {
+  } catch {
     return false;
+  }
+};
+
+const isValidAddr = (value: string, format?: "ss58" | "eth") => {
+  switch (format) {
+    case "eth":
+      return isValidEthAddr(value);
+    case "ss58":
+      return isValidSs58Addr(value);
+    default:
+      return isValidEthAddr(value) || isValidSs58Addr(value);
   }
 };
