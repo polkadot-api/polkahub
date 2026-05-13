@@ -53,7 +53,7 @@ const ManageAddresses = () => {
         onSubmit={(evt) => {
           evt.preventDefault();
           if (!address) return;
-          readOnlyProvider.addAccount(address);
+          readOnlyProvider.addAccount({ name, address });
           setAddress(null);
         }}
       >

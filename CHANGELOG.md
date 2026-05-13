@@ -1,8 +1,11 @@
 ## Unreleased
 
+## 0.7.0 2026-05-13
+
 ### Added
 
 - `AddressInput` optional prop `format?: "ss58" | "eth"` to filter accounts for an specific format.
+- `readOnlyProvider` supports storing `{ name, address }` rather than just address.
 
 ## 0.6.0 2026-04-29
 

@@ -11,12 +11,17 @@ import { AccountId } from "polkadot-api";
 import { getPolkadotSigner } from "polkadot-api/signer";
 import { map } from "rxjs";
 
+export interface ReadonlyAccountInfo {
+  address: AccountAddress;
+  name?: string;
+}
+
 export const readOnlyProviderId = "readonly";
 export interface ReadOnlyProvider extends Plugin {
   id: "readonly";
   accounts$: DefaultedStateObservable<Account[]>;
-  setAccounts: (payload: AccountAddress[]) => void;
-  addAccount: (address: AccountAddress) => Account;
+  setAccounts: (payload: ReadonlyAccountInfo[]) => void;
+  addAccount: (address: ReadonlyAccountInfo) => Account;
   removeAccount: (address: AccountAddress) => void;
   toAccount: (address: AccountAddress) => Account;
 }
@@ -35,36 +40,55 @@ export const createReadOnlyProvider = (
 
   const [persistedAccounts$, setPersistedAccounts] = persistedState(
     persist,
-    [] as AccountAddress[]
+    [] as Array<AccountAddress> | Array<ReadonlyAccountInfo>
   );
+  const normalizeInfo = (
+    value: AccountAddress | ReadonlyAccountInfo
+  ): ReadonlyAccountInfo =>
+    typeof value === "string"
+      ? {
+          address: value,
+        }
+      : value;
 
-  const getAccount = (address: AccountAddress): Account => ({
+  const getAccount = ({ address, name }: ReadonlyAccountInfo): Account => ({
+    name,
     provider: readOnlyProviderId,
     address,
     signer: fakeSigner ? createFakeSigner(address) : undefined,
   });
 
   const accounts$ = persistedAccounts$.pipeState(
-    map((accounts) => accounts.map(getAccount)),
+    map((accounts) => accounts.map(normalizeInfo).map(getAccount)),
     withDefault([])
   );
 
   return {
     id: readOnlyProviderId,
-    deserialize: (acc) => getAccount(acc.address),
+    deserialize: (acc) => getAccount(acc),
     accounts$,
     setAccounts: setPersistedAccounts,
-    addAccount: (addr) => {
+    addAccount: (acc) => {
       setPersistedAccounts((v) => {
-        const set = new Set(v);
-        set.add(addr);
-        return [...set];
+        const map = new Map(
+          v.map(normalizeInfo).map((acc) => [acc.address, acc])
+        );
+        map.set(acc.address, acc);
+        return [...map.values()];
       });
-      return getAccount(addr);
+      return getAccount(acc);
     },
     removeAccount: (addr) =>
-      setPersistedAccounts((v) => v.filter((acc) => acc !== addr)),
-    toAccount: getAccount,
+      setPersistedAccounts(
+        (v) =>
+          v.filter((acc) => normalizeInfo(acc).address !== addr) as
+            | ReadonlyAccountInfo[]
+            | AccountAddress[]
+      ),
+    toAccount: (address) =>
+      getAccount({
+        address,
+      }),
   };
 };
 
