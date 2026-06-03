@@ -4,22 +4,22 @@ import {
   ModalContext,
   useAvailableAccounts,
   usePlugin,
-} from "@polkahub/context";
-import { AccountAddress } from "@polkahub/plugin";
-import { useSetSelectedAccount } from "@polkahub/select-account";
+} from "@polkahub/context"
+import { AccountAddress } from "@polkahub/plugin"
+import { useSetSelectedAccount } from "@polkahub/select-account"
 import {
   Button,
   InlineAddressInput,
   Input,
   SourceButton,
-} from "@polkahub/ui-components";
-import { Eye, Trash2 } from "lucide-react";
-import { useContext, useState, type FC } from "react";
-import { ReadOnlyProvider, readOnlyProviderId } from "./provider";
+} from "@polkahub/ui-components"
+import { Eye, Trash2 } from "lucide-react"
+import { useContext, useState, type FC } from "react"
+import { ReadOnlyProvider, readOnlyProviderId } from "./provider"
 
 export const ManageReadOnly: FC = () => {
-  const { pushContent } = useContext(ModalContext)!;
-  const readOnlyProvider = usePlugin<ReadOnlyProvider>(readOnlyProviderId);
+  const { pushContent } = useContext(ModalContext)!
+  const readOnlyProvider = usePlugin<ReadOnlyProvider>(readOnlyProviderId)
 
   return (
     <SourceButton
@@ -36,25 +36,25 @@ export const ManageReadOnly: FC = () => {
         <Eye className="size-10" />
       </div>
     </SourceButton>
-  );
-};
+  )
+}
 
 const ManageAddresses = () => {
-  const [address, setAddress] = useState<AccountAddress | null>(null);
-  const [name, setName] = useState("");
-  const availableAccounts = useAvailableAccounts();
-  const readOnlyProvider = usePlugin<ReadOnlyProvider>(readOnlyProviderId)!;
-  const readOnlyAccounts = availableAccounts[readOnlyProviderId] ?? [];
-  const setAccount = useSetSelectedAccount();
+  const [address, setAddress] = useState<AccountAddress | null>(null)
+  const [name, setName] = useState("")
+  const availableAccounts = useAvailableAccounts()
+  const readOnlyProvider = usePlugin<ReadOnlyProvider>(readOnlyProviderId)!
+  const readOnlyAccounts = availableAccounts[readOnlyProviderId] ?? []
+  const setAccount = useSetSelectedAccount()
 
   return (
     <div className="space-y-4">
       <form
         onSubmit={(evt) => {
-          evt.preventDefault();
-          if (!address) return;
-          readOnlyProvider.addAccount({ name, address });
-          setAddress(null);
+          evt.preventDefault()
+          if (!address) return
+          readOnlyProvider.addAccount({ name, address })
+          setAddress(null)
         }}
       >
         <h3 className="font-medium text-muted-foreground">
@@ -100,7 +100,7 @@ const ManageAddresses = () => {
                   <Button
                     variant="secondary"
                     onClick={() => {
-                      setAccount(account);
+                      setAccount(account)
                     }}
                   >
                     Select
@@ -112,5 +112,5 @@ const ManageAddresses = () => {
         </div>
       ) : null}
     </div>
-  );
-};
+  )
+}

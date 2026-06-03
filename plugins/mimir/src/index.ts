@@ -1,2 +1,2 @@
-export * from "./provider";
-export { MimirButton } from "./MimirButton";
+export * from "./provider"
+export { MimirButton } from "./MimirButton"

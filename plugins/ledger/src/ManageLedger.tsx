@@ -4,24 +4,24 @@ import {
   externalizePlugin,
   ModalContext,
   usePlugin,
-} from "@polkahub/context";
-import { useSetSelectedAccount } from "@polkahub/select-account";
+} from "@polkahub/context"
+import { useSetSelectedAccount } from "@polkahub/select-account"
 import {
   Button,
   CardPlaceholder,
   Checkbox,
   SourceButton,
-} from "@polkahub/ui-components";
-import { state, useStateObservable } from "@react-rxjs/core";
-import { createSignal } from "@react-rxjs/utils";
+} from "@polkahub/ui-components"
+import { state, useStateObservable } from "@react-rxjs/core"
+import { createSignal } from "@react-rxjs/utils"
 import {
   ChevronLeft,
   ChevronRight,
   Trash2,
   TriangleAlert,
   Usb,
-} from "lucide-react";
-import { FC, useContext } from "react";
+} from "lucide-react"
+import { FC, useContext } from "react"
 import {
   catchError,
   concatMap,
@@ -32,18 +32,14 @@ import {
   startWith,
   switchMap,
   take,
-} from "rxjs";
-import ledgerImg from "./assets/ledger.webp";
-import {
-  LedgerAccountInfo,
-  LedgerProvider,
-  ledgerProviderId,
-} from "./provider";
-import { addrEq } from "@polkahub/plugin";
+} from "rxjs"
+import ledgerImg from "./assets/ledger.webp"
+import { LedgerAccountInfo, LedgerProvider, ledgerProviderId } from "./provider"
+import { addrEq } from "@polkahub/plugin"
 
 export const ManageLedger = () => {
-  const { pushContent } = useContext(ModalContext)!;
-  const ledgerProvider = usePlugin<LedgerProvider>(ledgerProviderId);
+  const { pushContent } = useContext(ModalContext)!
+  const ledgerProvider = usePlugin<LedgerProvider>(ledgerProviderId)
 
   return (
     <SourceButton
@@ -55,14 +51,14 @@ export const ManageLedger = () => {
     >
       <img src={ledgerImg} alt="Ledger" className="h-10 rounded" />
     </SourceButton>
-  );
-};
+  )
+}
 
 const LedgerAccounts: FC = () => {
-  const { pushContent, popContent } = useContext(ModalContext)!;
-  const ledgerProvider = usePlugin<LedgerProvider>(ledgerProviderId)!;
-  const ledgerAccounts = useStateObservable(ledgerProvider.accounts$);
-  const setAccount = useSetSelectedAccount();
+  const { pushContent, popContent } = useContext(ModalContext)!
+  const ledgerProvider = usePlugin<LedgerProvider>(ledgerProviderId)!
+  const ledgerAccounts = useStateObservable(ledgerProvider.accounts$)
+  const setAccount = useSetSelectedAccount()
 
   return (
     <div className="space-y-4">
@@ -90,7 +86,7 @@ const LedgerAccounts: FC = () => {
                   <Button
                     variant="secondary"
                     onClick={() => {
-                      setAccount(acc);
+                      setAccount(acc)
                     }}
                   >
                     Select
@@ -120,20 +116,20 @@ const LedgerAccounts: FC = () => {
         </Button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 5
 
-const [pageChange$, setPage] = createSignal<number>();
-const page$ = state(pageChange$, 0);
+const [pageChange$, setPage] = createSignal<number>()
+const page$ = state(pageChange$, 0)
 type PageAccounts = {
-  accounts: Array<LedgerAccountInfo | null>;
-  error: string | null;
-};
+  accounts: Array<LedgerAccountInfo | null>
+  error: string | null
+}
 
 const [plugin$, useLedgerProvider] =
-  externalizePlugin<LedgerProvider>(ledgerProviderId);
+  externalizePlugin<LedgerProvider>(ledgerProviderId)
 
 const pageAccounts$ = state(
   (ctxId: string) =>
@@ -141,54 +137,54 @@ const pageAccounts$ = state(
       // React might mess it up with a double re-render.
       debounceTime(200),
       map((page) =>
-        new Array(PAGE_SIZE).fill(0).map((_, i) => page * PAGE_SIZE + i)
+        new Array(PAGE_SIZE).fill(0).map((_, i) => page * PAGE_SIZE + i),
       ),
       concatMap((idxs): Observable<PageAccounts> => {
         const value: PageAccounts = {
           accounts: idxs.map(() => null),
           error: null,
-        };
+        }
 
         return plugin$(ctxId).pipe(
           filter((v) => v != null),
           take(1),
           switchMap((ledgerProvider) =>
-            ledgerProvider.getLedgerAccounts$(idxs)
+            ledgerProvider.getLedgerAccounts$(idxs),
           ),
           map((account, i) => {
-            value.accounts[i] = account;
+            value.accounts[i] = account
 
-            return { ...value };
+            return { ...value }
           }),
           startWith({ ...value }),
           catchError((ex) => {
-            console.error(ex);
+            console.error(ex)
             return [
               {
                 ...value,
                 error: ex.message,
               },
-            ];
-          })
-        );
-      })
+            ]
+          }),
+        )
+      }),
     ),
   {
     accounts: new Array(PAGE_SIZE).fill(null),
     error: null,
-  } as PageAccounts
-);
+  } as PageAccounts,
+)
 
 const ImportAccounts: FC<{ onClose: () => void }> = ({ onClose }) => {
-  const [id, ledgerProvider] = useLedgerProvider();
-  const ledgerAccounts = useStateObservable(ledgerProvider!.accounts$);
-  const page = useStateObservable(page$);
-  const { accounts, error } = useStateObservable(pageAccounts$(id));
+  const [id, ledgerProvider] = useLedgerProvider()
+  const ledgerAccounts = useStateObservable(ledgerProvider!.accounts$)
+  const page = useStateObservable(page$)
+  const { accounts, error } = useStateObservable(pageAccounts$(id))
 
-  const allLoading = accounts.every((v) => v == null);
-  const allLoaded = accounts.every((v) => v != null);
+  const allLoading = accounts.every((v) => v == null)
+  const allLoaded = accounts.every((v) => v != null)
 
-  const PLACEHOLDER_HEIGHT = 232;
+  const PLACEHOLDER_HEIGHT = 232
 
   return (
     <div className="space-y-2">
@@ -218,13 +214,13 @@ const ImportAccounts: FC<{ onClose: () => void }> = ({ onClose }) => {
                       (v) =>
                         v.deviceId === acc.deviceId &&
                         v.index === acc.index &&
-                        addrEq(v.address, acc.address)
+                        addrEq(v.address, acc.address),
                     )}
                     onCheckedChange={(chk) => {
                       if (chk) {
-                        ledgerProvider!.addAccount(acc);
+                        ledgerProvider!.addAccount(acc)
                       } else {
-                        ledgerProvider!.removeAccount(acc);
+                        ledgerProvider!.removeAccount(acc)
                       }
                     }}
                   />
@@ -265,5 +261,5 @@ const ImportAccounts: FC<{ onClose: () => void }> = ({ onClose }) => {
         </Button>
       </div>
     </div>
-  );
-};
+  )
+}

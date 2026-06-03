@@ -4,18 +4,18 @@ import {
   ModalContext,
   useModalContext,
   usePlugin,
-} from "@polkahub/context";
-import { useSetSelectedAccount } from "@polkahub/select-account";
-import { Button, SourceButton } from "@polkahub/ui-components";
-import { useStateObservable } from "@react-rxjs/core";
-import { Trash2, UserLock } from "lucide-react";
-import { useContext, type FC } from "react";
-import { AddProxy, AddProxyProps } from "./AddProxy";
-import { ProxyProvider, proxyProviderId } from "./provider";
+} from "@polkahub/context"
+import { useSetSelectedAccount } from "@polkahub/select-account"
+import { Button, SourceButton } from "@polkahub/ui-components"
+import { useStateObservable } from "@react-rxjs/core"
+import { Trash2, UserLock } from "lucide-react"
+import { useContext, type FC } from "react"
+import { AddProxy, AddProxyProps } from "./AddProxy"
+import { ProxyProvider, proxyProviderId } from "./provider"
 
 export const ManageProxy: FC = () => {
-  const { pushContent } = useContext(ModalContext)!;
-  const proxyProvider = usePlugin<ProxyProvider>(proxyProviderId);
+  const { pushContent } = useContext(ModalContext)!
+  const proxyProvider = usePlugin<ProxyProvider>(proxyProviderId)
 
   return (
     <SourceButton
@@ -32,14 +32,14 @@ export const ManageProxy: FC = () => {
         <UserLock className="size-10" />
       </div>
     </SourceButton>
-  );
-};
+  )
+}
 
 const ManageAddresses: FC<AddProxyProps> = (props) => {
-  const { pushContent } = useModalContext();
-  const proxyProvider = usePlugin<ProxyProvider>(proxyProviderId)!;
-  const proxyAccounts = useStateObservable(proxyProvider.accounts$);
-  const setAccount = useSetSelectedAccount();
+  const { pushContent } = useModalContext()
+  const proxyProvider = usePlugin<ProxyProvider>(proxyProviderId)!
+  const proxyAccounts = useStateObservable(proxyProvider.accounts$)
+  const setAccount = useSetSelectedAccount()
 
   return (
     <div className="space-y-4">
@@ -64,7 +64,7 @@ const ManageAddresses: FC<AddProxyProps> = (props) => {
                   <Button
                     variant="secondary"
                     onClick={() => {
-                      setAccount(account);
+                      setAccount(account)
                     }}
                   >
                     Select
@@ -89,5 +89,5 @@ const ManageAddresses: FC<AddProxyProps> = (props) => {
         </Button>
       </div>
     </div>
-  );
-};
+  )
+}

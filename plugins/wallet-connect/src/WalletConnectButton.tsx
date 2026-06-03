@@ -1,18 +1,18 @@
-import { usePlugin } from "@polkahub/context";
-import { state, useStateObservable } from "@react-rxjs/core";
-import { of } from "rxjs";
-import { SourceButton } from "@polkahub/ui-components";
-import wcLogo from "./assets/walletConnect.svg";
-import { WalletConnectProvider, walletConnectProviderId } from "./provider";
+import { usePlugin } from "@polkahub/context"
+import { state, useStateObservable } from "@react-rxjs/core"
+import { of } from "rxjs"
+import { SourceButton } from "@polkahub/ui-components"
+import wcLogo from "./assets/walletConnect.svg"
+import { WalletConnectProvider, walletConnectProviderId } from "./provider"
 
-const null$ = state(of(null), null);
+const null$ = state(of(null), null)
 export const WalletConnectButton = () => {
   const walletConnectProvider = usePlugin<WalletConnectProvider>(
-    walletConnectProviderId
-  );
+    walletConnectProviderId,
+  )
   const status = useStateObservable(
-    walletConnectProvider?.walletConnectStatus$ ?? null$
-  );
+    walletConnectProvider?.walletConnectStatus$ ?? null$,
+  )
 
   return (
     <SourceButton
@@ -23,5 +23,5 @@ export const WalletConnectButton = () => {
     >
       <img src={wcLogo} alt="Wallet Connect" className="h-10 rounded" />
     </SourceButton>
-  );
-};
+  )
+}

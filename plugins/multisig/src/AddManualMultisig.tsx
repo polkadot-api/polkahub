@@ -3,39 +3,39 @@ import {
   useModalContext,
   usePlugin,
   usePolkaHubContext,
-} from "@polkahub/context";
+} from "@polkahub/context"
 import {
   AccountPicker,
   AddressInput as AddressInputComponent,
   Button,
   Input,
   Slider,
-} from "@polkahub/ui-components";
-import { Trash2 } from "lucide-react";
-import { type FC } from "react";
+} from "@polkahub/ui-components"
+import { Trash2 } from "lucide-react"
+import { type FC } from "react"
 import {
   AccountId,
   getMultisigAccountId,
-} from "@polkadot-api/substrate-bindings";
-import { useAvailableAccounts } from "@polkahub/context";
+} from "@polkadot-api/substrate-bindings"
+import { useAvailableAccounts } from "@polkahub/context"
 import {
   Account,
   AccountAddress,
   addrEq,
   defaultSerialize,
-} from "@polkahub/plugin";
-import { useMemo, useState } from "react";
-import { MultisigProvider, multisigProviderId } from "./provider";
+} from "@polkahub/plugin"
+import { useMemo, useState } from "react"
+import { MultisigProvider, multisigProviderId } from "./provider"
 
 export const AddManualMultisig: FC = () => {
-  const { popContent } = useModalContext();
-  const multisigProvider = usePlugin<MultisigProvider>(multisigProviderId);
-  const { polkaHub } = usePolkaHubContext();
-  const [name, setName] = useState("");
-  const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
-  const [signatories, setSignatories] = useState<AccountAddress[]>([]);
-  const [threshold, setThreshold] = useState<number>(2);
-  const availableAccounts = useAvailableAccounts();
+  const { popContent } = useModalContext()
+  const multisigProvider = usePlugin<MultisigProvider>(multisigProviderId)
+  const { polkaHub } = usePolkaHubContext()
+  const [name, setName] = useState("")
+  const [selectedAccount, setSelectedAccount] = useState<Account | null>(null)
+  const [signatories, setSignatories] = useState<AccountAddress[]>([])
+  const [threshold, setThreshold] = useState<number>(2)
+  const availableAccounts = useAvailableAccounts()
   const availableSigners = useMemo(
     () =>
       Object.entries(availableAccounts)
@@ -44,56 +44,56 @@ export const AddManualMultisig: FC = () => {
           accounts: accounts
             .filter((acc) => !!acc.signer)
             .filter((acc) =>
-              signatories.some((addr) => addrEq(addr, acc.address))
+              signatories.some((addr) => addrEq(addr, acc.address)),
             ),
         }))
         .filter(({ accounts }) => accounts.length > 0),
-    [availableAccounts, signatories]
-  );
+    [availableAccounts, signatories],
+  )
 
   const multisigAddress = useMemo(() => {
-    if (threshold > signatories.length) return null;
-    const [enc, dec] = AccountId();
+    if (threshold > signatories.length) return null
+    const [enc, dec] = AccountId()
 
     try {
       return dec(
         getMultisigAccountId({
           threshold,
           signatories: signatories.map(enc),
-        })
-      );
+        }),
+      )
     } catch (ex) {
-      console.error(ex);
-      return null;
+      console.error(ex)
+      return null
     }
-  }, [signatories, threshold]);
+  }, [signatories, threshold])
 
   return (
     <form
       className="space-y-4"
       onSubmit={async (evt) => {
-        evt.preventDefault();
-        if (!multisigAddress || !selectedAccount) return null;
+        evt.preventDefault()
+        if (!multisigAddress || !selectedAccount) return null
 
-        const plugins = polkaHub.plugins$.getValue();
+        const plugins = polkaHub.plugins$.getValue()
         const parentProvider = plugins.find(
-          (p) => p.id === selectedAccount.provider
-        );
+          (p) => p.id === selectedAccount.provider,
+        )
         if (!parentProvider)
           throw new Error(
-            `Parent provider ${selectedAccount.provider} not found`
-          );
+            `Parent provider ${selectedAccount.provider} not found`,
+          )
 
-        const serializeFn = parentProvider.serialize ?? defaultSerialize;
+        const serializeFn = parentProvider.serialize ?? defaultSerialize
 
         multisigProvider?.addMultisig({
           signatories,
           threshold,
           parentSigner: serializeFn(selectedAccount),
           name: name.trim() ? name.trim() : undefined,
-        });
+        })
 
-        popContent();
+        popContent()
       }}
     >
       <div className="space-y-2">
@@ -107,9 +107,9 @@ export const AddManualMultisig: FC = () => {
                 type="button"
                 onClick={() => {
                   setThreshold((thr) =>
-                    Math.max(2, Math.min(thr, signatories.length - 1))
-                  );
-                  setSignatories((v) => v.filter((s) => s !== sig));
+                    Math.max(2, Math.min(thr, signatories.length - 1)),
+                  )
+                  setSignatories((v) => v.filter((s) => s !== sig))
                 }}
               >
                 <Trash2 />
@@ -120,8 +120,8 @@ export const AddManualMultisig: FC = () => {
           <li>
             <AddressInput
               onChange={(value) => {
-                if (signatories.includes(value!)) return;
-                setSignatories((s) => [...s, value!]);
+                if (signatories.includes(value!)) return
+                setSignatories((s) => [...s, value!])
               }}
             />
           </li>
@@ -183,30 +183,30 @@ export const AddManualMultisig: FC = () => {
         </Button>
       </div>
     </form>
-  );
-};
+  )
+}
 
 const AddressInput: FC<{
-  value?: AccountAddress | null;
-  onChange?: (value: AccountAddress | null) => void;
+  value?: AccountAddress | null
+  onChange?: (value: AccountAddress | null) => void
 }> = ({ ...props }) => {
-  const availableAccounts = useAvailableAccounts();
+  const availableAccounts = useAvailableAccounts()
 
   const hints = useMemo(() => {
-    const addressToAccounts: Record<AccountAddress, Account[]> = {};
+    const addressToAccounts: Record<AccountAddress, Account[]> = {}
     Object.values(availableAccounts)
       .flat()
       .forEach((acc) => {
-        addressToAccounts[acc.address] ??= [];
-        addressToAccounts[acc.address].push(acc);
-      });
+        addressToAccounts[acc.address] ??= []
+        addressToAccounts[acc.address].push(acc)
+      })
 
     return Object.values(addressToAccounts).map((group) =>
       group.reduce((acc, v) =>
-        (v.name?.length ?? 0) > (acc.name?.length ?? 0) ? v : acc
-      )
-    );
-  }, [availableAccounts]);
+        (v.name?.length ?? 0) > (acc.name?.length ?? 0) ? v : acc,
+      ),
+    )
+  }, [availableAccounts])
 
   return (
     <AddressInputComponent
@@ -225,5 +225,5 @@ const AddressInput: FC<{
       }
       {...props}
     />
-  );
-};
+  )
+}

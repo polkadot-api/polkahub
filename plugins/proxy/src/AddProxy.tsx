@@ -4,8 +4,8 @@ import {
   useModalContext,
   usePlugin,
   usePolkaHubContext,
-} from "@polkahub/context";
-import { Account, AccountAddress, defaultSerialize } from "@polkahub/plugin";
+} from "@polkahub/context"
+import { Account, AccountAddress, defaultSerialize } from "@polkahub/plugin"
 import {
   AccountPicker,
   Alert,
@@ -13,12 +13,12 @@ import {
   Button,
   InlineAddressInput,
   Input,
-} from "@polkahub/ui-components";
-import { AccountId } from "polkadot-api";
-import { toHex } from "polkadot-api/utils";
-import { useEffect, useMemo, useState, type FC } from "react";
-import { ProxyEntry, ProxyProvider, proxyProviderId } from "./provider";
-import { OctagonX } from "lucide-react";
+} from "@polkahub/ui-components"
+import { AccountId } from "polkadot-api"
+import { toHex } from "polkadot-api/utils"
+import { useEffect, useMemo, useState, type FC } from "react"
+import { ProxyEntry, ProxyProvider, proxyProviderId } from "./provider"
+import { OctagonX } from "lucide-react"
 
 const proxyTypeText: Record<string, string | undefined> = {
   AssetManager: "Asset Manager",
@@ -27,46 +27,46 @@ const proxyTypeText: Record<string, string | undefined> = {
   NominationPools: "Nomination Pools",
   NonTransfer: "Non-Transfer",
   ParaRegistration: "Para Registration",
-};
+}
 
 export type AddProxyProps = {
-  blockLength?: number;
-};
+  blockLength?: number
+}
 
 export const AddProxy: FC<AddProxyProps> = ({ blockLength }) => {
-  const { popContent } = useModalContext();
-  const proxyProvider = usePlugin<ProxyProvider>(proxyProviderId);
-  const { polkaHub } = usePolkaHubContext();
+  const { popContent } = useModalContext()
+  const proxyProvider = usePlugin<ProxyProvider>(proxyProviderId)
+  const { polkaHub } = usePolkaHubContext()
 
-  const [proxyAddress, setProxyAddress] = useState<AccountAddress | null>(null);
-  const [name, setName] = useState("");
+  const [proxyAddress, setProxyAddress] = useState<AccountAddress | null>(null)
+  const [name, setName] = useState("")
   const [selectedAccount, setSelectedAccount] =
-    useState<AccountWithProxy | null>(null);
+    useState<AccountWithProxy | null>(null)
 
   return (
     <form
       className="space-y-2"
       onSubmit={(evt) => {
-        evt.preventDefault();
-        if (!proxyAddress || !selectedAccount) return null;
+        evt.preventDefault()
+        if (!proxyAddress || !selectedAccount) return null
 
-        const plugins = polkaHub.plugins$.getValue();
+        const plugins = polkaHub.plugins$.getValue()
         const parentProvider = plugins.find(
-          (p) => p.id === selectedAccount.provider
-        );
+          (p) => p.id === selectedAccount.provider,
+        )
         if (!parentProvider)
           throw new Error(
-            `Parent provider ${selectedAccount.provider} not found`
-          );
+            `Parent provider ${selectedAccount.provider} not found`,
+          )
 
-        const serializeFn = parentProvider.serialize ?? defaultSerialize;
+        const serializeFn = parentProvider.serialize ?? defaultSerialize
         proxyProvider?.addProxy({
           real: proxyAddress,
           parentSigner: serializeFn(selectedAccount),
           name: name.trim() ? name.trim() : undefined,
-        });
+        })
 
-        popContent();
+        popContent()
       }}
     >
       <div className="space-y-2">
@@ -119,82 +119,82 @@ export const AddProxy: FC<AddProxyProps> = ({ blockLength }) => {
         <Button disabled={!proxyAddress || !selectedAccount}>Add Proxy</Button>
       </div>
     </form>
-  );
-};
+  )
+}
 
 const getDelayLength = (blocks: number, blockLength?: number) => {
-  if (!blockLength) return `delay ${blocks}`;
+  if (!blockLength) return `delay ${blocks}`
 
-  const seconds = (blocks * blockLength) / 1000;
+  const seconds = (blocks * blockLength) / 1000
   if (seconds < 120) {
-    return `${Math.round(seconds)}s delay`;
+    return `${Math.round(seconds)}s delay`
   }
-  const minutes = Math.round(seconds / 60);
-  const min = minutes % 60;
-  const hours = Math.floor(minutes / 60);
-  const hr = hours % 24;
-  const days = Math.floor(hours / 24);
+  const minutes = Math.round(seconds / 60)
+  const min = minutes % 60
+  const hours = Math.floor(minutes / 60)
+  const hr = hours % 24
+  const days = Math.floor(hours / 24)
 
-  const time = `${hr}:${min.toString().padStart(2, "0")} delay`;
+  const time = `${hr}:${min.toString().padStart(2, "0")} delay`
   if (!days) {
-    return time;
+    return time
   }
-  return `${days}d ${time}`;
-};
+  return `${days}d ${time}`
+}
 
 const useAsync = <T,>(fn: () => Promise<T>, deps: unknown[]) => {
   const [value, setValue] = useState<
     | {
-        type: "loading" | "error";
-        value?: never;
+        type: "loading" | "error"
+        value?: never
       }
     | {
-        type: "result";
-        value: T;
+        type: "result"
+        value: T
       }
   >({
     type: "loading",
-  });
+  })
 
   useEffect(() => {
-    let cancelled = false;
+    let cancelled = false
 
-    setValue({ type: "loading" });
+    setValue({ type: "loading" })
     fn().then(
       (value) => {
-        if (cancelled) return;
-        setValue({ type: "result", value });
+        if (cancelled) return
+        setValue({ type: "result", value })
       },
       (ex) => {
-        if (cancelled) return;
-        console.error(ex);
-        setValue({ type: "error" });
-      }
-    );
+        if (cancelled) return
+        console.error(ex)
+        setValue({ type: "error" })
+      },
+    )
 
     return () => {
-      cancelled = true;
-    };
-  }, deps);
+      cancelled = true
+    }
+  }, deps)
 
-  return value;
-};
+  return value
+}
 
 type AccountWithProxy = Account & {
-  delegate?: ProxyEntry[];
-};
+  delegate?: ProxyEntry[]
+}
 
 const ProxySignerPicker: FC<{
-  value: AccountWithProxy | null;
-  onChange: (value: AccountWithProxy | null) => void;
-  proxy: AccountAddress;
+  value: AccountWithProxy | null
+  onChange: (value: AccountWithProxy | null) => void
+  proxy: AccountAddress
 }> = ({ value, onChange, proxy }) => {
-  const proxyProvider = usePlugin<ProxyProvider>(proxyProviderId)!;
-  const availableAccounts = useAvailableAccounts();
+  const proxyProvider = usePlugin<ProxyProvider>(proxyProviderId)!
+  const availableAccounts = useAvailableAccounts()
   const delegatesResult = useAsync(
     () => proxyProvider.getDelegates(proxy),
-    [proxy]
-  );
+    [proxy],
+  )
   const availableSigners = useMemo(
     () =>
       Object.entries(availableAccounts)
@@ -203,41 +203,41 @@ const ProxySignerPicker: FC<{
           accounts: accounts.filter((acc) => !!acc.signer),
         }))
         .filter(({ accounts }) => accounts.length > 0),
-    [availableAccounts]
-  );
+    [availableAccounts],
+  )
 
   const selectableSigners = useMemo(() => {
-    if (delegatesResult.type === "loading") return null;
-    if (delegatesResult.value == null) return availableSigners;
+    if (delegatesResult.type === "loading") return null
+    if (delegatesResult.value == null) return availableSigners
 
     const delegates = delegatesResult.value.reduce(
       (acc: Record<string, ProxyEntry[]>, delegate) => {
-        const commonAddr = addrToCommon(delegate.delegate);
-        acc[commonAddr] ??= [];
-        acc[commonAddr].push(delegate);
-        return acc;
+        const commonAddr = addrToCommon(delegate.delegate)
+        acc[commonAddr] ??= []
+        acc[commonAddr].push(delegate)
+        return acc
       },
-      {}
-    );
+      {},
+    )
 
     return availableSigners
       .map(({ name, accounts }) => ({
         name,
         accounts: accounts
           .map((account): AccountWithProxy | null => {
-            const delegate = delegates[addrToCommon(account.address)];
-            if (!delegate) return null;
+            const delegate = delegates[addrToCommon(account.address)]
+            if (!delegate) return null
             return {
               ...account,
               delegate,
-            };
+            }
           })
           .filter((v) => v != null),
       }))
-      .filter(({ accounts }) => accounts.length > 0);
-  }, [delegatesResult, availableSigners]);
+      .filter(({ accounts }) => accounts.length > 0)
+  }, [delegatesResult, availableSigners])
 
-  if (selectableSigners == null) return <div>Loading…</div>;
+  if (selectableSigners == null) return <div>Loading…</div>
 
   if (
     selectableSigners.length === 0 &&
@@ -247,14 +247,14 @@ const ProxySignerPicker: FC<{
     const reason =
       delegatesResult.value.length === 0
         ? `This account doesn't appear to be a proxy.`
-        : `None of your connected signers are recognized as delegates of this proxy. Please configure the real signer account and try again`;
+        : `None of your connected signers are recognized as delegates of this proxy. Please configure the real signer account and try again`
 
     return (
       <Alert variant="destructive">
         <OctagonX />
         <AlertDescription>{reason}</AlertDescription>
       </Alert>
-    );
+    )
   }
 
   return (
@@ -272,9 +272,9 @@ const ProxySignerPicker: FC<{
         />
       )}
     />
-  );
-};
+  )
+}
 
-const [ss58ToBin] = AccountId();
+const [ss58ToBin] = AccountId()
 const addrToCommon = (addr: AccountAddress) =>
-  addr.startsWith("0x") ? "0x" : toHex(ss58ToBin(addr));
+  addr.startsWith("0x") ? "0x" : toHex(ss58ToBin(addr))

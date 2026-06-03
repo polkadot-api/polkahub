@@ -1,2 +1,2 @@
-export * from "./ManageReadOnly";
-export * from "./provider";
+export * from "./ManageReadOnly"
+export * from "./provider"

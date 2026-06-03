@@ -1,4 +1,4 @@
-import { getProxySigner } from "@polkadot-api/meta-signers";
+import { getProxySigner } from "@polkadot-api/meta-signers"
 import {
   Account,
   AccountAddress,
@@ -8,9 +8,9 @@ import {
   PersistenceProvider,
   Plugin,
   SerializableAccount,
-} from "@polkahub/plugin";
-import { DefaultedStateObservable, state } from "@react-rxjs/core";
-import { PolkadotSigner } from "polkadot-api";
+} from "@polkahub/plugin"
+import { DefaultedStateObservable, state } from "@react-rxjs/core"
+import { PolkadotSigner } from "polkadot-api"
 import {
   BehaviorSubject,
   combineLatest,
@@ -19,106 +19,106 @@ import {
   map,
   switchMap,
   timeout,
-} from "rxjs";
+} from "rxjs"
 
 export interface ProxyInfo {
-  real: AccountAddress;
-  parentSigner: SerializableAccount;
-  name?: string;
+  real: AccountAddress
+  parentSigner: SerializableAccount
+  name?: string
 }
 
-export const proxyProviderId = "proxy";
+export const proxyProviderId = "proxy"
 export interface ProxyAccount extends Account {
-  provider: "proxy";
-  info: ProxyInfo;
+  provider: "proxy"
+  info: ProxyInfo
 }
 
 export type ProxyEntry = {
-  delegate: AccountAddress;
+  delegate: AccountAddress
   proxy_type: {
-    type: string;
-  };
-  delay: number;
-};
+    type: string
+  }
+  delay: number
+}
 
 export type GetDelegates = (
-  address: AccountAddress
-) => Promise<Array<ProxyEntry> | null>;
+  address: AccountAddress,
+) => Promise<Array<ProxyEntry> | null>
 
 export interface ProxyProvider extends Plugin<ProxyAccount> {
-  id: "proxy";
-  accounts$: DefaultedStateObservable<ProxyAccount[]>;
+  id: "proxy"
+  accounts$: DefaultedStateObservable<ProxyAccount[]>
 
-  setProxies: (proxies: ProxyInfo[]) => void;
-  addProxy: (proxy: ProxyInfo) => Promise<ProxyAccount | null>;
-  removeProxy: (proxy: ProxyInfo) => void;
+  setProxies: (proxies: ProxyInfo[]) => void
+  addProxy: (proxy: ProxyInfo) => Promise<ProxyAccount | null>
+  removeProxy: (proxy: ProxyInfo) => void
 
-  getDelegates: GetDelegates;
+  getDelegates: GetDelegates
 }
 
 export const createProxyProvider = (
   getDelegates: GetDelegates,
   opts?: Partial<{
-    persist: PersistenceProvider;
-  }>
+    persist: PersistenceProvider
+  }>,
 ): ProxyProvider => {
   const { persist } = {
     persist: localStorageProvider("proxies"),
     ...opts,
-  };
+  }
 
   const [persistedAccounts$, setPersistedAccounts] = persistedState(
     persist,
-    [] as ProxyInfo[]
-  );
-  const plugins$ = new BehaviorSubject<Plugin[]>([]);
+    [] as ProxyInfo[],
+  )
+  const plugins$ = new BehaviorSubject<Plugin[]>([])
 
   const getAccount = (
     info: ProxyInfo,
-    parentSigner?: PolkadotSigner
+    parentSigner?: PolkadotSigner,
   ): ProxyAccount => ({
     provider: proxyProviderId,
     address: info.real,
     signer: parentSigner ? getProxySigner(info, parentSigner) : undefined,
     name: info.name,
     info,
-  });
+  })
 
   const proxyInfoToAccount = async (info: ProxyInfo) => {
     try {
       const plugin = await firstValueFrom(
         plugins$.pipe(
           map((plugins) =>
-            plugins.find((p) => info.parentSigner?.provider === p.id)
+            plugins.find((p) => info.parentSigner?.provider === p.id),
           ),
           filter((v) => v != null),
           timeout({
             first: 3000,
-          })
-        )
-      );
+          }),
+        ),
+      )
 
-      if (!plugin) return getAccount(info);
-      const parentSigner = await plugin.deserialize(info.parentSigner);
-      return getAccount(info, parentSigner?.signer);
+      if (!plugin) return getAccount(info)
+      const parentSigner = await plugin.deserialize(info.parentSigner)
+      return getAccount(info, parentSigner?.signer)
     } catch (ex) {
-      console.error(ex);
-      return getAccount(info);
+      console.error(ex)
+      return getAccount(info)
     }
-  };
+  }
 
   const accounts$ = state(
     combineLatest([persistedAccounts$, plugins$]).pipe(
-      switchMap(([accounts]) => Promise.all(accounts.map(proxyInfoToAccount)))
+      switchMap(([accounts]) => Promise.all(accounts.map(proxyInfoToAccount))),
     ),
-    []
-  );
+    [],
+  )
 
   return {
     id: proxyProviderId,
     deserialize: (account) => {
-      const extra = account.extra as ProxyInfo;
-      return proxyInfoToAccount(extra);
+      const extra = account.extra as ProxyInfo
+      return proxyInfoToAccount(extra)
     },
     serialize: ({ address, info, provider }) => ({
       address,
@@ -138,13 +138,13 @@ export const createProxyProvider = (
           prev.some(
             (v) =>
               addrEq(v.real, proxy.real) &&
-              addrEq(v.parentSigner.address, proxy.parentSigner.address)
+              addrEq(v.parentSigner.address, proxy.parentSigner.address),
           )
         )
-          return prev;
-        return [...prev, proxy];
-      });
-      return proxyInfoToAccount(proxy);
+          return prev
+        return [...prev, proxy]
+      })
+      return proxyInfoToAccount(proxy)
     },
     removeProxy: (proxy) =>
       setPersistedAccounts((prev) =>
@@ -153,9 +153,9 @@ export const createProxyProvider = (
             !(
               addrEq(v.real, proxy.real) &&
               addrEq(v.parentSigner.address, proxy.parentSigner.address)
-            )
-        )
+            ),
+        ),
       ),
     getDelegates,
-  };
-};
+  }
+}

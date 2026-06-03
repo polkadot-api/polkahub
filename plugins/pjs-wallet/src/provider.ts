@@ -3,7 +3,7 @@ import {
   getInjectedExtensions,
   type InjectedExtension,
   type InjectedPolkadotAccount,
-} from "@polkadot-api/pjs-signer";
+} from "@polkadot-api/pjs-signer"
 import {
   Account,
   addrEq,
@@ -11,15 +11,15 @@ import {
   persistedState,
   PersistenceProvider,
   Plugin,
-} from "@polkahub/plugin";
+} from "@polkahub/plugin"
 import {
   DefaultedStateObservable,
   state,
   StateObservable,
   withDefault,
-} from "@react-rxjs/core";
-import { combineKeys, MapWithChanges } from "@react-rxjs/utils";
-import { getSs58AddressInfo } from "polkadot-api";
+} from "@react-rxjs/core"
+import { combineKeys, MapWithChanges } from "@react-rxjs/utils"
+import { getSs58AddressInfo } from "polkadot-api"
 import {
   catchError,
   concat,
@@ -40,62 +40,62 @@ import {
   take,
   tap,
   timer,
-} from "rxjs";
+} from "rxjs"
 
-export const pjsWalletProviderId = "pjs-wallet";
+export const pjsWalletProviderId = "pjs-wallet"
 
 export interface PjsWalletAccount extends Account {
-  provider: "pjs-wallet";
-  extensionId: string;
-  injectedAccount: InjectedPolkadotAccount;
+  provider: "pjs-wallet"
+  extensionId: string
+  injectedAccount: InjectedPolkadotAccount
 }
 
 export interface PjsWalletProvider extends Plugin<PjsWalletAccount> {
-  id: "pjs-wallet";
-  accounts$: DefaultedStateObservable<PjsWalletAccount[]>;
-  accountGroups$: DefaultedStateObservable<Record<string, PjsWalletAccount[]>>;
+  id: "pjs-wallet"
+  accounts$: DefaultedStateObservable<PjsWalletAccount[]>
+  accountGroups$: DefaultedStateObservable<Record<string, PjsWalletAccount[]>>
 
-  connectedExtensions$: DefaultedStateObservable<string[]>;
-  setConnectedExtensions: (value: string[]) => void;
-  availableExtensions$: DefaultedStateObservable<string[]>;
+  connectedExtensions$: DefaultedStateObservable<string[]>
+  setConnectedExtensions: (value: string[]) => void
+  availableExtensions$: DefaultedStateObservable<string[]>
   injectedExtensions$: StateObservable<
     MapWithChanges<string, InjectedExtension>
-  >;
+  >
   connectedExtensionsAccounts$: StateObservable<
     {
-      extension: InjectedExtension;
-      accounts: PjsWalletAccount[];
+      extension: InjectedExtension
+      accounts: PjsWalletAccount[]
     }[]
-  >;
+  >
 }
 
 export const createPjsWalletProvider = (
   opts?: Partial<{
-    persist: PersistenceProvider;
-    accountFormat?: "ss58" | "eth" | "all";
-  }>
+    persist: PersistenceProvider
+    accountFormat?: "ss58" | "eth" | "all"
+  }>,
 ): PjsWalletProvider => {
   const { persist, accountFormat } = {
     persist: localStorageProvider("pjs-wallet-plugin"),
     accountFormat: "all" as const,
     ...opts,
-  };
+  }
 
   const availableExtensions$ = state(
     concat(
       timer(0, 100).pipe(
         map(getInjectedExtensions),
         filter((v) => v.length > 0),
-        take(1)
+        take(1),
       ),
-      interval(2000).pipe(map(getInjectedExtensions))
+      interval(2000).pipe(map(getInjectedExtensions)),
     ),
-    []
-  );
+    [],
+  )
 
   const [connectedExtensions$, setConnectedExtensions] = persistedState<
     string[]
-  >(persist, []);
+  >(persist, [])
 
   const extension$ = state((name: string) => {
     const connect$ = availableExtensions$.pipe(
@@ -108,59 +108,59 @@ export const createPjsWalletProvider = (
           retry({
             delay(error) {
               if (error?.message.includes("pending authorization request")) {
-                return timer(1000);
+                return timer(1000)
               }
-              throw error;
+              throw error
             },
           }),
           switchMap((ext) =>
             fromEventPattern(ext.subscribe, (hd) => hd()).pipe(
               map(() => ext),
-              startWith(ext)
-            )
-          )
-        )
+              startWith(ext),
+            ),
+          ),
+        ),
       ),
       catchError((e) => {
-        console.error(e);
+        console.error(e)
         // Deselect the extension that failed to connect
         return connectedExtensions$.pipe(
           take(1),
           tap((ext) => {
-            setConnectedExtensions(ext.filter((v) => v !== name));
+            setConnectedExtensions(ext.filter((v) => v !== name))
           }),
-          ignoreElements()
-        );
-      })
-    );
+          ignoreElements(),
+        )
+      }),
+    )
 
     return defer(() => {
-      let disconnected = false;
-      let extension: InjectedExtension | null = null;
+      let disconnected = false
+      let extension: InjectedExtension | null = null
       return concat(connect$, NEVER).pipe(
         tap({
           next(value) {
             if (value) {
               if (disconnected) {
-                console.log("disconnect just after connecting");
-                value.disconnect();
+                console.log("disconnect just after connecting")
+                value.disconnect()
               } else {
-                extension = value;
+                extension = value
               }
             }
           },
           unsubscribe() {
             if (extension) {
-              console.log("disconnect because of cleanup");
-              extension.disconnect();
+              console.log("disconnect because of cleanup")
+              extension.disconnect()
             } else {
-              disconnected = true;
+              disconnected = true
             }
           },
-        })
-      );
-    });
-  });
+        }),
+      )
+    })
+  })
 
   const extensionAccounts$ = combineKeys(connectedExtensions$, (id) =>
     extension$(id).pipe(
@@ -171,25 +171,25 @@ export const createPjsWalletProvider = (
       map((extWithAccounts) => {
         if (accountFormat === "ss58") {
           extWithAccounts.accounts = extWithAccounts.accounts.filter(
-            (v) => getSs58AddressInfo(v.address).isValid
-          );
+            (v) => getSs58AddressInfo(v.address).isValid,
+          )
         }
         if (accountFormat === "eth") {
           extWithAccounts.accounts = extWithAccounts.accounts.filter((v) =>
-            v.address.startsWith("0x")
-          );
+            v.address.startsWith("0x"),
+          )
         }
-        return extWithAccounts;
-      })
-    )
+        return extWithAccounts
+      }),
+    ),
   ).pipe(
     // Prevent getting it ref-counted, as it disconnects from the extensions
-    shareReplay(1)
-  );
+    shareReplay(1),
+  )
 
   const injectedExtensions$ = state(
-    extensionAccounts$.pipe(mapMapWithChanges((v) => v.extension))
-  );
+    extensionAccounts$.pipe(mapMapWithChanges((v) => v.extension)),
+  )
 
   const connectedExtensionsAccounts$ = state(
     extensionAccounts$.pipe(
@@ -204,12 +204,12 @@ export const createPjsWalletProvider = (
               signer: acc.polkadotSigner,
               extensionId: extension.name,
               injectedAccount: acc,
-            })
+            }),
           ),
-        }))
-      )
-    )
-  );
+        })),
+      ),
+    ),
+  )
 
   const accountGroups$ = connectedExtensionsAccounts$.pipeState(
     map((extensionAccounts) =>
@@ -217,18 +217,18 @@ export const createPjsWalletProvider = (
         extensionAccounts.map((extAcc) => [
           extAcc.extension.name,
           extAcc.accounts,
-        ])
-      )
+        ]),
+      ),
     ),
     withDefault<
       Record<string, PjsWalletAccount[]>,
       Record<string, PjsWalletAccount[]>
-    >({})
-  );
+    >({}),
+  )
   const accounts$ = accountGroups$.pipeState(
     map((groups) => Object.values(groups).flat()),
-    withDefault<PjsWalletAccount[], PjsWalletAccount[]>([])
-  );
+    withDefault<PjsWalletAccount[], PjsWalletAccount[]>([]),
+  )
 
   return {
     id: pjsWalletProviderId,
@@ -246,11 +246,11 @@ export const createPjsWalletProvider = (
               cea
                 .find((ext) => ext.extension.name === account.extra)
                 ?.accounts.find((acc) =>
-                  addrEq(acc.address, account.address)
-                ) ?? null
+                  addrEq(acc.address, account.address),
+                ) ?? null,
           ),
-          filter((v) => v != null)
-        )
+          filter((v) => v != null),
+        ),
       ),
     eq: (a, b) =>
       addrEq(a.address, b.address) && a.extensionId === b.extensionId,
@@ -261,29 +261,29 @@ export const createPjsWalletProvider = (
     connectedExtensionsAccounts$,
     injectedExtensions$,
     setConnectedExtensions,
-  };
-};
+  }
+}
 
 const mapMapWithChanges =
   <T, R, K>(mapFn: (value: T) => R) =>
   (
-    source: Observable<MapWithChanges<K, T>>
+    source: Observable<MapWithChanges<K, T>>,
   ): Observable<MapWithChanges<K, R>> =>
     source.pipe(
       scan(
         (acc: MapWithChanges<K, R>, v) => {
           v.changes.forEach((key) => {
             if (!v.has(key)) {
-              acc.delete(key);
+              acc.delete(key)
             } else {
-              acc.set(key, mapFn(v.get(key)!));
+              acc.set(key, mapFn(v.get(key)!))
             }
-          });
-          acc.changes = v.changes;
-          return acc;
+          })
+          acc.changes = v.changes
+          return acc
         },
         Object.assign(new Map<K, R>(), {
           changes: new Set<K>(),
-        })
-      )
-    );
+        }),
+      ),
+    )

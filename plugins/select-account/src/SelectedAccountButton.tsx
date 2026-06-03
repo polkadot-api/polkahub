@@ -2,37 +2,37 @@ import {
   PolkadotIdenticon,
   EthIdenticon,
   sliceMiddleStr,
-} from "@polkadot-api/react-components";
-import { AccountId } from "@polkadot-api/substrate-bindings";
-import { useIdentity } from "@polkahub/context";
-import { Button, cn } from "@polkahub/ui-components";
+} from "@polkadot-api/react-components"
+import { AccountId } from "@polkadot-api/substrate-bindings"
+import { useIdentity } from "@polkahub/context"
+import { Button, cn } from "@polkahub/ui-components"
 import {
   forwardRef,
   ForwardRefExoticComponent,
   ReactNode,
   RefAttributes,
   type ComponentProps,
-} from "react";
-import { useSelectedAccount } from "./provider";
+} from "react"
+import { useSelectedAccount } from "./provider"
 
 export const SelectedAccountButton: ForwardRefExoticComponent<
   ComponentProps<typeof Button> & {
-    loading?: boolean;
-    noAccountContent?: ReactNode;
+    loading?: boolean
+    noAccountContent?: ReactNode
   } & RefAttributes<HTMLButtonElement>
 > = forwardRef(({ loading, noAccountContent, ...props }, ref) => {
-  const [selectedAccount] = useSelectedAccount();
-  const identity = useIdentity(selectedAccount?.address ?? null);
+  const [selectedAccount] = useSelectedAccount()
+  const identity = useIdentity(selectedAccount?.address ?? null)
   const identityName = identity
     ? identity.name + (identity.subId ? `/${identity.subId}` : "")
-    : null;
+    : null
 
   if (!selectedAccount)
     return (
       <Button ref={ref} {...props}>
         {noAccountContent ?? "Connect"}
       </Button>
-    );
+    )
 
   const identicon = selectedAccount.address.startsWith("0x") ? (
     <EthIdenticon address={selectedAccount.address} className="size-6" />
@@ -41,8 +41,8 @@ export const SelectedAccountButton: ForwardRefExoticComponent<
       publicKey={AccountId().enc(selectedAccount.address)}
       className="size-6"
     />
-  );
-  const name = selectedAccount?.name ?? identityName;
+  )
+  const name = selectedAccount?.name ?? identityName
 
   return (
     <Button
@@ -60,5 +60,5 @@ export const SelectedAccountButton: ForwardRefExoticComponent<
         </div>
       )}
     </Button>
-  );
-});
+  )
+})

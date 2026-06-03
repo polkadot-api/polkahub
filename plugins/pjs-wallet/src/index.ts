@@ -1,2 +1,2 @@
-export * from "./provider";
-export * from "./ManagePjsWallet";
+export * from "./provider"
+export * from "./ManagePjsWallet"

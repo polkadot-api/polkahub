@@ -5,63 +5,63 @@ import {
   persistedState,
   PersistenceProvider,
   Plugin,
-} from "@polkahub/plugin";
-import { DefaultedStateObservable, withDefault } from "@react-rxjs/core";
-import { AccountId } from "polkadot-api";
-import { getPolkadotSigner } from "polkadot-api/signer";
-import { map } from "rxjs";
+} from "@polkahub/plugin"
+import { DefaultedStateObservable, withDefault } from "@react-rxjs/core"
+import { AccountId } from "polkadot-api"
+import { getPolkadotSigner } from "polkadot-api/signer"
+import { map } from "rxjs"
 
 export interface ReadonlyAccountInfo {
-  address: AccountAddress;
-  name?: string;
+  address: AccountAddress
+  name?: string
 }
 
-export const readOnlyProviderId = "readonly";
+export const readOnlyProviderId = "readonly"
 export interface ReadOnlyProvider extends Plugin {
-  id: "readonly";
-  accounts$: DefaultedStateObservable<Account[]>;
-  setAccounts: (payload: ReadonlyAccountInfo[]) => void;
-  addAccount: (address: ReadonlyAccountInfo) => Account;
-  removeAccount: (address: AccountAddress) => void;
-  toAccount: (address: AccountAddress) => Account;
+  id: "readonly"
+  accounts$: DefaultedStateObservable<Account[]>
+  setAccounts: (payload: ReadonlyAccountInfo[]) => void
+  addAccount: (address: ReadonlyAccountInfo) => Account
+  removeAccount: (address: AccountAddress) => void
+  toAccount: (address: AccountAddress) => Account
 }
 
 export const createReadOnlyProvider = (
   opts?: Partial<{
-    fakeSigner: boolean;
-    persist: PersistenceProvider;
-  }>
+    fakeSigner: boolean
+    persist: PersistenceProvider
+  }>,
 ): ReadOnlyProvider => {
   const { fakeSigner, persist } = {
     fakeSigner: false,
     persist: localStorageProvider("readonly-accounts"),
     ...opts,
-  };
+  }
 
   const [persistedAccounts$, setPersistedAccounts] = persistedState(
     persist,
-    [] as Array<AccountAddress> | Array<ReadonlyAccountInfo>
-  );
+    [] as Array<AccountAddress> | Array<ReadonlyAccountInfo>,
+  )
   const normalizeInfo = (
-    value: AccountAddress | ReadonlyAccountInfo
+    value: AccountAddress | ReadonlyAccountInfo,
   ): ReadonlyAccountInfo =>
     typeof value === "string"
       ? {
           address: value,
         }
-      : value;
+      : value
 
   const getAccount = ({ address, name }: ReadonlyAccountInfo): Account => ({
     name,
     provider: readOnlyProviderId,
     address,
     signer: fakeSigner ? createFakeSigner(address) : undefined,
-  });
+  })
 
   const accounts$ = persistedAccounts$.pipeState(
     map((accounts) => accounts.map(normalizeInfo).map(getAccount)),
-    withDefault([])
-  );
+    withDefault([]),
+  )
 
   return {
     id: readOnlyProviderId,
@@ -71,32 +71,32 @@ export const createReadOnlyProvider = (
     addAccount: (acc) => {
       setPersistedAccounts((v) => {
         const map = new Map(
-          v.map(normalizeInfo).map((acc) => [acc.address, acc])
-        );
-        map.set(acc.address, acc);
-        return [...map.values()];
-      });
-      return getAccount(acc);
+          v.map(normalizeInfo).map((acc) => [acc.address, acc]),
+        )
+        map.set(acc.address, acc)
+        return [...map.values()]
+      })
+      return getAccount(acc)
     },
     removeAccount: (addr) =>
       setPersistedAccounts(
         (v) =>
           v.filter((acc) => normalizeInfo(acc).address !== addr) as
             | ReadonlyAccountInfo[]
-            | AccountAddress[]
+            | AccountAddress[],
       ),
     toAccount: (address) =>
       getAccount({
         address,
       }),
-  };
-};
+  }
+}
 
 const createFakeSigner = (address: AccountAddress) =>
   getPolkadotSigner(AccountId().enc(address)!, "Sr25519", () => {
     // From https://wiki.acala.network/build/sdks/homa
-    const signature = new Uint8Array(64);
-    signature.fill(0xcd);
-    signature.set([0xde, 0xad, 0xbe, 0xef]);
-    return signature;
-  });
+    const signature = new Uint8Array(64)
+    signature.fill(0xcd)
+    signature.set([0xde, 0xad, 0xbe, 0xef])
+    return signature
+  })

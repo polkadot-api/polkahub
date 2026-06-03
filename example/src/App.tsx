@@ -1,4 +1,4 @@
-import { AccountDisplay } from "@polkadot-api/react-components";
+import { AccountDisplay } from "@polkadot-api/react-components"
 import {
   addrEq,
   AddressInput,
@@ -13,14 +13,14 @@ import {
   useAvailableAccounts,
   useSelectedAccount,
   WalletConnectButton,
-} from "polkahub";
-import { useMemo, useState } from "react";
-import { Card } from "./Card";
+} from "polkahub"
+import { useMemo, useState } from "react"
+import { Card } from "./Card"
 
 function App() {
   const [value, setValue] = useState<string | null>(
-    "5FxrUu1PUugUYs6HQ83bDswjGLyHYTEzm7yqmrkKVPaYe71Y"
-  );
+    "5FxrUu1PUugUYs6HQ83bDswjGLyHYTEzm7yqmrkKVPaYe71Y",
+  )
 
   return (
     <div className="container m-auto">
@@ -35,7 +35,7 @@ function App() {
         />
       </div>
     </div>
-  );
+  )
 }
 
 const ConnectButton = () => (
@@ -53,7 +53,7 @@ const ConnectButton = () => (
           <ManageProxy />
           <ManageMultisig
             getMultisigDetails={async (addr) => {
-              console.log("gmd", addr);
+              console.log("gmd", addr)
               if (
                 addrEq("12R1XCdgkHysv8Y4ntiXguo4eUYHXjQTmfRjL8FbmezsG71j", addr)
               ) {
@@ -64,22 +64,22 @@ const ConnectButton = () => (
                     "16JGzEsi8gcySKjpmxHVrkLTHdFHodRepEz8n244gNZpr9J",
                   ],
                   threshold: 2,
-                };
+                }
               }
-              return null;
+              return null
             }}
           />
         </div>
       </div>
     </PolkaHubModal>
   </Card>
-);
+)
 
 const SelectedAccount = () => {
-  const [selectedAccount, setSelectedAccount] = useSelectedAccount();
+  const [selectedAccount, setSelectedAccount] = useSelectedAccount()
 
   if (!selectedAccount) {
-    return <Card>No account selected</Card>;
+    return <Card>No account selected</Card>
   }
 
   return (
@@ -96,19 +96,19 @@ const SelectedAccount = () => {
         </button>
       </div>
     </Card>
-  );
-};
+  )
+}
 
 const AvailableAccounts = () => {
-  const availableAccounts = useAvailableAccounts();
+  const availableAccounts = useAvailableAccounts()
 
   const availableAccountList = useMemo(
     () => Object.values(availableAccounts).flat(),
-    [availableAccounts]
-  );
+    [availableAccounts],
+  )
 
   if (!availableAccountList.length) {
-    return <Card>No available accounts, please connect one provider</Card>;
+    return <Card>No available accounts, please connect one provider</Card>
   }
 
   return (
@@ -122,7 +122,7 @@ const AvailableAccounts = () => {
         ))}
       </ul>
     </Card>
-  );
-};
+  )
+}
 
-export default App;
+export default App
