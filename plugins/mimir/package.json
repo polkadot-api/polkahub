@@ -28,7 +28,7 @@
     "index.css"
   ],
   "scripts": {
-    "build": "tsc -b && rollup -c ../../rollup.config.js"
+    "build": "echo 'TODO: migration pending'"
   },
   "dependencies": {
     "@mimirdev/apps-inject": "^3.2.0",

@@ -8,7 +8,7 @@ import {
 } from "@polkahub/plugin"
 import { DefaultedStateObservable, withDefault } from "@react-rxjs/core"
 import { AccountId } from "polkadot-api"
-import { getPolkadotSigner } from "polkadot-api/signer"
+import { getTxCreator } from "polkadot-api/signer"
 import { map } from "rxjs"
 
 export interface ReadonlyAccountInfo {
@@ -17,13 +17,14 @@ export interface ReadonlyAccountInfo {
 }
 
 export const readOnlyProviderId = "readonly"
-export interface ReadOnlyProvider extends Plugin {
+type ReadOnlyAccount = Account<ReturnType<typeof getTxCreator>>
+export interface ReadOnlyProvider extends Plugin<ReadOnlyAccount> {
   id: "readonly"
-  accounts$: DefaultedStateObservable<Account[]>
+  accounts$: DefaultedStateObservable<ReadOnlyAccount[]>
   setAccounts: (payload: ReadonlyAccountInfo[]) => void
-  addAccount: (address: ReadonlyAccountInfo) => Account
+  addAccount: (address: ReadonlyAccountInfo) => ReadOnlyAccount
   removeAccount: (address: AccountAddress) => void
-  toAccount: (address: AccountAddress) => Account
+  toAccount: (address: AccountAddress) => ReadOnlyAccount
 }
 
 export const createReadOnlyProvider = (
@@ -51,11 +52,14 @@ export const createReadOnlyProvider = (
         }
       : value
 
-  const getAccount = ({ address, name }: ReadonlyAccountInfo): Account => ({
+  const getAccount = ({
+    address,
+    name,
+  }: ReadonlyAccountInfo): ReadOnlyAccount => ({
     name,
     provider: readOnlyProviderId,
     address,
-    signer: fakeSigner ? createFakeSigner(address) : undefined,
+    txCreator: fakeSigner ? createFakeSigner(address) : undefined,
   })
 
   const accounts$ = persistedAccounts$.pipeState(
@@ -93,7 +97,7 @@ export const createReadOnlyProvider = (
 }
 
 const createFakeSigner = (address: AccountAddress) =>
-  getPolkadotSigner(AccountId().enc(address)!, "Sr25519", () => {
+  getTxCreator(AccountId().enc(address)!, "Sr25519", () => {
     // From https://wiki.acala.network/build/sdks/homa
     const signature = new Uint8Array(64)
     signature.fill(0xcd)

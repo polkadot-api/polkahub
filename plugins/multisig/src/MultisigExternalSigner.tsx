@@ -1,10 +1,9 @@
 import {
   AccountId,
-  Binary,
   getMultisigAccountId,
   HexString,
 } from "@polkadot-api/substrate-bindings"
-import { CreateMultisigSigner, MultisigInfo } from "./provider"
+import { CreateMultisigTxCreator, MultisigInfo } from "./provider"
 import { createSignal } from "@react-rxjs/utils"
 import { state, useStateObservable } from "@react-rxjs/core"
 import { filter, firstValueFrom } from "rxjs"
@@ -17,19 +16,20 @@ import {
   DialogBody,
 } from "@polkahub/ui-components"
 import { Link } from "lucide-react"
+import { TxCreatorFactory } from "@polkahub/plugin"
 
 const [urlChange$, setUrl] = createSignal<string | null>()
 const url$ = state(urlChange$, null)
 
 const [enc] = AccountId()
 export const multisigExternalSigner =
-  (
+  <T extends TxCreatorFactory<any>>(
     getMultisigUrl: (
       info: MultisigInfo,
       callData: HexString,
     ) => string | Promise<string>,
-    thresholdOneFallback?: CreateMultisigSigner,
-  ): CreateMultisigSigner =>
+    thresholdOneFallback?: CreateMultisigTxCreator<T>,
+  ): CreateMultisigTxCreator<T> =>
   (info, signer) => {
     if (info.threshold === 1 && signer && thresholdOneFallback)
       return thresholdOneFallback(info, signer)
@@ -39,13 +39,10 @@ export const multisigExternalSigner =
       signatories: info.signatories.map(enc),
     })
 
-    return {
-      publicKey,
-      signBytes() {
-        throw new Error("Raw bytes can't be signed with a multisig")
-      },
-      async signTx(callData) {
-        const url = await getMultisigUrl(info, Binary.toHex(callData))
+    const creator: TxCreatorFactory<any> =
+      () =>
+      async ({ callData }) => {
+        const url = await getMultisigUrl(info, callData)
         setUrl(url)
         try {
           await firstValueFrom(url$.pipe(filter((v) => !v)))
@@ -53,8 +50,15 @@ export const multisigExternalSigner =
         } catch (ex) {
           throw new Error("Dismissed")
         }
+      }
+
+    return Object.assign(creator as T, {
+      accountId: publicKey,
+      publicKey,
+      signBytes() {
+        throw new Error("Raw bytes can't be signed with a multisig")
       },
-    }
+    })
   }
 
 export const MultisigExternalSignerModal: FC = () => {

@@ -42,7 +42,7 @@ export const AddManualMultisig: FC = () => {
         .map(([name, accounts]) => ({
           name,
           accounts: accounts
-            .filter((acc) => !!acc.signer)
+            .filter((acc) => !!acc.txCreator)
             .filter((acc) =>
               signatories.some((addr) => addrEq(addr, acc.address)),
             ),
