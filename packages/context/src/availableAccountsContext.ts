@@ -10,4 +10,3 @@ export const useAvailableAccounts = () => {
   const ctx = useContext(AvailableAccountsContext)
   return ctx?.availableAccounts ?? {}
 }
-;``

@@ -199,7 +199,7 @@ export const multisigDirectSigner =
   ): CreateMultisigTxCreator<T> =>
   (info, parentSigner) => {
     if (parentSigner && !parentSigner.publicKey)
-      throw new Error("Proxy provider requires TxCreator with `publicKey.")
+      throw new Error("Proxy provider requires TxCreator with `publicKey`.")
     return parentSigner
       ? getMultisigTxCreator(
           info,

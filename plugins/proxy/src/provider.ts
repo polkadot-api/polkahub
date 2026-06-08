@@ -83,7 +83,7 @@ export const createProxyProvider = (
     parentSigner?: T & { publicKey?: Uint8Array },
   ): ProxyAccount<T> => {
     if (parentSigner && !parentSigner.publicKey)
-      throw new Error("Proxy provider requires TxCreator with `publicKey.")
+      throw new Error("Proxy provider requires TxCreator with `publicKey`.")
     return {
       provider: proxyProviderId,
       address: info.real,
