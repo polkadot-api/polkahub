@@ -15,16 +15,16 @@ importers:
         specifier: ^8.0.2
         version: 8.0.2(rollup@4.61.1)
       '@types/node':
-        specifier: ^25.7.0
+        specifier: ^25.9.3
         version: 25.9.3
       globals:
         specifier: ^17.6.0
         version: 17.6.0
       prettier:
-        specifier: ^3.8.3
+        specifier: ^3.8.4
         version: 3.8.4
       rollup:
-        specifier: ^4.60.3
+        specifier: ^4.61.1
         version: 4.61.1
       rollup-plugin-dts:
         specifier: ^6.4.1
@@ -42,7 +42,7 @@ importers:
   example:
     dependencies:
       '@ledgerhq/hw-transport-webhid':
-        specifier: ^6.35.2
+        specifier: ^6.35.3
         version: 6.35.3
       '@polkadot-api/descriptors':
         specifier: file:.papi/descriptors
@@ -60,7 +60,7 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       lucide-react:
-        specifier: ^1.14.0
+        specifier: ^1.17.0
         version: 1.17.0(react@19.2.7)
       polkadot-api:
         specifier: canary
@@ -69,10 +69,10 @@ importers:
         specifier: workspace:*
         version: link:../packages/polkahub
       react:
-        specifier: ^19.2.6
+        specifier: ^19.2.7
         version: 19.2.7
       react-dom:
-        specifier: ^19.2.6
+        specifier: ^19.2.7
         version: 19.2.7(react@19.2.7)
       tailwind-merge:
         specifier: ^3.6.0
@@ -82,16 +82,16 @@ importers:
         specifier: ^4.3.0
         version: 4.3.0(vite@8.0.16(@types/node@25.9.3)(esbuild@0.28.0)(jiti@2.7.0))
       '@types/node':
-        specifier: ^25.7.0
+        specifier: ^25.9.3
         version: 25.9.3
       '@types/react':
-        specifier: ^19.2.14
+        specifier: ^19.2.17
         version: 19.2.17
       '@types/react-dom':
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.17)
       '@vitejs/plugin-react':
-        specifier: ^6.0.1
+        specifier: ^6.0.2
         version: 6.0.2(vite@8.0.16(@types/node@25.9.3)(esbuild@0.28.0)(jiti@2.7.0))
       globals:
         specifier: ^17.6.0
@@ -106,7 +106,7 @@ importers:
         specifier: ~6.0.3
         version: 6.0.3
       vite:
-        specifier: ^8.0.12
+        specifier: ^8.0.16
         version: 8.0.16(@types/node@25.9.3)(esbuild@0.28.0)(jiti@2.7.0)
 
   packages/context:
@@ -137,10 +137,10 @@ importers:
         version: 7.8.2
     devDependencies:
       '@types/react':
-        specifier: ^19.2.14
+        specifier: ^19.2.17
         version: 19.2.17
       react:
-        specifier: ^19.2.6
+        specifier: ^19.2.7
         version: 19.2.7
 
   packages/plugin:
@@ -209,17 +209,17 @@ importers:
         specifier: ^0.9.7
         version: 0.9.7(@react-rxjs/core@0.10.8(react@19.2.7)(rxjs@7.8.2))(react@19.2.7)(rxjs@7.8.2)
       lucide-react:
-        specifier: ^1.14.0
+        specifier: ^1.17.0
         version: 1.17.0(react@19.2.7)
       polkadot-api:
         specifier: canary
         version: 2.1.7-canary.78aac72(esbuild@0.28.0)(rxjs@7.8.2)
     devDependencies:
       '@types/react':
-        specifier: ^19.2.14
+        specifier: ^19.2.17
         version: 19.2.17
       react:
-        specifier: ^19.2.6
+        specifier: ^19.2.7
         version: 19.2.7
 
   packages/state:
@@ -252,49 +252,49 @@ importers:
         specifier: canary
         version: 0.4.1-canary.78aac72
       '@radix-ui/primitive':
-        specifier: ^1.1.3
+        specifier: ^1.1.4
         version: 1.1.4
       '@radix-ui/react-checkbox':
-        specifier: ^1.3.3
+        specifier: ^1.3.4
         version: 1.3.4(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@radix-ui/react-compose-refs':
-        specifier: ^1.1.2
+        specifier: ^1.1.3
         version: 1.1.3(@types/react@19.2.17)(react@19.2.7)
       '@radix-ui/react-context':
-        specifier: ^1.1.3
+        specifier: ^1.1.4
         version: 1.1.4(@types/react@19.2.17)(react@19.2.7)
       '@radix-ui/react-dialog':
-        specifier: ^1.1.15
+        specifier: ^1.1.16
         version: 1.1.16(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@radix-ui/react-dismissable-layer':
-        specifier: ^1.1.11
+        specifier: ^1.1.12
         version: 1.1.12(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@radix-ui/react-focus-guards':
-        specifier: ^1.1.3
+        specifier: ^1.1.4
         version: 1.1.4(@types/react@19.2.17)(react@19.2.7)
       '@radix-ui/react-focus-scope':
-        specifier: ^1.1.8
+        specifier: ^1.1.9
         version: 1.1.9(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@radix-ui/react-popover':
-        specifier: ^1.1.15
+        specifier: ^1.1.16
         version: 1.1.16(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@radix-ui/react-portal':
-        specifier: ^1.1.10
+        specifier: ^1.1.11
         version: 1.1.11(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@radix-ui/react-presence':
-        specifier: ^1.1.5
+        specifier: ^1.1.6
         version: 1.1.6(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@radix-ui/react-primitive':
-        specifier: ^2.1.4
+        specifier: ^2.1.5
         version: 2.1.5(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@radix-ui/react-slider':
-        specifier: ^1.3.6
+        specifier: ^1.4.0
         version: 1.4.0(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@radix-ui/react-slot':
-        specifier: ^1.2.4
+        specifier: ^1.2.5
         version: 1.2.5(@types/react@19.2.17)(react@19.2.7)
       '@radix-ui/react-use-controllable-state':
-        specifier: ^1.2.2
+        specifier: ^1.2.3
         version: 1.2.3(@types/react@19.2.17)(react@19.2.7)
       aria-hidden:
         specifier: ^1.2.6
@@ -309,7 +309,7 @@ importers:
         specifier: ^1.1.1
         version: 1.1.1(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       lucide-react:
-        specifier: ^1.14.0
+        specifier: ^1.17.0
         version: 1.17.0(react@19.2.7)
       react-remove-scroll:
         specifier: ^2.7.2
@@ -319,10 +319,10 @@ importers:
         version: 3.6.0
     devDependencies:
       '@types/react':
-        specifier: ^19.2.14
+        specifier: ^19.2.17
         version: 19.2.17
       react:
-        specifier: ^19.2.6
+        specifier: ^19.2.7
         version: 19.2.7
 
   plugins/ledger:
@@ -352,7 +352,7 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
       lucide-react:
-        specifier: ^1.14.0
+        specifier: ^1.17.0
         version: 1.17.0(react@19.2.7)
       polkadot-api:
         specifier: canary
@@ -362,13 +362,13 @@ importers:
         version: 7.8.2
     devDependencies:
       '@ledgerhq/hw-transport':
-        specifier: ^6.35.2
+        specifier: ^6.35.3
         version: 6.35.3
       '@types/react':
-        specifier: ^19.2.14
+        specifier: ^19.2.17
         version: 19.2.17
       react:
-        specifier: ^19.2.6
+        specifier: ^19.2.7
         version: 19.2.7
 
   plugins/mimir:
@@ -405,10 +405,10 @@ importers:
         version: 7.8.2
     devDependencies:
       '@types/react':
-        specifier: ^19.2.14
+        specifier: ^19.2.17
         version: 19.2.17
       react:
-        specifier: ^19.2.6
+        specifier: ^19.2.7
         version: 19.2.7
 
   plugins/multisig:
@@ -441,7 +441,7 @@ importers:
         specifier: ^0.9.7
         version: 0.9.7(@react-rxjs/core@0.10.8(react@19.2.7)(rxjs@7.8.2))(react@19.2.7)(rxjs@7.8.2)
       lucide-react:
-        specifier: ^1.14.0
+        specifier: ^1.17.0
         version: 1.17.0(react@19.2.7)
       polkadot-api:
         specifier: canary
@@ -451,10 +451,10 @@ importers:
         version: 7.8.2
     devDependencies:
       '@types/react':
-        specifier: ^19.2.14
+        specifier: ^19.2.17
         version: 19.2.17
       react:
-        specifier: ^19.2.6
+        specifier: ^19.2.7
         version: 19.2.7
 
   plugins/pjs-wallet:
@@ -478,7 +478,7 @@ importers:
         specifier: ^0.9.7
         version: 0.9.7(@react-rxjs/core@0.10.8(react@19.2.7)(rxjs@7.8.2))(react@19.2.7)(rxjs@7.8.2)
       lucide-react:
-        specifier: ^1.14.0
+        specifier: ^1.17.0
         version: 1.17.0(react@19.2.7)
       polkadot-api:
         specifier: canary
@@ -488,10 +488,10 @@ importers:
         version: 7.8.2
     devDependencies:
       '@types/react':
-        specifier: ^19.2.14
+        specifier: ^19.2.17
         version: 19.2.17
       react:
-        specifier: ^19.2.6
+        specifier: ^19.2.7
         version: 19.2.7
 
   plugins/proxy:
@@ -518,7 +518,7 @@ importers:
         specifier: ^0.9.7
         version: 0.9.7(@react-rxjs/core@0.10.8(react@19.2.7)(rxjs@7.8.2))(react@19.2.7)(rxjs@7.8.2)
       lucide-react:
-        specifier: ^1.14.0
+        specifier: ^1.17.0
         version: 1.17.0(react@19.2.7)
       polkadot-api:
         specifier: canary
@@ -528,10 +528,10 @@ importers:
         version: 7.8.2
     devDependencies:
       '@types/react':
-        specifier: ^19.2.14
+        specifier: ^19.2.17
         version: 19.2.17
       react:
-        specifier: ^19.2.6
+        specifier: ^19.2.7
         version: 19.2.7
 
   plugins/read-only:
@@ -558,7 +558,7 @@ importers:
         specifier: ^0.9.7
         version: 0.9.7(@react-rxjs/core@0.10.8(react@19.2.7)(rxjs@7.8.2))(react@19.2.7)(rxjs@7.8.2)
       lucide-react:
-        specifier: ^1.14.0
+        specifier: ^1.17.0
         version: 1.17.0(react@19.2.7)
       polkadot-api:
         specifier: canary
@@ -568,10 +568,10 @@ importers:
         version: 7.8.2
     devDependencies:
       '@types/react':
-        specifier: ^19.2.14
+        specifier: ^19.2.17
         version: 19.2.17
       react:
-        specifier: ^19.2.6
+        specifier: ^19.2.7
         version: 19.2.7
 
   plugins/select-account:
@@ -601,17 +601,17 @@ importers:
         specifier: ^0.1.4
         version: 0.1.4(rxjs@7.8.2)
       lucide-react:
-        specifier: ^1.14.0
+        specifier: ^1.17.0
         version: 1.17.0(react@19.2.7)
       rxjs:
         specifier: ^7.8.2
         version: 7.8.2
     devDependencies:
       '@types/react':
-        specifier: ^19.2.14
+        specifier: ^19.2.17
         version: 19.2.17
       react:
-        specifier: ^19.2.6
+        specifier: ^19.2.7
         version: 19.2.7
 
   plugins/vault:
@@ -644,7 +644,7 @@ importers:
         specifier: ^0.9.7
         version: 0.9.7(@react-rxjs/core@0.10.8(react@19.2.7)(rxjs@7.8.2))(react@19.2.7)(rxjs@7.8.2)
       lucide-react:
-        specifier: ^1.14.0
+        specifier: ^1.17.0
         version: 1.17.0(react@19.2.7)
       polkadot-api:
         specifier: canary
@@ -654,10 +654,10 @@ importers:
         version: 7.8.2
     devDependencies:
       '@types/react':
-        specifier: ^19.2.14
+        specifier: ^19.2.17
         version: 19.2.17
       react:
-        specifier: ^19.2.6
+        specifier: ^19.2.7
         version: 19.2.7
 
   plugins/wallet-connect:
@@ -684,8 +684,8 @@ importers:
         specifier: ^0.9.7
         version: 0.9.7(@react-rxjs/core@0.10.8(react@19.2.7)(rxjs@7.8.2))(react@19.2.7)(rxjs@7.8.2)
       '@reown/appkit':
-        specifier: 1.8.19
-        version: 1.8.19(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(use-sync-external-store@1.6.0(react@19.2.7))(zod@3.25.76)
+        specifier: 1.8.20
+        version: 1.8.20(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(use-sync-external-store@1.6.0(react@19.2.7))(zod@3.25.76)
       '@walletconnect/types':
         specifier: 2.23.9
         version: 2.23.9
@@ -703,10 +703,10 @@ importers:
         version: 7.8.2
     devDependencies:
       '@types/react':
-        specifier: ^19.2.14
+        specifier: ^19.2.17
         version: 19.2.17
       react:
-        specifier: ^19.2.6
+        specifier: ^19.2.7
         version: 19.2.7
 
 packages:
@@ -727,6 +727,9 @@ packages:
 
   '@coinbase/cdp-sdk@1.51.0':
     resolution: {integrity: sha512-XK8+OXDER1jirYpuiOct4ij65ODQ31LsmyRrZi/J7zF4GB89qxWZ0KPfAdsqJMP7VvE4no+Q++MKkQtAJUBoyg==}
+
+  '@coinbase/wallet-sdk@4.3.6':
+    resolution: {integrity: sha512-4q8BNG1ViL4mSAAvPAtpwlOs1gpC+67eQtgIwNvT3xyeyFFd+guwkc8bcX5rTmQhXpqnhzC4f0obACbP9CqMSA==}
 
   '@commander-js/extra-typings@15.0.0':
     resolution: {integrity: sha512-yeJlba62xqmkgELUsn7356MEnzLLu/fw2x4lofFqGnXh6YysRdEs2BaLeLtg1+KU0AXvMeqQvTTp+3hBEBK+EA==}
@@ -1453,34 +1456,34 @@ packages:
       react: '>=16.8.0'
       rxjs: '>=6'
 
-  '@reown/appkit-common@1.8.19':
-    resolution: {integrity: sha512-z5wDrYjUGY7YbM4b14NHVo54WKZ5++PQtGkcsXhiOP39yAVijubBQD8BfHs/Pu2fSFqnqLIFoCVvIEfNWWccRw==}
+  '@reown/appkit-common@1.8.20':
+    resolution: {integrity: sha512-x6Yc8FaZZaEnsRCu6crYD/s1MA+Ffk35rJNZpug8I26iAJgi+o3rar/0lwZ70dl/QA9ytnwFUFWzhXqkT3O7Og==}
 
-  '@reown/appkit-controllers@1.8.19':
-    resolution: {integrity: sha512-JFNT8CfAVit9FJXh596Ye4U8A/oIapW+Y0KQqjB59DXyTCDZbxZDB32rULBQrSkZ6PufTEa239Dil4kABCQKtg==}
+  '@reown/appkit-controllers@1.8.20':
+    resolution: {integrity: sha512-2Gdi/ScftfBK3MwfAJcf/bGRByHgHzaAK8rCzKrYYUqLjbRFR9I/uq7gd6D+w4Xm+NRCpdiKFJY/0zPSfq+gpw==}
 
-  '@reown/appkit-pay@1.8.19':
-    resolution: {integrity: sha512-HO/tQT0TbTQO3eONxNNPJAOZAOzUiHvjM0Mty1rFFeRBH68auiqQxQi2YFNMs014gNkRN+cb84VYau7+MCC0fQ==}
+  '@reown/appkit-pay@1.8.20':
+    resolution: {integrity: sha512-JEoTVetCWNFJnbkYGtwvdWa7ZW7xF0uOH+jmJvnAbYSXTR+Bd8HdQOMn/AoWulSu6qmjKjNpZQmNjkIUf5yiUw==}
 
-  '@reown/appkit-polyfills@1.8.19':
-    resolution: {integrity: sha512-PSoetRSuZg7f2YFPzdfs4BayQl51zcGqYr7frwOe6td0XEsspLrrVFn/zk5QFbFHZVsMdfRZ+TTunt84ozRdnQ==}
+  '@reown/appkit-polyfills@1.8.20':
+    resolution: {integrity: sha512-88qJedSBYkhCZxeyODcQhqKt45OkS28VbZGNsay6t7FexvPcoibYMtkHaP79ojE8OuhV7k3FlrssrjPES3OFCw==}
 
-  '@reown/appkit-scaffold-ui@1.8.19':
-    resolution: {integrity: sha512-Ak767x0VzeDIXb0wbzkl19kx6udw7vkb1EU0SAweG3iKc9BunW87Rfcd48/YimzMZycJaYmlbtfmqQQDYs6Few==}
+  '@reown/appkit-scaffold-ui@1.8.20':
+    resolution: {integrity: sha512-Vx0qib30UUbcKT8VeNcCcZkkhtaOT28TtClQ8nKC0EdOkLA08Lxt0j32XpEat2c4Fl6xzAIIOuZO7HRBTxMfzA==}
 
-  '@reown/appkit-ui@1.8.19':
-    resolution: {integrity: sha512-fCAwW8yyyC3JcgKLBPvCtYuDGC4H8anO7u4LTaAXGEzdcU5H+IrCgNFSPNK7NuTSmgXm1TnoYxPxRFKNiNwFdA==}
+  '@reown/appkit-ui@1.8.20':
+    resolution: {integrity: sha512-ObWhgu+4capnVhxtEG0VMRtGHwr6bso9VUcxDIfUDpjNAMi1HQBvXiBJ/R098Gvjmjz0QLwNe8YNVe50KaCTVw==}
 
-  '@reown/appkit-utils@1.8.19':
-    resolution: {integrity: sha512-VQPgUMTFqoh4UD3EDZSw9wyMkyZsmIVmu8CdQ2FUxIuqYW4fLd0VIpkDeO64MMhSv8b0X8Vd6m4+eGcqSwlUAg==}
+  '@reown/appkit-utils@1.8.20':
+    resolution: {integrity: sha512-ZVPUhZm/8TbR5MI1GzhazpUShrjVhZCC8Fyc7m+VXSPVZkPiW7K2AtTDAqhfYeStvBSJIvC6jbKwhlaWGR1TDQ==}
     peerDependencies:
       valtio: 2.1.7
 
-  '@reown/appkit-wallet@1.8.19':
-    resolution: {integrity: sha512-NVdIKceUhkXYtsG32925ctmVn0QJFNyDlr+mWheMLCEZ/IUPn+6aA53vTVaSUquhyeFxUXtrCOh3ln6v1tup5w==}
+  '@reown/appkit-wallet@1.8.20':
+    resolution: {integrity: sha512-fEYnCQTQFSi8qtGfdQp7BHAVD8yiijPgjXhel0jFLKTX5leufGKjrERtnn2vABoUHQucwQzI+Q958Bnx/lHE2w==}
 
-  '@reown/appkit@1.8.19':
-    resolution: {integrity: sha512-wB+xatkRbOy0AY1cZxxtcKzzPk3l3CTFulDbaISLVmZI6ZnQrOFuLnYc285zGsC6DB4d6bmwYUh89zcMLa4PvQ==}
+  '@reown/appkit@1.8.20':
+    resolution: {integrity: sha512-+OI1TWg3XcMRhZ5RGVF0+AjkUvTPpODP6HFIgmxsV8HCf6bfE+jaYYE+JJcaz05TYJJ2TCXSYDyRfRvjSUzMzg==}
 
   '@rolldown/binding-android-arm64@1.0.3':
     resolution: {integrity: sha512-454rs7jHngixp/NMxd5srYD57OnzSlZ/eFTETjORQHLwJG1lRtmNOJcBerZlfu4GjKqeq8aCCIQrMdHyhI51Hw==}
@@ -4203,6 +4206,27 @@ snapshots:
       - utf-8-validate
     optional: true
 
+  '@coinbase/wallet-sdk@4.3.6(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(use-sync-external-store@1.6.0(react@19.2.7))(zod@3.25.76)':
+    dependencies:
+      '@noble/hashes': 1.4.0
+      clsx: 1.2.1
+      eventemitter3: 5.0.1
+      idb-keyval: 6.2.1
+      ox: 0.6.9(typescript@6.0.3)(zod@3.25.76)
+      preact: 10.24.2
+      viem: 2.52.2(typescript@6.0.3)(zod@3.25.76)
+      zustand: 5.0.3(@types/react@19.2.17)(react@19.2.7)(use-sync-external-store@1.6.0(react@19.2.7))
+    transitivePeerDependencies:
+      - '@types/react'
+      - bufferutil
+      - immer
+      - react
+      - typescript
+      - use-sync-external-store
+      - utf-8-validate
+      - zod
+    optional: true
+
   '@commander-js/extra-typings@15.0.0(commander@15.0.0)':
     dependencies:
       commander: 15.0.0
@@ -4943,7 +4967,7 @@ snapshots:
       react: 19.2.7
       rxjs: 7.8.2
 
-  '@reown/appkit-common@1.8.19(typescript@6.0.3)(zod@3.22.4)':
+  '@reown/appkit-common@1.8.20(typescript@6.0.3)(zod@3.22.4)':
     dependencies:
       big.js: 6.2.2
       dayjs: 1.11.13
@@ -4954,7 +4978,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@reown/appkit-common@1.8.19(typescript@6.0.3)(zod@3.25.76)':
+  '@reown/appkit-common@1.8.20(typescript@6.0.3)(zod@3.25.76)':
     dependencies:
       big.js: 6.2.2
       dayjs: 1.11.13
@@ -4965,10 +4989,10 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@reown/appkit-controllers@1.8.19(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(zod@3.25.76)':
+  '@reown/appkit-controllers@1.8.20(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(zod@3.25.76)':
     dependencies:
-      '@reown/appkit-common': 1.8.19(typescript@6.0.3)(zod@3.25.76)
-      '@reown/appkit-wallet': 1.8.19(typescript@6.0.3)
+      '@reown/appkit-common': 1.8.20(typescript@6.0.3)(zod@3.25.76)
+      '@reown/appkit-wallet': 1.8.20(typescript@6.0.3)
       '@walletconnect/universal-provider': 2.23.7(typescript@6.0.3)(zod@3.25.76)
       valtio: 2.1.7(@types/react@19.2.17)(react@19.2.7)
       viem: 2.52.2(typescript@6.0.3)(zod@3.25.76)
@@ -5000,12 +5024,12 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@reown/appkit-pay@1.8.19(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(use-sync-external-store@1.6.0(react@19.2.7))(zod@3.25.76)':
+  '@reown/appkit-pay@1.8.20(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(use-sync-external-store@1.6.0(react@19.2.7))(zod@3.25.76)':
     dependencies:
-      '@reown/appkit-common': 1.8.19(typescript@6.0.3)(zod@3.25.76)
-      '@reown/appkit-controllers': 1.8.19(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(zod@3.25.76)
-      '@reown/appkit-ui': 1.8.19(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(zod@3.25.76)
-      '@reown/appkit-utils': 1.8.19(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(use-sync-external-store@1.6.0(react@19.2.7))(valtio@2.1.7(@types/react@19.2.17)(react@19.2.7))(zod@3.25.76)
+      '@reown/appkit-common': 1.8.20(typescript@6.0.3)(zod@3.25.76)
+      '@reown/appkit-controllers': 1.8.20(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(zod@3.25.76)
+      '@reown/appkit-ui': 1.8.20(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(zod@3.25.76)
+      '@reown/appkit-utils': 1.8.20(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(use-sync-external-store@1.6.0(react@19.2.7))(valtio@2.1.7(@types/react@19.2.17)(react@19.2.7))(zod@3.25.76)
       lit: 3.3.0
       valtio: 2.1.7(@types/react@19.2.17)(react@19.2.7)
     transitivePeerDependencies:
@@ -5040,18 +5064,18 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@reown/appkit-polyfills@1.8.19':
+  '@reown/appkit-polyfills@1.8.20':
     dependencies:
       buffer: 6.0.3
 
-  '@reown/appkit-scaffold-ui@1.8.19(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(use-sync-external-store@1.6.0(react@19.2.7))(valtio@2.1.7(@types/react@19.2.17)(react@19.2.7))(zod@3.25.76)':
+  '@reown/appkit-scaffold-ui@1.8.20(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(use-sync-external-store@1.6.0(react@19.2.7))(valtio@2.1.7(@types/react@19.2.17)(react@19.2.7))(zod@3.25.76)':
     dependencies:
-      '@reown/appkit-common': 1.8.19(typescript@6.0.3)(zod@3.25.76)
-      '@reown/appkit-controllers': 1.8.19(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(zod@3.25.76)
-      '@reown/appkit-pay': 1.8.19(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(use-sync-external-store@1.6.0(react@19.2.7))(zod@3.25.76)
-      '@reown/appkit-ui': 1.8.19(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(zod@3.25.76)
-      '@reown/appkit-utils': 1.8.19(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(use-sync-external-store@1.6.0(react@19.2.7))(valtio@2.1.7(@types/react@19.2.17)(react@19.2.7))(zod@3.25.76)
-      '@reown/appkit-wallet': 1.8.19(typescript@6.0.3)
+      '@reown/appkit-common': 1.8.20(typescript@6.0.3)(zod@3.25.76)
+      '@reown/appkit-controllers': 1.8.20(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(zod@3.25.76)
+      '@reown/appkit-pay': 1.8.20(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(use-sync-external-store@1.6.0(react@19.2.7))(zod@3.25.76)
+      '@reown/appkit-ui': 1.8.20(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(zod@3.25.76)
+      '@reown/appkit-utils': 1.8.20(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(use-sync-external-store@1.6.0(react@19.2.7))(valtio@2.1.7(@types/react@19.2.17)(react@19.2.7))(zod@3.25.76)
+      '@reown/appkit-wallet': 1.8.20(typescript@6.0.3)
       lit: 3.3.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -5086,12 +5110,12 @@ snapshots:
       - valtio
       - zod
 
-  '@reown/appkit-ui@1.8.19(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(zod@3.25.76)':
+  '@reown/appkit-ui@1.8.20(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(zod@3.25.76)':
     dependencies:
       '@phosphor-icons/webcomponents': 2.1.5
-      '@reown/appkit-common': 1.8.19(typescript@6.0.3)(zod@3.25.76)
-      '@reown/appkit-controllers': 1.8.19(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(zod@3.25.76)
-      '@reown/appkit-wallet': 1.8.19(typescript@6.0.3)
+      '@reown/appkit-common': 1.8.20(typescript@6.0.3)(zod@3.25.76)
+      '@reown/appkit-controllers': 1.8.20(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(zod@3.25.76)
+      '@reown/appkit-wallet': 1.8.20(typescript@6.0.3)
       lit: 3.3.0
       qrcode: 1.5.3
     transitivePeerDependencies:
@@ -5122,12 +5146,12 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@reown/appkit-utils@1.8.19(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(use-sync-external-store@1.6.0(react@19.2.7))(valtio@2.1.7(@types/react@19.2.17)(react@19.2.7))(zod@3.25.76)':
+  '@reown/appkit-utils@1.8.20(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(use-sync-external-store@1.6.0(react@19.2.7))(valtio@2.1.7(@types/react@19.2.17)(react@19.2.7))(zod@3.25.76)':
     dependencies:
-      '@reown/appkit-common': 1.8.19(typescript@6.0.3)(zod@3.25.76)
-      '@reown/appkit-controllers': 1.8.19(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(zod@3.25.76)
-      '@reown/appkit-polyfills': 1.8.19
-      '@reown/appkit-wallet': 1.8.19(typescript@6.0.3)
+      '@reown/appkit-common': 1.8.20(typescript@6.0.3)(zod@3.25.76)
+      '@reown/appkit-controllers': 1.8.20(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(zod@3.25.76)
+      '@reown/appkit-polyfills': 1.8.20
+      '@reown/appkit-wallet': 1.8.20(typescript@6.0.3)
       '@wallet-standard/wallet': 1.1.0
       '@walletconnect/logger': 3.0.2
       '@walletconnect/universal-provider': 2.23.7(typescript@6.0.3)(zod@3.25.76)
@@ -5135,6 +5159,7 @@ snapshots:
       viem: 2.52.2(typescript@6.0.3)(zod@3.25.76)
     optionalDependencies:
       '@base-org/account': 2.4.0(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(use-sync-external-store@1.6.0(react@19.2.7))(zod@3.25.76)
+      '@coinbase/wallet-sdk': 4.3.6(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(use-sync-external-store@1.6.0(react@19.2.7))(zod@3.25.76)
       '@safe-global/safe-apps-provider': 0.18.6(typescript@6.0.3)(zod@3.25.76)
       '@safe-global/safe-apps-sdk': 9.1.0(typescript@6.0.3)(zod@3.25.76)
     transitivePeerDependencies:
@@ -5169,10 +5194,10 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@reown/appkit-wallet@1.8.19(typescript@6.0.3)':
+  '@reown/appkit-wallet@1.8.20(typescript@6.0.3)':
     dependencies:
-      '@reown/appkit-common': 1.8.19(typescript@6.0.3)(zod@3.22.4)
-      '@reown/appkit-polyfills': 1.8.19
+      '@reown/appkit-common': 1.8.20(typescript@6.0.3)(zod@3.22.4)
+      '@reown/appkit-polyfills': 1.8.20
       '@walletconnect/logger': 3.0.2
       zod: 3.22.4
     transitivePeerDependencies:
@@ -5180,16 +5205,16 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@reown/appkit@1.8.19(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(use-sync-external-store@1.6.0(react@19.2.7))(zod@3.25.76)':
+  '@reown/appkit@1.8.20(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(use-sync-external-store@1.6.0(react@19.2.7))(zod@3.25.76)':
     dependencies:
-      '@reown/appkit-common': 1.8.19(typescript@6.0.3)(zod@3.25.76)
-      '@reown/appkit-controllers': 1.8.19(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(zod@3.25.76)
-      '@reown/appkit-pay': 1.8.19(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(use-sync-external-store@1.6.0(react@19.2.7))(zod@3.25.76)
-      '@reown/appkit-polyfills': 1.8.19
-      '@reown/appkit-scaffold-ui': 1.8.19(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(use-sync-external-store@1.6.0(react@19.2.7))(valtio@2.1.7(@types/react@19.2.17)(react@19.2.7))(zod@3.25.76)
-      '@reown/appkit-ui': 1.8.19(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(zod@3.25.76)
-      '@reown/appkit-utils': 1.8.19(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(use-sync-external-store@1.6.0(react@19.2.7))(valtio@2.1.7(@types/react@19.2.17)(react@19.2.7))(zod@3.25.76)
-      '@reown/appkit-wallet': 1.8.19(typescript@6.0.3)
+      '@reown/appkit-common': 1.8.20(typescript@6.0.3)(zod@3.25.76)
+      '@reown/appkit-controllers': 1.8.20(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(zod@3.25.76)
+      '@reown/appkit-pay': 1.8.20(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(use-sync-external-store@1.6.0(react@19.2.7))(zod@3.25.76)
+      '@reown/appkit-polyfills': 1.8.20
+      '@reown/appkit-scaffold-ui': 1.8.20(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(use-sync-external-store@1.6.0(react@19.2.7))(valtio@2.1.7(@types/react@19.2.17)(react@19.2.7))(zod@3.25.76)
+      '@reown/appkit-ui': 1.8.20(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(zod@3.25.76)
+      '@reown/appkit-utils': 1.8.20(@types/react@19.2.17)(react@19.2.7)(typescript@6.0.3)(use-sync-external-store@1.6.0(react@19.2.7))(valtio@2.1.7(@types/react@19.2.17)(react@19.2.7))(zod@3.25.76)
+      '@reown/appkit-wallet': 1.8.20(typescript@6.0.3)
       '@walletconnect/universal-provider': 2.23.7(typescript@6.0.3)(zod@3.25.76)
       bs58: 6.0.0
       semver: 7.7.2
@@ -6386,6 +6411,11 @@ snapshots:
       typescript: 6.0.3
       zod: 3.25.76
 
+  abitype@1.2.4(typescript@6.0.3)(zod@3.22.4):
+    optionalDependencies:
+      typescript: 6.0.3
+      zod: 3.22.4
+
   abitype@1.2.4(typescript@6.0.3)(zod@3.25.76):
     optionalDependencies:
       typescript: 6.0.3
@@ -7164,7 +7194,7 @@ snapshots:
       '@noble/hashes': 1.8.0
       '@scure/bip32': 1.7.0
       '@scure/bip39': 1.6.0
-      abitype: 1.2.3(typescript@6.0.3)(zod@3.22.4)
+      abitype: 1.2.4(typescript@6.0.3)(zod@3.22.4)
       eventemitter3: 5.0.1
     optionalDependencies:
       typescript: 6.0.3
@@ -7179,7 +7209,7 @@ snapshots:
       '@noble/hashes': 1.8.0
       '@scure/bip32': 1.7.0
       '@scure/bip39': 1.6.0
-      abitype: 1.2.3(typescript@6.0.3)(zod@3.25.76)
+      abitype: 1.2.4(typescript@6.0.3)(zod@3.25.76)
       eventemitter3: 5.0.1
     optionalDependencies:
       typescript: 6.0.3

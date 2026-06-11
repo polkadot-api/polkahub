@@ -36,7 +36,7 @@
     "@polkahub/ui-components": "workspace:*",
     "@react-rxjs/core": "^0.10.8",
     "@react-rxjs/utils": "^0.9.7",
-    "@reown/appkit": "1.8.19",
+    "@reown/appkit": "1.8.20",
     "@walletconnect/types": "2.23.9",
     "@walletconnect/universal-provider": "2.23.7",
     "@walletconnect/utils": "2.23.9",
@@ -48,7 +48,7 @@
     "react": "^19.2.0"
   },
   "devDependencies": {
-    "@types/react": "^19.2.14",
-    "react": "^19.2.6"
+    "@types/react": "^19.2.17",
+    "react": "^19.2.7"
   }
 }
