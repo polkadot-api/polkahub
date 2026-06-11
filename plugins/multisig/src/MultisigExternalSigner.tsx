@@ -16,14 +16,14 @@ import {
   DialogBody,
 } from "@polkahub/ui-components"
 import { Link } from "lucide-react"
-import { TxCreatorFactory } from "@polkahub/plugin"
+import { TxCreator } from "@polkahub/plugin"
 
 const [urlChange$, setUrl] = createSignal<string | null>()
 const url$ = state(urlChange$, null)
 
 const [enc] = AccountId()
 export const multisigExternalSigner =
-  <T extends TxCreatorFactory<any>>(
+  <T extends TxCreator<any>>(
     getMultisigUrl: (
       info: MultisigInfo,
       callData: HexString,
@@ -39,18 +39,16 @@ export const multisigExternalSigner =
       signatories: info.signatories.map(enc),
     })
 
-    const creator: TxCreatorFactory<any> =
-      () =>
-      async ({ callData }) => {
-        const url = await getMultisigUrl(info, callData)
-        setUrl(url)
-        try {
-          await firstValueFrom(url$.pipe(filter((v) => !v)))
-          throw null
-        } catch (ex) {
-          throw new Error("Dismissed")
-        }
+    const creator: TxCreator<any> = async ({ callData }) => {
+      const url = await getMultisigUrl(info, callData)
+      setUrl(url)
+      try {
+        await firstValueFrom(url$.pipe(filter((v) => !v)))
+        throw null
+      } catch (ex) {
+        throw new Error("Dismissed")
       }
+    }
 
     return Object.assign(creator as T, {
       accountId: publicKey,

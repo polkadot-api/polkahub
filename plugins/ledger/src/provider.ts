@@ -122,12 +122,10 @@ export const createLedgerProvider = (
         close()
       }
     }
-    const creatorWithSigner =
-      (
-        ...factoryArgs: Parameters<LedgerTxCreator>
-      ): ReturnType<LedgerTxCreator> =>
-      (...args) =>
-        operateWithSigner((factory) => factory(...factoryArgs)(...args))
+    const creatorWithSigner = (
+      ...args: Parameters<LedgerTxCreator>
+    ): ReturnType<LedgerTxCreator> =>
+      operateWithSigner((creator) => creator(...args))
 
     return Object.assign(creatorWithSigner, {
       // ArrayBuffer mismatch

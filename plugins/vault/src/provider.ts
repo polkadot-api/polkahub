@@ -1,7 +1,6 @@
 import {
   createV4Tx,
   getSignBytes,
-  TxCreatorFactory,
   withCommonExtensions,
   withNonce,
 } from "@polkadot-api/signers-common"
@@ -18,6 +17,7 @@ import {
   persistedState,
   PersistenceProvider,
   Plugin,
+  TxCreator,
 } from "@polkahub/plugin"
 import { DefaultedStateObservable, state, withDefault } from "@react-rxjs/core"
 import { createSignal } from "@react-rxjs/utils"
@@ -35,11 +35,11 @@ export interface VaultAccountInfo {
   address: AccountAddress
   genesis: HexString
 }
-type Factory = ReturnType<typeof getTxCreator>
-export interface PolkadotVaultAccount extends Account<Factory> {
+type Creator = ReturnType<typeof getTxCreator>
+export interface PolkadotVaultAccount extends Account<Creator> {
   provider: "polkadot-vault"
   genesis: HexString
-  txCreator: Factory
+  txCreator: Creator
 }
 
 export interface PolkadotVaultProvider extends Plugin<PolkadotVaultAccount> {
@@ -93,7 +93,7 @@ export const createPolkadotVaultProvider = (
   const createVaultSigner = ({
     address,
     genesis: accountGenesis,
-  }: VaultAccountInfo): Factory => {
+  }: VaultAccountInfo): Creator => {
     const info = getSs58AddressInfo(address)
     if (!info.isValid) {
       throw new Error("Invalid SS58 address " + address)
@@ -101,7 +101,7 @@ export const createPolkadotVaultProvider = (
 
     const publicKey = info.publicKey
 
-    const creator: TxCreatorFactory<{}> = () => async (payload, _, mocked) => {
+    const creator: TxCreator<[]> = async (payload, _, mocked) => {
       let merkleizer: MetadataMerkleizer | null = null
       const decMeta = unifyMetadata(decAnyMetadata(payload.context.metadata))
       const extra: Array<Uint8Array> = []

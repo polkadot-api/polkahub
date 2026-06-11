@@ -1,7 +1,4 @@
-import {
-  getProxyTxCreator,
-  WrapTxCreatorFactory,
-} from "@polkadot-api/meta-signers"
+import { getProxyTxCreator, WrapTxCreator } from "@polkadot-api/meta-signers"
 import {
   Account,
   AccountAddress,
@@ -11,7 +8,7 @@ import {
   PersistenceProvider,
   Plugin,
   SerializableAccount,
-  TxCreatorFactory,
+  TxCreator,
 } from "@polkahub/plugin"
 import { DefaultedStateObservable, state } from "@react-rxjs/core"
 import {
@@ -32,8 +29,8 @@ export interface ProxyInfo {
 
 export const proxyProviderId = "proxy"
 export interface ProxyAccount<
-  T extends TxCreatorFactory<any> = TxCreatorFactory<any>,
-> extends Account<WrapTxCreatorFactory<T>> {
+  T extends TxCreator<any> = TxCreator<any>,
+> extends Account<WrapTxCreator<T>> {
   provider: "proxy"
   info: ProxyInfo
 }
@@ -78,7 +75,7 @@ export const createProxyProvider = (
   )
   const plugins$ = new BehaviorSubject<Plugin[]>([])
 
-  const getAccount = <T extends TxCreatorFactory<any>>(
+  const getAccount = <T extends TxCreator<any>>(
     info: ProxyInfo,
     parentSigner?: T & { publicKey?: Uint8Array },
   ): ProxyAccount<T> => {

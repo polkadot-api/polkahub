@@ -1,7 +1,7 @@
 import {
   getMultisigTxCreator,
   MultisigTxCreatorOptions,
-  WrapTxCreatorFactory,
+  WrapTxCreator,
 } from "@polkadot-api/meta-signers"
 import {
   AccountId,
@@ -18,7 +18,7 @@ import {
   PersistenceProvider,
   Plugin,
   SerializableAccount,
-  TxCreatorFactory,
+  TxCreator,
 } from "@polkahub/plugin"
 import { DefaultedStateObservable, state } from "@react-rxjs/core"
 import {
@@ -40,15 +40,15 @@ export interface MultisigInfo {
   name?: string
 }
 
-export type CreateMultisigTxCreator<T extends TxCreatorFactory<any>> = (
+export type CreateMultisigTxCreator<T extends TxCreator<any>> = (
   info: MultisigInfo,
   parentSigner?: T & { publicKey?: Uint8Array },
-) => WrapTxCreatorFactory<T> | null
+) => WrapTxCreator<T> | null
 
 export const multisigProviderId = "multisig"
 export interface MultisigAccount<
-  T extends TxCreatorFactory<any> = TxCreatorFactory<any>,
-> extends Account<WrapTxCreatorFactory<T>> {
+  T extends TxCreator<any> = TxCreator<any>,
+> extends Account<WrapTxCreator<T>> {
   provider: "multisig"
   info: MultisigInfo
 }
@@ -62,7 +62,7 @@ export interface MultisigProvider extends Plugin<MultisigAccount> {
   removeMultisig: (addr: AccountAddress) => void
 }
 
-export const createMultisigProvider = <T extends TxCreatorFactory<any>>(
+export const createMultisigProvider = <T extends TxCreator<any>>(
   createMultisigTxCreator: CreateMultisigTxCreator<T>,
   opts?: Partial<{
     persist: PersistenceProvider
@@ -79,7 +79,7 @@ export const createMultisigProvider = <T extends TxCreatorFactory<any>>(
   )
   const plugins$ = new BehaviorSubject<Plugin<Account>[]>([])
 
-  const getAccount = <T extends TxCreatorFactory<any>>(
+  const getAccount = <T extends TxCreator<any>>(
     info: MultisigInfo,
     parentSigner?: T,
   ): MultisigAccount => ({
@@ -172,7 +172,7 @@ const getMultisigAddress = (info: MultisigInfo) => {
 }
 
 export const multisigDirectSigner =
-  <T extends TxCreatorFactory<any>>(
+  <T extends TxCreator<any>>(
     getMultisigInfo: (
       multisig: AccountAddress,
       callHash: SizedHex<32>,
