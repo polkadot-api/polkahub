@@ -11,6 +11,7 @@ import { createSignal } from "@react-rxjs/utils"
 import type { CaipNetwork } from "@reown/appkit/core"
 import { defineChain } from "@reown/appkit/networks"
 import type { SessionTypes } from "@walletconnect/types"
+import { AccountId } from "@polkadot-api/substrate-bindings"
 import {
   getTxCreatorFromPjs,
   InjectedPolkadotAccount,
@@ -37,6 +38,8 @@ import {
   takeUntil,
   tap,
 } from "rxjs"
+
+const accId = AccountId(42)
 
 export const walletConnectProviderId = "walletconnect"
 export interface WalletConnectAccount extends Account<
@@ -315,11 +318,16 @@ export const createWalletConnectProvider = (
   )
 
   const getAccounts = (session: SessionTypes.Struct) =>
-    Object.values(session.namespaces)
-      .map((namespace) => namespace.accounts)
-      .flat()
-      // Format: `polkadot:{genesis_hash}:{account_id}`
-      .map((wcAccount) => wcAccount.split(":")[2])
+    Array.from(
+      new Set(
+        Object.values(session.namespaces)
+          .map((namespace) => namespace.accounts)
+          .flat()
+          // Format: `polkadot:{genesis_hash}:{account_id}`
+          .map((wcAccount) => wcAccount.split(":")[2])
+          .map((acc) => accId.dec(accId.enc(acc))),
+      ),
+    )
 
   const getSigner = (session: SessionTypes.Struct, address: string) =>
     getTxCreatorFromPjs(
