@@ -4,8 +4,8 @@ packages:
   - example
 
 onlyBuiltDependencies:
-  - '@reown/appkit'
-  - '@swc/core'
+  - "@reown/appkit"
+  - "@swc/core"
   - bufferutil
   - esbuild
   - node-hid

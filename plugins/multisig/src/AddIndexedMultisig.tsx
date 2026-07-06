@@ -4,14 +4,14 @@ import {
   useModalContext,
   usePlugin,
   usePolkaHubContext,
-} from "@polkahub/context";
+} from "@polkahub/context"
 import {
   Account,
   AccountAddress,
   addrEq,
   defaultSerialize,
-} from "@polkahub/plugin";
-import { ProxyProvider, proxyProviderId } from "@polkahub/proxy";
+} from "@polkahub/plugin"
+import { ProxyProvider, proxyProviderId } from "@polkahub/proxy"
 import {
   AccountPicker,
   Alert,
@@ -19,8 +19,8 @@ import {
   Button,
   InlineAddressInput,
   Input,
-} from "@polkahub/ui-components";
-import { useEffect, useMemo, useState, type FC } from "react";
+} from "@polkahub/ui-components"
+import { useEffect, useMemo, useState, type FC } from "react"
 import {
   EMPTY,
   filter,
@@ -29,82 +29,82 @@ import {
   map,
   merge,
   switchMap,
-} from "rxjs";
-import { MultisigProvider, multisigProviderId } from "./provider";
-import { OctagonX, TriangleAlert } from "lucide-react";
+} from "rxjs"
+import { MultisigProvider, multisigProviderId } from "./provider"
+import { OctagonX, TriangleAlert } from "lucide-react"
 
 type AccountWithMultisig = Account & {
   multisig: {
-    proxy?: AccountAddress;
-    address: AccountAddress;
+    proxy?: AccountAddress
+    address: AccountAddress
     result: {
-      addresses: AccountAddress[];
-      threshold: number;
-    };
-  };
-};
+      addresses: AccountAddress[]
+      threshold: number
+    }
+  }
+}
 
 export type GetMultisigDetails = (
-  address: AccountAddress
-) => Promise<{ addresses: AccountAddress[]; threshold: number } | null>;
+  address: AccountAddress,
+) => Promise<{ addresses: AccountAddress[]; threshold: number } | null>
 
 export const AddIndexedMultisig: FC<{
-  getMultisigDetails: GetMultisigDetails;
+  getMultisigDetails: GetMultisigDetails
 }> = ({ getMultisigDetails }) => {
-  const { popContent } = useModalContext();
-  const multisigProvider = usePlugin<MultisigProvider>(multisigProviderId);
-  const proxyProvider = usePlugin<ProxyProvider>(proxyProviderId);
-  const { polkaHub } = usePolkaHubContext();
+  const { popContent } = useModalContext()
+  const multisigProvider = usePlugin<MultisigProvider>(multisigProviderId)
+  const proxyProvider = usePlugin<ProxyProvider>(proxyProviderId)
+  const { polkaHub } = usePolkaHubContext()
   const [multisigAddress, setMultisigAddress] = useState<AccountAddress | null>(
-    null
-  );
-  const [name, setName] = useState("");
+    null,
+  )
+  const [name, setName] = useState("")
   const [selectedAccount, setSelectedAccount] =
-    useState<AccountWithMultisig | null>(null);
+    useState<AccountWithMultisig | null>(null)
 
   return (
     <form
       className="space-y-2"
       onSubmit={async (evt) => {
-        evt.preventDefault();
-        if (!multisigAddress || !selectedAccount) return null;
+        evt.preventDefault()
+        if (!multisigAddress || !selectedAccount) return null
 
-        const plugins = polkaHub.plugins$.getValue();
+        const plugins = polkaHub.plugins$.getValue()
         const parentProvider = plugins.find(
-          (p) => p.id === selectedAccount.provider
-        );
+          (p) => p.id === selectedAccount.provider,
+        )
         if (!parentProvider)
           throw new Error(
-            `Parent provider ${selectedAccount.provider} not found`
-          );
+            `Parent provider ${selectedAccount.provider} not found`,
+          )
 
-        const details = selectedAccount.multisig.result;
-        const serializeFn = parentProvider.serialize ?? defaultSerialize;
+        const details = selectedAccount.multisig.result
+        const serializeFn = parentProvider.serialize ?? defaultSerialize
 
         if (selectedAccount.multisig.proxy) {
           const multisigAccount = await multisigProvider!.addMultisig({
             signatories: details.addresses,
             threshold: details.threshold,
             parentSigner: serializeFn(selectedAccount),
-          });
+          })
 
           await proxyProvider?.addProxy({
             real: multisigAddress,
             parentSigner: (multisigProvider!.serialize ?? defaultSerialize)(
-              multisigAccount
+              multisigAccount,
             ),
             name: name.trim() ? name.trim() : undefined,
-          });
+          })
         } else {
           multisigProvider?.addMultisig({
             signatories: details.addresses,
             threshold: details.threshold,
             parentSigner: serializeFn(selectedAccount),
             name: name.trim() ? name.trim() : undefined,
-          });
+          })
         }
 
-        popContent();
+        popContent()
       }}
     >
       <div className="space-y-2">
@@ -140,16 +140,16 @@ export const AddIndexedMultisig: FC<{
         </Button>
       </div>
     </form>
-  );
-};
+  )
+}
 
 const IndexedMultisigInfo: FC<{
-  value: AccountWithMultisig | null;
-  onChange: (value: AccountWithMultisig | null) => void;
-  address: AccountAddress;
-  getMultisigDetails: GetMultisigDetails;
+  value: AccountWithMultisig | null
+  onChange: (value: AccountWithMultisig | null) => void
+  address: AccountAddress
+  getMultisigDetails: GetMultisigDetails
 }> = ({ value, onChange, address, getMultisigDetails }) => {
-  const proxyProvider = usePlugin<ProxyProvider>(proxyProviderId);
+  const proxyProvider = usePlugin<ProxyProvider>(proxyProviderId)
   const multisigDetails = useAsync(() => {
     const directMultisig$ = from(getMultisigDetails(address)).pipe(
       filter((v) => !!v),
@@ -157,13 +157,13 @@ const IndexedMultisigInfo: FC<{
         proxy: undefined,
         address,
         result,
-      }))
-    );
+      })),
+    )
     const proxyMultisig$ = proxyProvider
       ? from(proxyProvider.getDelegates(address)).pipe(
           switchMap((res) => {
-            if (!res) return EMPTY;
-            const addresses = [...new Set(res.map((v) => v.delegate))];
+            if (!res) return EMPTY
+            const addresses = [...new Set(res.map((v) => v.delegate))]
             return merge(
               ...addresses.map((addr) =>
                 from(getMultisigDetails(addr)).pipe(
@@ -172,20 +172,20 @@ const IndexedMultisigInfo: FC<{
                     proxy: address,
                     address: addr,
                     result,
-                  }))
-                )
-              )
-            );
-          })
+                  })),
+                ),
+              ),
+            )
+          }),
         )
-      : EMPTY;
+      : EMPTY
 
     // This covers the most common scenario of a pure proxy, but TODO might fail for other scenarios: Multiple delegators, or a multisig that's also a proxy.
     return firstValueFrom(merge(directMultisig$, proxyMultisig$), {
       defaultValue: null,
-    });
-  }, [address]);
-  const availableAccounts = useAvailableAccounts();
+    })
+  }, [address])
+  const availableAccounts = useAvailableAccounts()
   const availableSigners = useMemo(
     () =>
       Object.entries(availableAccounts)
@@ -194,10 +194,10 @@ const IndexedMultisigInfo: FC<{
           accounts: accounts.filter((acc) => !!acc.signer),
         }))
         .filter(({ accounts }) => accounts.length > 0),
-    [availableAccounts]
-  );
+    [availableAccounts],
+  )
 
-  if (multisigDetails.type === "loading") return null;
+  if (multisigDetails.type === "loading") return null
   if (multisigDetails.value == null)
     return (
       <Alert variant="destructive">
@@ -206,9 +206,9 @@ const IndexedMultisigInfo: FC<{
           Multisig details not found. Try manual input.
         </AlertDescription>
       </Alert>
-    );
+    )
 
-  const details = multisigDetails.value;
+  const details = multisigDetails.value
   const notice = details.proxy ? (
     <Alert>
       <TriangleAlert />
@@ -224,16 +224,16 @@ const IndexedMultisigInfo: FC<{
         </p>
       </AlertDescription>
     </Alert>
-  ) : null;
+  ) : null
 
   const selectableSigners = availableSigners
     .map(({ name, accounts }) => ({
       name,
       accounts: accounts.filter((acc) =>
-        details.result.addresses.some((addr) => addrEq(acc.address, addr))
+        details.result.addresses.some((addr) => addrEq(acc.address, addr)),
       ),
     }))
-    .filter(({ accounts }) => accounts.length > 0);
+    .filter(({ accounts }) => accounts.length > 0)
 
   return (
     <div className="space-y-2">
@@ -264,7 +264,7 @@ const IndexedMultisigInfo: FC<{
                       ...value,
                       multisig: details,
                     }
-                  : null
+                  : null,
               )
             }
             groups={selectableSigners}
@@ -292,43 +292,43 @@ const IndexedMultisigInfo: FC<{
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
 const useAsync = <T,>(fn: () => Promise<T>, deps: unknown[]) => {
   const [value, setValue] = useState<
     | {
-        type: "loading" | "error";
-        value?: never;
+        type: "loading" | "error"
+        value?: never
       }
     | {
-        type: "result";
-        value: T;
+        type: "result"
+        value: T
       }
   >({
     type: "loading",
-  });
+  })
 
   useEffect(() => {
-    let cancelled = false;
+    let cancelled = false
 
-    setValue({ type: "loading" });
+    setValue({ type: "loading" })
     fn().then(
       (value) => {
-        if (cancelled) return;
-        setValue({ type: "result", value });
+        if (cancelled) return
+        setValue({ type: "result", value })
       },
       (ex) => {
-        if (cancelled) return;
-        console.error(ex);
-        setValue({ type: "error" });
-      }
-    );
+        if (cancelled) return
+        console.error(ex)
+        setValue({ type: "error" })
+      },
+    )
 
     return () => {
-      cancelled = true;
-    };
-  }, deps);
+      cancelled = true
+    }
+  }, deps)
 
-  return value;
-};
+  return value
+}

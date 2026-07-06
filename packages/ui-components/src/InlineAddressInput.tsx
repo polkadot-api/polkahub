@@ -1,8 +1,5 @@
-import {
-  EthIdenticon,
-  PolkadotIdenticon,
-} from "@polkadot-api/react-components";
-import { AccountId } from "@polkadot-api/substrate-bindings";
+import { EthIdenticon, PolkadotIdenticon } from "@polkadot-api/react-components"
+import { AccountId } from "@polkadot-api/substrate-bindings"
 import {
   type MouseEvent,
   type ReactNode,
@@ -10,9 +7,9 @@ import {
   useEffect,
   useRef,
   useState,
-} from "react";
-import { inputClassNames } from "./Input";
-import { cn } from "./utils";
+} from "react"
+import { inputClassNames } from "./Input"
+import { cn } from "./utils"
 
 export function InlineAddressInput({
   value,
@@ -21,38 +18,38 @@ export function InlineAddressInput({
   className,
   name = "address",
 }: {
-  value?: string | null;
-  onChange?: (value: string | null) => void;
-  renderAddress?: (value: string) => ReactNode;
-  className?: string;
-  name?: string;
+  value?: string | null
+  onChange?: (value: string | null) => void
+  renderAddress?: (value: string) => ReactNode
+  className?: string
+  name?: string
 }) {
-  const ref = useRef<HTMLInputElement | null>(null);
-  const [query, setQuery] = useState(value ?? "");
-  const queryIsValidAddr = isValidAddr(query);
+  const ref = useRef<HTMLInputElement | null>(null)
+  const [query, setQuery] = useState(value ?? "")
+  const queryIsValidAddr = isValidAddr(query)
 
   useEffect(() => {
     if (!ref.current || ref.current !== document.activeElement) {
-      setQuery(value ?? "");
+      setQuery(value ?? "")
     }
-  }, [value]);
+  }, [value])
 
   const onValueChange = (newValue: string) => {
-    setQuery(newValue);
+    setQuery(newValue)
     if (isValidAddr(newValue)) {
-      onChange?.(newValue);
+      onChange?.(newValue)
     } else if (value != null) {
-      onChange?.(null);
+      onChange?.(null)
     }
-  };
+  }
 
   const focusInput = (evt: MouseEvent | TouchEvent) => {
-    evt.preventDefault();
-    ref.current?.focus();
-  };
+    evt.preventDefault()
+    ref.current?.focus()
+  }
   const stopPropagation = (evt: MouseEvent | TouchEvent) => {
-    evt.stopPropagation();
-  };
+    evt.stopPropagation()
+  }
 
   return (
     <div
@@ -60,7 +57,7 @@ export function InlineAddressInput({
         inputClassNames,
         "focus-within:border-ring focus-within:ring-ring/50 focus-within:ring-[3px]",
         "inline-flex px-1 cursor-text overflow-hidden",
-        className
+        className,
       )}
       onMouseDown={focusInput}
       onTouchStart={focusInput}
@@ -87,7 +84,7 @@ export function InlineAddressInput({
           name={name}
           className={cn(
             "outline-none col-start-1 row-start-1 peer opacity-0 focus-visible:opacity-100 w-full p-1",
-            { "opacity-100": !value }
+            { "opacity-100": !value },
           )}
           onChange={(evt) => onValueChange(evt.target.value)}
           placeholder="Address"
@@ -99,16 +96,16 @@ export function InlineAddressInput({
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-const [ss58ToBin] = AccountId();
+const [ss58ToBin] = AccountId()
 const isValidAddr = (value: string) => {
-  if (value.startsWith("0x")) return value.length === 42;
+  if (value.startsWith("0x")) return value.length === 42
   try {
-    ss58ToBin(value);
-    return true;
+    ss58ToBin(value)
+    return true
   } catch (ex) {
-    return false;
+    return false
   }
-};
+}

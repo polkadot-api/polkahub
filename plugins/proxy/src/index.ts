@@ -1,2 +1,2 @@
-export * from "./provider";
-export * from "./ManageProxy";
+export * from "./provider"
+export * from "./ManageProxy"

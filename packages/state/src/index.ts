@@ -1,1 +1,1 @@
-export * from "./polkahub";
+export * from "./polkahub"

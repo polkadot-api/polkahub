@@ -3,22 +3,22 @@ import {
   AddressIdentity,
   ModalContext,
   usePlugin,
-} from "@polkahub/context";
-import { useSetSelectedAccount } from "@polkahub/select-account";
-import { Button, SourceButton } from "@polkahub/ui-components";
-import { useStateObservable } from "@react-rxjs/core";
-import { Camera, Trash2 } from "lucide-react";
-import { getSs58AddressInfo } from "polkadot-api";
-import { useCallback, useContext, type FC } from "react";
-import vaultImg from "./assets/vault.webp";
-import { PolkadotVaultProvider, polkadotVaultProviderId } from "./provider";
-import { QrCamera } from "./QrCamera";
+} from "@polkahub/context"
+import { useSetSelectedAccount } from "@polkahub/select-account"
+import { Button, SourceButton } from "@polkahub/ui-components"
+import { useStateObservable } from "@react-rxjs/core"
+import { Camera, Trash2 } from "lucide-react"
+import { getSs58AddressInfo } from "polkadot-api"
+import { useCallback, useContext, type FC } from "react"
+import vaultImg from "./assets/vault.webp"
+import { PolkadotVaultProvider, polkadotVaultProviderId } from "./provider"
+import { QrCamera } from "./QrCamera"
 
 export const ManageVault: FC = () => {
-  const { pushContent } = useContext(ModalContext)!;
+  const { pushContent } = useContext(ModalContext)!
   const polkadotVaultProvider = usePlugin<PolkadotVaultProvider>(
-    polkadotVaultProviderId
-  );
+    polkadotVaultProviderId,
+  )
 
   return (
     <SourceButton
@@ -30,16 +30,16 @@ export const ManageVault: FC = () => {
     >
       <img src={vaultImg} alt="Vault" className="h-10 rounded" />
     </SourceButton>
-  );
-};
+  )
+}
 
 const VaultAccounts = () => {
-  const { pushContent, popContent } = useContext(ModalContext)!;
+  const { pushContent, popContent } = useContext(ModalContext)!
   const polkadotVaultProvider = usePlugin<PolkadotVaultProvider>(
-    polkadotVaultProviderId
-  )!;
-  const vaultAccounts = useStateObservable(polkadotVaultProvider.accounts$);
-  const selectAccount = useSetSelectedAccount();
+    polkadotVaultProviderId,
+  )!
+  const vaultAccounts = useStateObservable(polkadotVaultProvider.accounts$)
+  const selectAccount = useSetSelectedAccount()
 
   return (
     <div className="space-y-4">
@@ -67,7 +67,7 @@ const VaultAccounts = () => {
                   <Button
                     variant="secondary"
                     onClick={() => {
-                      selectAccount(acc);
+                      selectAccount(acc)
                     }}
                   >
                     Select
@@ -97,13 +97,13 @@ const VaultAccounts = () => {
         </Button>
       </div>
     </div>
-  );
-};
+  )
+}
 
 const ScanAccount: FC<{ onScanned: () => void }> = ({ onScanned }) => {
   const polkadotVaultProvider = usePlugin<PolkadotVaultProvider>(
-    polkadotVaultProviderId
-  )!;
+    polkadotVaultProviderId,
+  )!
 
   return (
     <div className="space-y-2">
@@ -112,29 +112,29 @@ const ScanAccount: FC<{ onScanned: () => void }> = ({ onScanned }) => {
         onRead={useCallback(
           (res) => {
             // Expected format: `substrate:${Addr}:${genesis}`
-            const split = res.split(":");
+            const split = res.split(":")
             if (
               split[0] !== "substrate" ||
               split.length != 3 ||
               !split[2].startsWith("0x")
             ) {
-              throw new Error("Invalid QR");
+              throw new Error("Invalid QR")
             }
-            const [, address, genesis] = split;
-            const account = getSs58AddressInfo(address);
+            const [, address, genesis] = split
+            const account = getSs58AddressInfo(address)
             if (!account.isValid) {
-              throw new Error("Invalid QR");
+              throw new Error("Invalid QR")
             }
 
             polkadotVaultProvider.addAccount({
               address,
               genesis,
-            });
-            onScanned();
+            })
+            onScanned()
           },
-          [onScanned, polkadotVaultProvider]
+          [onScanned, polkadotVaultProvider],
         )}
       />
     </div>
-  );
-};
+  )
+}

@@ -54,12 +54,12 @@ import {
   createReadOnlyProvider,
   createSelectedAccountPlugin,
   createPolkaHub,
-} from "polkahub";
+} from "polkahub"
 
-const selectedAccountPlugin = createSelectedAccountPlugin();
-const pjsWalletProvider = createPjsWalletProvider();
-const polkadotVaultProvider = createPolkadotVaultProvider();
-const readOnlyProvider = createReadOnlyProvider();
+const selectedAccountPlugin = createSelectedAccountPlugin()
+const pjsWalletProvider = createPjsWalletProvider()
+const polkadotVaultProvider = createPolkadotVaultProvider()
+const readOnlyProvider = createReadOnlyProvider()
 
 export const polkaHub = createPolkaHub(
   [
@@ -73,15 +73,15 @@ export const polkaHub = createPolkaHub(
     getBalance: async (address) => {
       // Some plugins show the balance of an account for reference.
       // Use your polkadot client, or ignore / return null to disable.
-      return null;
+      return null
     },
     getIdentity: async (address) => {
       // Some plugins show the identity of an account for reference.
       // Use your polkadot client, or ignore / return null to disable.
-      return null;
+      return null
     },
-  }
-);
+  },
+)
 ```
 
 ### 3. Wrap your app
@@ -89,19 +89,19 @@ export const polkaHub = createPolkaHub(
 Provide the polkaHub instance through the `PolkaHubProvider`.
 
 ```tsx
-import { createRoot } from "react-dom/client";
-import { PolkaHubProvider } from "polkahub";
-import { StrictMode } from "react";
-import App from "./App.tsx";
-import { polkaHub } from "./account-providers";
+import { createRoot } from "react-dom/client"
+import { PolkaHubProvider } from "polkahub"
+import { StrictMode } from "react"
+import App from "./App.tsx"
+import { polkaHub } from "./account-providers"
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <PolkaHubProvider polkaHub={polkaHub}>
       <App />
     </PolkaHubProvider>
-  </StrictMode>
-);
+  </StrictMode>,
+)
 ```
 
 ### 4. Create the modal
@@ -115,7 +115,7 @@ import {
   ManagePjsWallets,
   ManageVault,
   ManageReadOnly,
-} from "polkahub";
+} from "polkahub"
 
 export const ConnectButton = () => (
   <PolkaHubModal>
@@ -129,7 +129,7 @@ export const ConnectButton = () => (
       </div>
     </div>
   </PolkaHubModal>
-);
+)
 ```
 
 ### 5. Consume accounts
@@ -137,14 +137,14 @@ export const ConnectButton = () => (
 Use the provided hooks anywhere under the provider to access the available accounts.
 
 ```tsx
-import { useSelectedAccount, useAvailableAccounts } from "polkahub";
+import { useSelectedAccount, useAvailableAccounts } from "polkahub"
 
 const MyComponent = () => {
-  const availableAccounts = useAvailableAccounts(); // Record<groupName, Account[]>
-  const [account, setAccount] = useSelectedAccount();
+  const availableAccounts = useAvailableAccounts() // Record<groupName, Account[]>
+  const [account, setAccount] = useSelectedAccount()
 
-  return <div>…</div>;
-};
+  return <div>…</div>
+}
 ```
 
 ## Build your own React UI
@@ -152,13 +152,13 @@ const MyComponent = () => {
 PolkaHub's modular architecture makes it possible to build your own UI reusing the same plugin setup. Reach into the state with hooks like `usePlugin`.
 
 ```tsx
-import { usePlugin } from "polkahub";
+import { usePlugin } from "polkahub"
 
 const MyCustomPjsWalletManager = () => {
-  const plugin = usePlugin<PolkadotVaultProvider>(polkadotVaultProviderId)!;
+  const plugin = usePlugin<PolkadotVaultProvider>(polkadotVaultProviderId)!
 
-  return <div>…</div>;
-};
+  return <div>…</div>
+}
 ```
 
 The hook returns the plugin instance, giving you direct access to its observables and methods. Combine it with your own UI controls to tailor the experience.
@@ -169,28 +169,28 @@ Every plugin implements a minimal contract and can expose additional methods or 
 
 ```ts
 interface Account {
-  provider: string;
-  address: SS58String;
-  signer?: PolkadotSigner;
-  name?: string;
+  provider: string
+  address: SS58String
+  signer?: PolkadotSigner
+  name?: string
 }
 
 interface SerializableAccount<T = unknown> {
-  provider: string;
-  address: SS58String;
-  name?: string;
-  extra?: T;
+  provider: string
+  address: SS58String
+  name?: string
+  extra?: T
 }
 
 interface Plugin<A extends Account = Account> {
-  id: string;
-  serialize?: (account: A) => SerializableAccount;
-  deserialize: (value: SerializableAccount) => Promise<A | null> | A | null;
-  eq?: (a: A, b: A) => boolean;
-  accounts$: Observable<A[]>;
-  accountGroups$?: Observable<Record<string, A[]>>;
-  receivePlugins?: (plugins: Plugin[]) => void;
-  subscription$?: Observable<unknown>;
+  id: string
+  serialize?: (account: A) => SerializableAccount
+  deserialize: (value: SerializableAccount) => Promise<A | null> | A | null
+  eq?: (a: A, b: A) => boolean
+  accounts$: Observable<A[]>
+  accountGroups$?: Observable<Record<string, A[]>>
+  receivePlugins?: (plugins: Plugin[]) => void
+  subscription$?: Observable<unknown>
 }
 ```
 

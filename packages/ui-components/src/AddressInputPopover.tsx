@@ -1,18 +1,18 @@
-import { ChevronsUpDown, X } from "lucide-react";
-import { ReactNode, useState } from "react";
-import { Button } from "./Button";
-import { Popover, PopoverContent, PopoverTrigger } from "./Popover";
-import { cn } from "./utils";
+import { ChevronsUpDown, X } from "lucide-react"
+import { ReactNode, useState } from "react"
+import { Button } from "./Button"
+import { Popover, PopoverContent, PopoverTrigger } from "./Popover"
+import { cn } from "./utils"
 
 export type AddressInputPopoverProps = {
-  hasValue: boolean;
-  onClear?: () => void;
-  className?: string;
-  triggerClassName?: string;
-  onOpenChange?: (open: boolean) => void;
-  renderValue: () => ReactNode;
-  children: (close: () => void) => ReactNode;
-};
+  hasValue: boolean
+  onClear?: () => void
+  className?: string
+  triggerClassName?: string
+  onOpenChange?: (open: boolean) => void
+  renderValue: () => ReactNode
+  children: (close: () => void) => ReactNode
+}
 
 export function AddressInputPopover({
   className,
@@ -23,17 +23,17 @@ export function AddressInputPopover({
   onOpenChange,
   children,
 }: AddressInputPopoverProps) {
-  const [open, _setOpen] = useState(false);
+  const [open, _setOpen] = useState(false)
   const setOpen = (value: boolean) => {
-    _setOpen(value);
-    onOpenChange?.(value);
-  };
+    _setOpen(value)
+    onOpenChange?.(value)
+  }
 
   const onTriggerKeyDown = (evt: React.KeyboardEvent) => {
     if (evt.key.length === 1) {
-      setOpen(true);
+      setOpen(true)
     }
-  };
+  }
 
   // modal=true is needed because otherwise the command is not selectable nor scrollable
   // see https://github.com/shadcn-ui/ui/issues/4799, https://github.com/shadcn-ui/ui/issues/6488, https://github.com/shadcn-ui/ui/issues/7308, https://github.com/shadcn-ui/ui/issues/7385, etc.
@@ -43,7 +43,7 @@ export function AddressInputPopover({
       <div
         className={cn(
           "flex items-center gap-2 overflow-hidden w-full max-w-96 relative group",
-          className
+          className,
         )}
       >
         <PopoverTrigger asChild onKeyDown={onTriggerKeyDown}>
@@ -53,7 +53,7 @@ export function AddressInputPopover({
             aria-expanded={open}
             className={cn(
               "grow shrink-0 p-2 has-[>svg]:p-2 h-12 max-w-full flex justify-between overflow-hidden border border-border bg-background",
-              triggerClassName
+              triggerClassName,
             )}
           >
             {renderValue()}
@@ -73,5 +73,5 @@ export function AddressInputPopover({
         {children(() => setOpen(false))}
       </PopoverContent>
     </Popover>
-  );
+  )
 }

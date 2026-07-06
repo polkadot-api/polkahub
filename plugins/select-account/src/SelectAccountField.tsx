@@ -1,10 +1,10 @@
-import { AddressIdentity, useAvailableAccounts } from "@polkahub/context";
+import { AddressIdentity, useAvailableAccounts } from "@polkahub/context"
 import {
   AccountPicker as AccountPickerComponent,
   cn,
-} from "@polkahub/ui-components";
-import { type FC } from "react";
-import { useSelectedAccount } from "./provider";
+} from "@polkahub/ui-components"
+import { type FC } from "react"
+import { useSelectedAccount } from "./provider"
 
 const groupLabels: Record<string, string> = {
   ledger: "Ledger",
@@ -13,42 +13,42 @@ const groupLabels: Record<string, string> = {
   readonly: "Read Only",
   "polkadot-vault": "Vault",
   walletconnect: "Wallet Connect",
-};
+}
 
 export const SelectAccountField: FC<{
-  className?: string;
-  disableClear?: boolean;
+  className?: string
+  disableClear?: boolean
 }> = (props) => {
-  const availableAccounts = useAvailableAccounts();
-  const [account] = useSelectedAccount();
+  const availableAccounts = useAvailableAccounts()
+  const [account] = useSelectedAccount()
 
   if (
     !account &&
     !Object.values(availableAccounts).some((group) => group.length > 0)
   )
-    return null;
+    return null
 
   return (
     <div>
       <h3 className="font-medium">Select Account</h3>
       <SelectAccount {...props} />
     </div>
-  );
-};
+  )
+}
 
 export const SelectAccount: FC<{
-  className?: string;
-  disableClear?: boolean;
+  className?: string
+  disableClear?: boolean
 }> = ({ className, disableClear }) => {
-  const availableAccounts = useAvailableAccounts();
-  const [account, setAccount] = useSelectedAccount();
+  const availableAccounts = useAvailableAccounts()
+  const [account, setAccount] = useSelectedAccount()
 
   const groups = Object.entries(availableAccounts)
     .filter(([, accounts]) => accounts.length > 0)
     .map(([key, accounts]) => ({
       name: groupLabels[key] ?? key,
       accounts,
-    }));
+    }))
 
   return (
     <AccountPickerComponent
@@ -65,5 +65,5 @@ export const SelectAccount: FC<{
         />
       )}
     />
-  );
-};
+  )
+}

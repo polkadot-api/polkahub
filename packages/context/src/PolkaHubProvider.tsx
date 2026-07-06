@@ -1,14 +1,14 @@
-import type { PolkaHub } from "@polkahub/state";
-import { useStateObservable } from "@react-rxjs/core";
-import { FC, PropsWithChildren, useMemo } from "react";
-import { AvailableAccountsContext } from "./availableAccountsContext";
-import { PolkaHubContext } from "./polkahubContext";
+import type { PolkaHub } from "@polkahub/state"
+import { useStateObservable } from "@react-rxjs/core"
+import { FC, PropsWithChildren, useMemo } from "react"
+import { AvailableAccountsContext } from "./availableAccountsContext"
+import { PolkaHubContext } from "./polkahubContext"
 
 type ProviderProps = PropsWithChildren<{
-  polkaHub: PolkaHub;
-}>;
+  polkaHub: PolkaHub
+}>
 export const PolkaHubProvider: FC<ProviderProps> = ({ children, polkaHub }) => {
-  const availableAccounts = useStateObservable(polkaHub.availableAccounts$);
+  const availableAccounts = useStateObservable(polkaHub.availableAccounts$)
 
   return (
     <PolkaHubContext
@@ -16,7 +16,7 @@ export const PolkaHubProvider: FC<ProviderProps> = ({ children, polkaHub }) => {
         () => ({
           polkaHub,
         }),
-        [polkaHub]
+        [polkaHub],
       )}
     >
       <AvailableAccountsContext
@@ -25,5 +25,5 @@ export const PolkaHubProvider: FC<ProviderProps> = ({ children, polkaHub }) => {
         {children}
       </AvailableAccountsContext>
     </PolkaHubContext>
-  );
-};
+  )
+}

@@ -1,14 +1,14 @@
-import { FC, MouseEvent, PropsWithChildren } from "react";
-import { Button } from "./Button";
-import { cn } from "./utils";
+import { FC, MouseEvent, PropsWithChildren } from "react"
+import { Button } from "./Button"
+import { cn } from "./utils"
 
 export const SourceButton: FC<
   PropsWithChildren<{
-    label: string;
-    isSelected?: boolean;
-    className?: string;
-    onClick?: (evt: MouseEvent) => void;
-    disabled?: boolean;
+    label: string
+    isSelected?: boolean
+    className?: string
+    onClick?: (evt: MouseEvent) => void
+    disabled?: boolean
   }>
 > = ({ label, isSelected, onClick, className, children, disabled }) => (
   <Button
@@ -22,4 +22,4 @@ export const SourceButton: FC<
       <span className={cn("font-bold", className)}>{label}</span>
     </div>
   </Button>
-);
+)

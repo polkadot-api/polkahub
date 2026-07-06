@@ -1,4 +1,4 @@
-import { externalizePlugin, usePlugin } from "@polkahub/context";
+import { externalizePlugin, usePlugin } from "@polkahub/context"
 import {
   Account,
   addrEq,
@@ -8,9 +8,9 @@ import {
   Plugin,
   SerializableAccount,
   ss58Reformat,
-} from "@polkahub/plugin";
-import { state, StateObservable, useStateObservable } from "@react-rxjs/core";
-import { createSignal } from "@react-rxjs/utils";
+} from "@polkahub/plugin"
+import { state, StateObservable, useStateObservable } from "@react-rxjs/core"
+import { createSignal } from "@react-rxjs/utils"
 import {
   BehaviorSubject,
   catchError,
@@ -22,83 +22,81 @@ import {
   filter,
   map,
   NEVER,
+  Observable,
   of,
   Subject,
+  Subscription,
   switchMap,
-  take,
   takeUntil,
-  timeout,
-} from "rxjs";
+} from "rxjs"
 
-export const selectedAccountPluginId = "selected-account";
+export const selectedAccountPluginId = "selected-account"
 export interface SelectedAccountPlugin extends Plugin {
-  id: "selected-account";
-  selectedAccount$: StateObservable<Account | null>;
-  setAccount: (value: Account | null) => void;
+  id: "selected-account"
+  selectedAccount$: StateObservable<Account | null>
+  setAccount: (value: Account | null) => void
 }
 
 export const createSelectedAccountPlugin = (
   opts?: Partial<{
-    persist: PersistenceProvider;
-  }>
+    persist: PersistenceProvider
+  }>,
 ): SelectedAccountPlugin => {
   const { persist } = {
     persist: localStorageProvider(selectedAccountPluginId),
     ...opts,
-  };
+  }
 
-  const [accountChange$, setAccount] = createSignal<Account | null>();
-  const plugins$ = new BehaviorSubject<Plugin[]>([]);
+  const [accountChange$, setAccount] = createSignal<Account | null>()
+  const plugins$ = new BehaviorSubject<Plugin[]>([])
 
-  const initialValue$ = defer(() => {
-    const loaded = persist.load() ?? "null";
-    const persisted: SerializableAccount | null = JSON.parse(loaded);
-    if (!persisted) return of(null);
+  const persistedValue$ = defer(() => {
+    const loaded = persist.load() ?? "null"
+    const persisted: SerializableAccount | null = JSON.parse(loaded)
+    if (!persisted) return of(null)
 
     return plugins$.pipe(
       distinctUntilChanged(),
+      filter((v) => v.length > 0),
       map((plugins) =>
-        plugins.find((plugin) => plugin.id === persisted.provider)
+        plugins.find((plugin) => plugin.id === persisted.provider),
       ),
-      filter((r) => r != null),
-      switchMap((plugin) => Promise.resolve(plugin.deserialize(persisted)))
-    );
+      switchMap((plugin) =>
+        Promise.resolve(plugin?.deserialize(persisted) ?? null),
+      ),
+    )
   }).pipe(
-    timeout({
-      first: 3000,
-    }),
     catchError((ex) => {
-      console.error(ex);
-      return [null];
+      console.error(ex)
+      return []
     }),
-    take(1)
-  );
+  )
 
-  const ss58Format$ = new Subject<number>();
+  const ss58Format$ = new Subject<number>()
   const selectedAccount$ = state(
-    concat(
-      initialValue$,
+    mergeUntilNext(
+      persistedValue$,
       accountChange$.pipe(
         switchMap((account) => {
           if (!account) {
-            persist.save(null);
-            return [null];
+            persist.save(null)
+            return [null]
           }
 
           return plugins$.pipe(
             distinctUntilChanged(),
             map((plugins) => plugins.find((p) => p.id === account.provider)),
             switchMap((plugin) => {
-              if (!plugin) return [null];
+              if (!plugin) return [null]
 
-              const serializeFn = plugin.serialize ?? defaultSerialize;
-              persist.save(JSON.stringify(serializeFn(account)));
+              const serializeFn = plugin.serialize ?? defaultSerialize
+              persist.save(JSON.stringify(serializeFn(account)))
 
-              return deselectWhenRemoved$(account, plugin);
-            })
-          );
-        })
-      )
+              return deselectWhenRemoved$(account, plugin)
+            }),
+          )
+        }),
+      ),
     ).pipe(
       combineLatestWith(ss58Format$),
       map(([account, ss58Format]) =>
@@ -107,63 +105,95 @@ export const createSelectedAccountPlugin = (
               ...account,
               address: ss58Reformat(account.address, ss58Format),
             }
-          : null
-      )
-    )
-  );
+          : null,
+      ),
+    ),
+  )
 
   return {
     id: selectedAccountPluginId,
     deserialize: () => null,
     accounts$: of([]),
     receiveContext(context) {
-      plugins$.next(context.plugins);
-      ss58Format$.next(context.ss58Format);
+      plugins$.next(context.plugins)
+      ss58Format$.next(context.ss58Format)
     },
     subscription$: selectedAccount$,
     selectedAccount$,
     setAccount,
-  };
-};
+  }
+}
 
 const deselectWhenRemoved$ = (value: Account, plugin: Plugin) =>
   concat([value], NEVER).pipe(
     takeUntil(
       plugin.accounts$.pipe(
         filter((accounts) => {
-          const eqFn = plugin.eq ?? ((a, b) => addrEq(a.address, b.address));
-          return accounts.every((acc) => !eqFn(acc, value));
-        })
-      )
+          const eqFn = plugin.eq ?? ((a, b) => addrEq(a.address, b.address))
+          return accounts.every((acc) => !eqFn(acc, value))
+        }),
+      ),
     ),
-    endWith(null)
-  );
+    endWith(null),
+  )
 
 const [selectedAccount$, useSelectedAccountPlugin] =
-  externalizePlugin<SelectedAccountPlugin>(selectedAccountPluginId);
+  externalizePlugin<SelectedAccountPlugin>(selectedAccountPluginId)
 
 const defaultedSelectedAccount$ = state(
   (id: string) =>
     selectedAccount$(id).pipe(switchMap((plugin) => plugin.selectedAccount$)),
-  null
-);
+  null,
+)
 
 export const useSelectedAccount = (): [
   Account | null,
-  (value: Account | null) => void
+  (value: Account | null) => void,
 ] => {
-  const [id, plugin] = useSelectedAccountPlugin();
-  const selectedAccount = useStateObservable(defaultedSelectedAccount$(id));
+  const [id, plugin] = useSelectedAccountPlugin()
+  const selectedAccount = useStateObservable(defaultedSelectedAccount$(id))
 
   if (!plugin) {
-    console.warn("Plugin SelectedAccount not found");
-    return [null, () => {}];
+    console.warn("Plugin SelectedAccount not found")
+    return [null, () => {}]
   }
 
-  return [selectedAccount, plugin.setAccount];
-};
+  return [selectedAccount, plugin.setAccount]
+}
 
 export const useSetSelectedAccount = () => {
-  const plugin = usePlugin<SelectedAccountPlugin>(selectedAccountPluginId);
-  return plugin?.setAccount ?? null;
-};
+  const plugin = usePlugin<SelectedAccountPlugin>(selectedAccountPluginId)
+  return plugin?.setAccount ?? null
+}
+
+const mergeUntilNext = <T>(...observables: Array<Observable<T>>) =>
+  new Observable<T>((observer) => {
+    const subscriptions = new Array<Subscription>()
+
+    for (const source of observables) {
+      const sub = new Subscription()
+      subscriptions.push(sub)
+      sub.add(
+        source.subscribe({
+          next: (v) => {
+            const index = subscriptions.indexOf(sub)
+            const deleted = subscriptions.splice(0, index)
+            deleted.forEach((s) => s.unsubscribe())
+            observer.next(v)
+          },
+          error: (e) => observer.error(e),
+          complete: () => {
+            const index = subscriptions.indexOf(sub)
+            subscriptions.splice(index, 1)
+            sub.unsubscribe()
+
+            if (subscriptions.length === 0) observer.complete()
+          },
+        }),
+      )
+    }
+
+    return () => {
+      subscriptions.forEach((sub) => sub.unsubscribe())
+    }
+  })

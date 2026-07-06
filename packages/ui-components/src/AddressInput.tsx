@@ -1,14 +1,8 @@
-import { AccountDisplay, AccountInfo } from "@polkadot-api/react-components";
-import { AccountId } from "@polkadot-api/substrate-bindings";
-import { toHex } from "@polkadot-api/utils";
-import {
-  PropsWithChildren,
-  ReactNode,
-  useMemo,
-  useState,
-  type FC,
-} from "react";
-import { AddressInputPopover } from "./AddressInputPopover";
+import { AccountDisplay, AccountInfo } from "@polkadot-api/react-components"
+import { AccountId } from "@polkadot-api/substrate-bindings"
+import { toHex } from "@polkadot-api/utils"
+import { PropsWithChildren, ReactNode, useMemo, useState, type FC } from "react"
+import { AddressInputPopover } from "./AddressInputPopover"
 import {
   Command,
   CommandEmpty,
@@ -16,7 +10,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "./Command";
+} from "./Command"
 
 export function AddressInput<T extends AccountInfo = never>({
   value,
@@ -33,46 +27,46 @@ export function AddressInput<T extends AccountInfo = never>({
   format,
   ...props
 }: {
-  value?: string | null;
-  onChange?: (value: string | null) => void;
-  className?: string;
-  disableClear?: boolean;
-  triggerClassName?: string;
-  hinted?: Array<T | string>;
-  renderAddress?: (value: T | string) => ReactNode;
-  format?: "ss58" | "eth";
+  value?: string | null
+  onChange?: (value: string | null) => void
+  className?: string
+  disableClear?: boolean
+  triggerClassName?: string
+  hinted?: Array<T | string>
+  renderAddress?: (value: T | string) => ReactNode
+  format?: "ss58" | "eth"
 }) {
-  const [query, setQuery] = useState("");
-  const queryIsValidAddr = isValidAddr(query, format);
+  const [query, setQuery] = useState("")
+  const queryIsValidAddr = isValidAddr(query, format)
 
   const cleanHinted = useMemo(() => {
     const mapped = hinted.map((v) =>
-      typeof v === "string" ? { address: v } : v
-    );
+      typeof v === "string" ? { address: v } : v,
+    )
     // we'll key by address, so we need unique hints.
-    const byAddress = new Map(mapped.map((v) => [v.address, v]));
-    return [...byAddress.values()];
-  }, [hinted]);
+    const byAddress = new Map(mapped.map((v) => [v.address, v]))
+    return [...byAddress.values()]
+  }, [hinted])
 
   const cleanHintedValue = value
     ? cleanHinted.find((acc) => acc.address === value)
-    : null;
+    : null
   const hintedValue =
     cleanHintedValue &&
     ((Object.keys(cleanHintedValue).length === 1
       ? cleanHintedValue.address
-      : cleanHintedValue) as string | T | null);
-  const valueIsNew = hintedValue == null;
+      : cleanHintedValue) as string | T | null)
+  const valueIsNew = hintedValue == null
 
   const queryMatchesHint =
     queryIsValidAddr &&
     ((value && addrEq(query, value)) ||
-      cleanHinted.some((acc) => acc.address === query));
+      cleanHinted.some((acc) => acc.address === query))
 
   if (value != null) {
     cleanHinted.sort((a, b) =>
-      addrEq(a.address, value) ? -1 : addrEq(b.address, value) ? 1 : 0
-    );
+      addrEq(a.address, value) ? -1 : addrEq(b.address, value) ? 1 : 0,
+    )
   }
 
   return (
@@ -119,9 +113,9 @@ export function AddressInput<T extends AccountInfo = never>({
                   }
                   onSelect={() => {
                     onChange?.(
-                      typeof account === "string" ? account : account.address
-                    );
-                    close();
+                      typeof account === "string" ? account : account.address,
+                    )
+                    close()
                   }}
                 >
                   {renderAddress(account)}
@@ -131,8 +125,8 @@ export function AddressInput<T extends AccountInfo = never>({
                 <AccountOption
                   account={{ address: query }}
                   onSelect={() => {
-                    onChange?.(query);
-                    close();
+                    onChange?.(query)
+                    close()
                   }}
                 >
                   {renderAddress(query)}
@@ -143,13 +137,13 @@ export function AddressInput<T extends AccountInfo = never>({
         </Command>
       )}
     </AddressInputPopover>
-  );
+  )
 }
 
 const AccountOption: FC<
   PropsWithChildren<{
-    account: AccountInfo;
-    onSelect: () => void;
+    account: AccountInfo
+    onSelect: () => void
   }>
 > = ({ account, onSelect, children }) => (
   <CommandItem
@@ -162,41 +156,41 @@ const AccountOption: FC<
   >
     {children}
   </CommandItem>
-);
+)
 
-const [ss58ToBin] = AccountId();
+const [ss58ToBin] = AccountId()
 export const addrEq = (a: string, b: string) => {
   if (!a.startsWith("0x")) {
     try {
-      a = toHex(ss58ToBin(a));
+      a = toHex(ss58ToBin(a))
     } catch (ex) {}
   }
   if (!b.startsWith("0x")) {
     try {
-      b = toHex(ss58ToBin(b));
+      b = toHex(ss58ToBin(b))
     } catch (ex) {}
   }
-  return a === b;
-};
+  return a === b
+}
 
 const isValidEthAddr = (value: string) =>
-  value.startsWith("0x") && value.length === 42;
+  value.startsWith("0x") && value.length === 42
 const isValidSs58Addr = (value: string) => {
   try {
-    ss58ToBin(value);
-    return true;
+    ss58ToBin(value)
+    return true
   } catch {
-    return false;
+    return false
   }
-};
+}
 
 const isValidAddr = (value: string, format?: "ss58" | "eth") => {
   switch (format) {
     case "eth":
-      return isValidEthAddr(value);
+      return isValidEthAddr(value)
     case "ss58":
-      return isValidSs58Addr(value);
+      return isValidSs58Addr(value)
     default:
-      return isValidEthAddr(value) || isValidSs58Addr(value);
+      return isValidEthAddr(value) || isValidSs58Addr(value)
   }
-};
+}

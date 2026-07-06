@@ -4,21 +4,21 @@ import {
   ModalContext,
   useModalContext,
   usePlugin,
-} from "@polkahub/context";
-import { Button, SourceButton } from "@polkahub/ui-components";
-import { useStateObservable } from "@react-rxjs/core";
-import { CirclePlus, Trash2, Users } from "lucide-react";
-import { useContext, type FC } from "react";
-import { AddIndexedMultisig, GetMultisigDetails } from "./AddIndexedMultisig";
-import { AddManualMultisig } from "./AddManualMultisig";
-import { MultisigProvider, multisigProviderId } from "./provider";
-import { useSetSelectedAccount } from "@polkahub/select-account";
+} from "@polkahub/context"
+import { Button, SourceButton } from "@polkahub/ui-components"
+import { useStateObservable } from "@react-rxjs/core"
+import { CirclePlus, Trash2, Users } from "lucide-react"
+import { useContext, type FC } from "react"
+import { AddIndexedMultisig, GetMultisigDetails } from "./AddIndexedMultisig"
+import { AddManualMultisig } from "./AddManualMultisig"
+import { MultisigProvider, multisigProviderId } from "./provider"
+import { useSetSelectedAccount } from "@polkahub/select-account"
 
 export const ManageMultisig: FC<{
-  getMultisigDetails?: GetMultisigDetails;
+  getMultisigDetails?: GetMultisigDetails
 }> = (props) => {
-  const { pushContent } = useContext(ModalContext)!;
-  const multisigProvider = usePlugin<MultisigProvider>(multisigProviderId);
+  const { pushContent } = useContext(ModalContext)!
+  const multisigProvider = usePlugin<MultisigProvider>(multisigProviderId)
 
   return (
     <SourceButton
@@ -35,16 +35,16 @@ export const ManageMultisig: FC<{
         <Users className="size-10" />
       </div>
     </SourceButton>
-  );
-};
+  )
+}
 
 const ManageAddresses: FC<{ getMultisigDetails?: GetMultisigDetails }> = ({
   getMultisigDetails,
 }) => {
-  const { pushContent } = useModalContext();
-  const multisigProvider = usePlugin<MultisigProvider>(multisigProviderId)!;
-  const multisigAccounts = useStateObservable(multisigProvider.accounts$);
-  const setAccount = useSetSelectedAccount();
+  const { pushContent } = useModalContext()
+  const multisigProvider = usePlugin<MultisigProvider>(multisigProviderId)!
+  const multisigAccounts = useStateObservable(multisigProvider.accounts$)
+  const setAccount = useSetSelectedAccount()
 
   return (
     <div className="space-y-4">
@@ -71,7 +71,7 @@ const ManageAddresses: FC<{ getMultisigDetails?: GetMultisigDetails }> = ({
                   <Button
                     variant="secondary"
                     onClick={() => {
-                      setAccount(account);
+                      setAccount(account)
                     }}
                   >
                     Select
@@ -113,5 +113,5 @@ const ManageAddresses: FC<{ getMultisigDetails?: GetMultisigDetails }> = ({
         </Button>
       </div>
     </div>
-  );
-};
+  )
+}

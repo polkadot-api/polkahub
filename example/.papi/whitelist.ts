@@ -1,4 +1,4 @@
-import type { DotPplWhitelistEntry } from "@polkadot-api/descriptors";
+import type { DotPplWhitelistEntry } from "@polkadot-api/descriptors"
 
 export const whitelist: (DotPplWhitelistEntry | DotPplWhitelistEntry)[] = [
   "query.Identity.IdentityOf",
@@ -7,4 +7,4 @@ export const whitelist: (DotPplWhitelistEntry | DotPplWhitelistEntry)[] = [
   "query.Proxy.Proxies",
   "query.Multisig.Multisigs",
   "api.TransactionPaymentApi.query_info",
-];
+]

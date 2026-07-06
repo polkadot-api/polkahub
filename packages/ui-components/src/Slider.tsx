@@ -1,6 +1,6 @@
-import * as SliderPrimitive from "@radix-ui/react-slider";
-import * as React from "react";
-import { cn } from "./utils";
+import * as SliderPrimitive from "@radix-ui/react-slider"
+import * as React from "react"
+import { cn } from "./utils"
 
 function Slider({
   className,
@@ -12,46 +12,47 @@ function Slider({
   rangeTicks,
   ...props
 }: React.ComponentProps<typeof SliderPrimitive.Root> & {
-  rangeOverlay?: React.ReactNode;
-  rangeTicks?: boolean;
+  rangeOverlay?: React.ReactNode
+  rangeTicks?: boolean
 }) {
   const _values = React.useMemo(
     () =>
       Array.isArray(value)
         ? value
         : Array.isArray(defaultValue)
-        ? defaultValue
-        : [min, max],
-    [value, defaultValue, min, max]
-  );
+          ? defaultValue
+          : [min, max],
+    [value, defaultValue, min, max],
+  )
 
   const calculateTicks = (tickLen: number) => {
     /**
-     * The first offset is challenging. We want the offset as a % of the [min,max]
+     * The first offset is challenging. We want the offset as a % of the
+     * [min,max]
      * range, but making sure the tick is aligned with the [0,max] range.
      */
-    const maxTicks = Math.floor(100 / tickLen);
-    const pMin = (min / max) * 100;
-    const startingTick = Math.ceil(pMin / tickLen);
+    const maxTicks = Math.floor(100 / tickLen)
+    const pMin = (min / max) * 100
+    const startingTick = Math.ceil(pMin / tickLen)
     const firstTickOffset =
-      ((startingTick * tickLen - pMin) / (100 - pMin)) * 100;
+      ((startingTick * tickLen - pMin) / (100 - pMin)) * 100
 
-    const tickAmount = maxTicks - startingTick + 1;
+    const tickAmount = maxTicks - startingTick + 1
     if (Number.isNaN(tickAmount) || tickAmount <= 0)
       return {
         ticks: [],
         firstTickOffset: 0,
-      };
+      }
 
     const ticks = new Array(tickAmount)
       .fill(0)
-      .map((_, i) => tickLen * (startingTick + i));
+      .map((_, i) => tickLen * (startingTick + i))
 
-    return { ticks, firstTickOffset };
-  };
+    return { ticks, firstTickOffset }
+  }
 
-  const ticks10 = calculateTicks(10);
-  const ticks25 = calculateTicks(25);
+  const ticks10 = calculateTicks(10)
+  const ticks25 = calculateTicks(25)
 
   return (
     <SliderPrimitive.Root
@@ -62,21 +63,21 @@ function Slider({
       max={max}
       className={cn(
         "@container/slider relative flex w-full touch-none items-center select-none data-disabled:opacity-50 data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-44 data-[orientation=vertical]:w-auto data-[orientation=vertical]:flex-col",
-        className
+        className,
       )}
       {...props}
     >
       <SliderPrimitive.Track
         data-slot="slider-track"
         className={cn(
-          "bg-muted relative grow overflow-hidden rounded-full data-[orientation=horizontal]:h-1.5 data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-1.5"
+          "bg-muted relative grow overflow-hidden rounded-full data-[orientation=horizontal]:h-1.5 data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-1.5",
         )}
       >
         {rangeOverlay}
         <SliderPrimitive.Range
           data-slot="slider-range"
           className={cn(
-            "bg-accent-foreground absolute data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full"
+            "bg-accent-foreground absolute data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full",
           )}
         />
       </SliderPrimitive.Track>
@@ -113,7 +114,7 @@ function Slider({
         />
       ))}
     </SliderPrimitive.Root>
-  );
+  )
 }
 
-export { Slider };
+export { Slider }

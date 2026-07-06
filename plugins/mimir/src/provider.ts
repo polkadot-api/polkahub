@@ -1,5 +1,5 @@
-import { isMimirReady, MIMIR_REGEXP } from "@mimirdev/apps-inject";
-import { MimirPAPISigner } from "@mimirdev/papi-signer";
+import { isMimirReady, MIMIR_REGEXP } from "@mimirdev/apps-inject"
+import { MimirPAPISigner } from "@mimirdev/papi-signer"
 import {
   Account,
   addrEq,
@@ -7,8 +7,8 @@ import {
   persistedState,
   PersistenceProvider,
   Plugin,
-} from "@polkahub/plugin";
-import { DefaultedStateObservable, state, withDefault } from "@react-rxjs/core";
+} from "@polkahub/plugin"
+import { DefaultedStateObservable, state, withDefault } from "@react-rxjs/core"
 import {
   defer,
   filter,
@@ -17,50 +17,50 @@ import {
   map,
   Observable,
   switchMap,
-} from "rxjs";
+} from "rxjs"
 
-export const mimirProviderId = "mimir";
+export const mimirProviderId = "mimir"
 export interface MimirProvider extends Plugin {
-  id: "mimir";
-  accounts$: DefaultedStateObservable<Account[]>;
+  id: "mimir"
+  accounts$: DefaultedStateObservable<Account[]>
 
-  isReady$: DefaultedStateObservable<boolean>;
-  isActive$: DefaultedStateObservable<boolean>;
-  toggle: () => void;
+  isReady$: DefaultedStateObservable<boolean>
+  isActive$: DefaultedStateObservable<boolean>
+  toggle: () => void
 }
 
 export const createMimirProvider = (
   origin: string,
   opts?: Partial<{
-    persist: PersistenceProvider;
-  }>
+    persist: PersistenceProvider
+  }>,
 ): MimirProvider => {
   const { persist } = {
     persist: localStorageProvider(mimirProviderId),
     ...opts,
-  };
+  }
 
-  const signer = new MimirPAPISigner();
-  const [enabled$, setEnabled] = persistedState(persist, false);
+  const signer = new MimirPAPISigner()
+  const [enabled$, setEnabled] = persistedState(persist, false)
 
   const isReady$ = state(
     defer(isMimirReady).pipe(
-      map((origin) => (origin ? MIMIR_REGEXP.test(origin) : false))
+      map((origin) => (origin ? MIMIR_REGEXP.test(origin) : false)),
     ),
-    false
-  );
+    false,
+  )
   const isActive$ = enabled$.pipeState(
     switchMap((enabled) => {
-      if (!enabled) return [false];
+      if (!enabled) return [false]
 
-      return from(signer.enable(origin)).pipe(map(({ result }) => result));
+      return from(signer.enable(origin)).pipe(map(({ result }) => result))
     }),
-    withDefault(false)
-  );
+    withDefault(false),
+  )
 
   const accounts$ = isActive$.pipeState(
     switchMap((isActive) => {
-      if (!isActive) return [[]];
+      if (!isActive) return [[]]
       return new Observable<Account[]>((obs) =>
         signer.subscribeAccounts((accounts) =>
           obs.next(
@@ -70,14 +70,14 @@ export const createMimirProvider = (
                 address: account.address,
                 name: account.name,
                 signer: signer.getPolkadotSigner(account.address),
-              })
-            )
-          )
-        )
-      );
+              }),
+            ),
+          ),
+        ),
+      )
     }),
-    withDefault([])
-  );
+    withDefault([]),
+  )
 
   return {
     id: mimirProviderId,
@@ -85,14 +85,14 @@ export const createMimirProvider = (
       firstValueFrom(
         accounts$.pipe(
           map((accounts) =>
-            accounts.find((acc) => addrEq(acc.address, account.address))
+            accounts.find((acc) => addrEq(acc.address, account.address)),
           ),
-          filter((v) => v != null)
-        )
+          filter((v) => v != null),
+        ),
       ),
     accounts$,
     toggle: () => setEnabled((e) => !e),
     isActive$,
     isReady$,
-  };
-};
+  }
+}

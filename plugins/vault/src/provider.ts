@@ -1,9 +1,9 @@
-import { createV4Tx } from "@polkadot-api/signers-common";
+import { createV4Tx } from "@polkadot-api/signers-common"
 import {
   compact,
   decAnyMetadata,
   unifyMetadata,
-} from "@polkadot-api/substrate-bindings";
+} from "@polkadot-api/substrate-bindings"
 import {
   Account,
   AccountAddress,
@@ -12,90 +12,90 @@ import {
   persistedState,
   PersistenceProvider,
   Plugin,
-} from "@polkahub/plugin";
-import { DefaultedStateObservable, state, withDefault } from "@react-rxjs/core";
-import { createSignal } from "@react-rxjs/utils";
+} from "@polkahub/plugin"
+import { DefaultedStateObservable, state, withDefault } from "@react-rxjs/core"
+import { createSignal } from "@react-rxjs/utils"
 import {
   Binary,
   getSs58AddressInfo,
   HexString,
   PolkadotSigner,
-} from "polkadot-api";
-import { mergeUint8 } from "polkadot-api/utils";
-import { firstValueFrom, map, merge, race } from "rxjs";
+} from "polkadot-api"
+import { mergeUint8 } from "polkadot-api/utils"
+import { firstValueFrom, map, merge, race } from "rxjs"
 import {
   merkleizeMetadata,
   MetadataMerkleizer,
-} from "@polkadot-api/merkleize-metadata";
+} from "@polkadot-api/merkleize-metadata"
 
-export const polkadotVaultProviderId = "polkadot-vault";
+export const polkadotVaultProviderId = "polkadot-vault"
 export interface VaultAccountInfo {
-  address: AccountAddress;
-  genesis: HexString;
+  address: AccountAddress
+  genesis: HexString
 }
 export interface PolkadotVaultAccount extends Account {
-  provider: "polkadot-vault";
-  genesis: HexString;
+  provider: "polkadot-vault"
+  genesis: HexString
 }
 
 export interface PolkadotVaultProvider extends Plugin<PolkadotVaultAccount> {
-  id: "polkadot-vault";
-  accounts$: DefaultedStateObservable<PolkadotVaultAccount[]>;
+  id: "polkadot-vault"
+  accounts$: DefaultedStateObservable<PolkadotVaultAccount[]>
 
-  setAccounts: (payload: VaultAccountInfo[]) => void;
-  addAccount: (payload: VaultAccountInfo) => PolkadotVaultAccount;
-  removeAccount: (payload: VaultAccountInfo) => void;
+  setAccounts: (payload: VaultAccountInfo[]) => void
+  addAccount: (payload: VaultAccountInfo) => PolkadotVaultAccount
+  removeAccount: (payload: VaultAccountInfo) => void
 
-  activeTx$: DefaultedStateObservable<Uint8Array<ArrayBufferLike> | null>;
-  setTx: (payload: Uint8Array<ArrayBufferLike>) => void;
-  setSignature: (payload: Uint8Array<ArrayBufferLike>) => void;
-  cancelTx: () => void;
+  activeTx$: DefaultedStateObservable<Uint8Array<ArrayBufferLike> | null>
+  setTx: (payload: Uint8Array<ArrayBufferLike>) => void
+  setSignature: (payload: Uint8Array<ArrayBufferLike>) => void
+  cancelTx: () => void
 }
 
 export type NetworkInfo = {
-  decimals: number;
-  tokenSymbol: string;
-};
+  decimals: number
+  tokenSymbol: string
+}
 
 export const createPolkadotVaultProvider = (
   opts?: Partial<{
-    persist: PersistenceProvider;
-    getNetworkInfo: () => Promise<NetworkInfo>;
-  }>
+    persist: PersistenceProvider
+    getNetworkInfo: () => Promise<NetworkInfo>
+  }>,
 ): PolkadotVaultProvider => {
   const { persist, getNetworkInfo } = {
     persist: localStorageProvider(polkadotVaultProviderId),
     ...opts,
-  };
+  }
 
   const [vaultAccounts$, setVaultAccounts] = persistedState(
     persist,
-    [] as VaultAccountInfo[]
-  );
+    [] as VaultAccountInfo[],
+  )
 
-  const [newTx$, setTx] = createSignal<Uint8Array>();
-  const [scannedSignature$, setSignature] = createSignal<Uint8Array>();
-  const [cancelledTx$, cancelTx] = createSignal();
+  const [newTx$, setTx] = createSignal<Uint8Array>()
+  const [scannedSignature$, setSignature] = createSignal<Uint8Array>()
+  const [cancelledTx$, cancelTx] = createSignal()
 
   const activeTx$ = state(
     merge(newTx$, merge(scannedSignature$, cancelledTx$).pipe(map(() => null))),
-    null
-  );
+    null,
+  )
   const currentScannedSignature$ = race(
     scannedSignature$,
-    merge(newTx$, cancelledTx$).pipe(map(() => null))
-  );
+    merge(newTx$, cancelledTx$).pipe(map(() => null)),
+  )
 
   const createVaultSigner = ({
     address,
     genesis: accountGenesis,
   }: VaultAccountInfo): PolkadotSigner => {
-    const info = getSs58AddressInfo(address);
+    const info = getSs58AddressInfo(address)
     if (!info.isValid) {
-      throw new Error("Invalid SS58 address " + address);
+      throw new Error("Invalid SS58 address " + address)
     }
 
-    const publicKey = info.publicKey;
+    const publicKey = info.publicKey
 
     return {
       publicKey,
@@ -104,49 +104,49 @@ export const createPolkadotVaultProvider = (
           VaultQrEncryption.Sr25519,
           publicKey,
           data,
-          Binary.fromHex(accountGenesis)
-        );
-        setTx(qrPayload);
+          Binary.fromHex(accountGenesis),
+        )
+        setTx(qrPayload)
 
-        const signature = await firstValueFrom(currentScannedSignature$);
+        const signature = await firstValueFrom(currentScannedSignature$)
         if (!signature) {
-          throw new Error("Cancelled");
+          throw new Error("Cancelled")
         }
 
-        return signature;
+        return signature
       },
       async signTx(callData, signedExtensions, metadata) {
-        let merkleizer: MetadataMerkleizer | null = null;
-        const decMeta = unifyMetadata(decAnyMetadata(metadata));
-        const extra: Array<Uint8Array> = [];
-        const additionalSigned: Array<Uint8Array> = [];
+        let merkleizer: MetadataMerkleizer | null = null
+        const decMeta = unifyMetadata(decAnyMetadata(metadata))
+        const extra: Array<Uint8Array> = []
+        const additionalSigned: Array<Uint8Array> = []
         // TODO use the best version
         for (const { identifier } of decMeta.extrinsic.signedExtensions[0]) {
           if (identifier === "CheckMetadataHash") {
             if (getNetworkInfo) {
-              merkleizer = merkleizeMetadata(metadata, await getNetworkInfo());
-              extra.push(Uint8Array.from([1]));
+              merkleizer = merkleizeMetadata(metadata, await getNetworkInfo())
+              extra.push(Uint8Array.from([1]))
               additionalSigned.push(
-                mergeUint8([Uint8Array.from([1]), merkleizer.digest()])
-              );
-              continue;
+                mergeUint8([Uint8Array.from([1]), merkleizer.digest()]),
+              )
+              continue
             } else {
               console.warn(
-                "The chain supports `CheckMetadataHash`, but `getNetworkInfo` was not provided. Polkadot Vault will need the whole metadata downloaded beforehand."
-              );
+                "The chain supports `CheckMetadataHash`, but `getNetworkInfo` was not provided. Polkadot Vault will need the whole metadata downloaded beforehand.",
+              )
             }
           }
-          const signedExtension = signedExtensions[identifier];
+          const signedExtension = signedExtensions[identifier]
           if (!signedExtension)
-            throw new Error(`Missing ${identifier} signed extension`);
-          extra.push(signedExtension.value);
-          additionalSigned.push(signedExtension.additionalSigned);
+            throw new Error(`Missing ${identifier} signed extension`)
+          extra.push(signedExtension.value)
+          additionalSigned.push(signedExtension.additionalSigned)
         }
-        const extensions = mergeUint8([...extra, ...additionalSigned]);
+        const extensions = mergeUint8([...extra, ...additionalSigned])
 
         const genesis =
           signedExtensions.CheckGenesis?.additionalSigned ??
-          Binary.fromHex(accountGenesis);
+          Binary.fromHex(accountGenesis)
 
         const qrPayload = merkleizer
           ? createQrProofedTransaction(
@@ -155,24 +155,24 @@ export const createPolkadotVaultProvider = (
               merkleizer.getProofForExtrinsicParts(
                 callData,
                 mergeUint8(extra),
-                mergeUint8(additionalSigned)
+                mergeUint8(additionalSigned),
               ),
               callData,
               extensions,
-              genesis
+              genesis,
             )
           : createQrTransaction(
               VaultQrEncryption.Sr25519,
               publicKey,
               callData,
               extensions,
-              genesis
-            );
-        setTx(qrPayload);
+              genesis,
+            )
+        setTx(qrPayload)
 
-        const signature = await firstValueFrom(currentScannedSignature$);
+        const signature = await firstValueFrom(currentScannedSignature$)
         if (!signature) {
-          throw new Error("Cancelled");
+          throw new Error("Cancelled")
         }
 
         const tx = createV4Tx(
@@ -183,27 +183,27 @@ export const createPolkadotVaultProvider = (
           extra,
           callData,
           // TODO schema?
-          "Sr25519"
-        );
+          "Sr25519",
+        )
 
-        return tx;
+        return tx
       },
-    };
-  };
+    }
+  }
 
   const accountInfoToAccount = (
-    info: VaultAccountInfo
+    info: VaultAccountInfo,
   ): PolkadotVaultAccount => ({
     provider: polkadotVaultProviderId,
     address: info.address,
     genesis: info.genesis,
     signer: createVaultSigner(info),
-  });
+  })
 
   const accounts$ = vaultAccounts$.pipeState(
     map((accounts) => accounts.map(accountInfoToAccount)),
-    withDefault([])
-  );
+    withDefault([]),
+  )
 
   return {
     id: polkadotVaultProviderId,
@@ -220,13 +220,13 @@ export const createPolkadotVaultProvider = (
               accounts.find(
                 (acc) =>
                   addrEq(acc.address, account.address) &&
-                  acc.genesis === account.extra
-              ) ?? null
+                  acc.genesis === account.extra,
+              ) ?? null,
           ),
           map((info): PolkadotVaultAccount | null =>
-            info ? accountInfoToAccount(info) : null
-          )
-        )
+            info ? accountInfoToAccount(info) : null,
+          ),
+        ),
       ),
     accounts$,
     activeTx$,
@@ -235,27 +235,27 @@ export const createPolkadotVaultProvider = (
     setTx,
     setAccounts: setVaultAccounts,
     addAccount: (account) => {
-      const accountKey = `${account.address}:${account.genesis}`;
+      const accountKey = `${account.address}:${account.genesis}`
       setVaultAccounts((oldAccounts) => {
         if (
           oldAccounts.some(
-            (acc) => `${acc.address}:${acc.genesis}` === accountKey
+            (acc) => `${acc.address}:${acc.genesis}` === accountKey,
           )
         )
-          return oldAccounts;
-        return [...oldAccounts, account];
-      });
-      return accountInfoToAccount(account);
+          return oldAccounts
+        return [...oldAccounts, account]
+      })
+      return accountInfoToAccount(account)
     },
     removeAccount: (account) =>
       setVaultAccounts((v) =>
-        v.filter((acc) => acc.address !== account.address)
+        v.filter((acc) => acc.address !== account.address),
       ),
-  };
-};
+  }
+}
 
 // https://github.com/novasamatech/parity-signer/blob/738e34f0b60f86b718267cfe1ca766bd291640ed/docs/src/development/UOS.md
-const VAULT_QR_HEADER = new Uint8Array([0x53]);
+const VAULT_QR_HEADER = new Uint8Array([0x53])
 enum VaultQrEncryption {
   Ed25519 = 0x00,
   Sr25519 = 0x01,
@@ -279,7 +279,7 @@ const createQrTransaction = (
   publicKey: Uint8Array,
   callData: Uint8Array,
   extensions: Uint8Array,
-  genesisHash: Uint8Array
+  genesisHash: Uint8Array,
 ) =>
   mergeUint8([
     VAULT_QR_HEADER,
@@ -290,7 +290,7 @@ const createQrTransaction = (
     callData,
     extensions,
     genesisHash,
-  ]);
+  ])
 
 const createQrProofedTransaction = (
   encryption: VaultQrEncryption,
@@ -298,7 +298,7 @@ const createQrProofedTransaction = (
   metadataProof: Uint8Array,
   callData: Uint8Array,
   extensions: Uint8Array,
-  genesisHash: Uint8Array
+  genesisHash: Uint8Array,
 ) =>
   mergeUint8([
     VAULT_QR_HEADER,
@@ -310,13 +310,13 @@ const createQrProofedTransaction = (
     callData,
     extensions,
     genesisHash,
-  ]);
+  ])
 
 const createQrMessage = (
   encrpytion: VaultQrEncryption,
   publicKey: Uint8Array,
   data: Uint8Array,
-  genesisHash: Uint8Array
+  genesisHash: Uint8Array,
 ) =>
   mergeUint8([
     VAULT_QR_HEADER,
@@ -325,4 +325,4 @@ const createQrMessage = (
     publicKey,
     mergeUint8([Binary.fromText("<Bytes>"), data, Binary.fromText("</Bytes>")]),
     genesisHash,
-  ]);
+  ])

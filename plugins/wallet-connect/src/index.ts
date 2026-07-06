@@ -1,2 +1,2 @@
-export * from "./provider";
-export * from "./WalletConnectButton";
+export * from "./provider"
+export * from "./WalletConnectButton"

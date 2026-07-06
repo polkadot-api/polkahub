@@ -1,9 +1,9 @@
-import { AccountDisplay, AccountInfo } from "@polkadot-api/react-components";
-import { defaultFilter } from "cmdk";
-import { Check } from "lucide-react";
-import { PropsWithChildren, ReactNode, type FC } from "react";
-import { addrEq } from "./AddressInput";
-import { AddressInputPopover } from "./AddressInputPopover";
+import { AccountDisplay, AccountInfo } from "@polkadot-api/react-components"
+import { defaultFilter } from "cmdk"
+import { Check } from "lucide-react"
+import { PropsWithChildren, ReactNode, type FC } from "react"
+import { addrEq } from "./AddressInput"
+import { AddressInputPopover } from "./AddressInputPopover"
 import {
   Command,
   CommandEmpty,
@@ -11,8 +11,8 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "./Command";
-import { cn } from "./utils";
+} from "./Command"
+import { cn } from "./utils"
 
 export function AccountPicker<T extends AccountInfo = never>({
   value,
@@ -28,13 +28,13 @@ export function AccountPicker<T extends AccountInfo = never>({
   disableClear,
   ...props
 }: {
-  value?: T | null;
-  onChange?: (value: T | null) => void;
-  groups: { accounts: T[] } | Array<{ name: ReactNode; accounts: T[] }>;
-  className?: string;
-  triggerClassName?: string;
-  disableClear?: boolean;
-  renderAddress?: (value: T) => ReactNode;
+  value?: T | null
+  onChange?: (value: T | null) => void
+  groups: { accounts: T[] } | Array<{ name: ReactNode; accounts: T[] }>
+  className?: string
+  triggerClassName?: string
+  disableClear?: boolean
+  renderAddress?: (value: T) => ReactNode
 }) {
   const cleanGroups = Array.isArray(groups)
     ? groups
@@ -43,7 +43,7 @@ export function AccountPicker<T extends AccountInfo = never>({
           name: undefined,
           accounts: groups.accounts,
         },
-      ];
+      ]
 
   return (
     <AddressInputPopover
@@ -61,10 +61,10 @@ export function AccountPicker<T extends AccountInfo = never>({
       {(close) => (
         <Command
           filter={(value, search, keywords) => {
-            const [addr] = keywords ?? [];
-            if (addr && addrEq(search, addr)) return search === addr ? 1 : 0.9;
+            const [addr] = keywords ?? []
+            if (addr && addrEq(search, addr)) return search === addr ? 1 : 0.9
 
-            return defaultFilter(value, search, keywords);
+            return defaultFilter(value, search, keywords)
           }}
         >
           <CommandInput placeholder="Search and select…" />
@@ -84,8 +84,8 @@ export function AccountPicker<T extends AccountInfo = never>({
                     selected={value === account}
                     selectedValue={value}
                     onSelect={() => {
-                      onChange?.(account);
-                      close();
+                      onChange?.(account)
+                      close()
                     }}
                   >
                     {renderAddress(account)}
@@ -97,16 +97,16 @@ export function AccountPicker<T extends AccountInfo = never>({
         </Command>
       )}
     </AddressInputPopover>
-  );
+  )
 }
 
 const AccountOption: FC<
   PropsWithChildren<{
-    group?: ReactNode;
-    account: AccountInfo;
-    selected: boolean;
-    selectedValue?: AccountInfo | null;
-    onSelect: () => void;
+    group?: ReactNode
+    account: AccountInfo
+    selected: boolean
+    selectedValue?: AccountInfo | null
+    onSelect: () => void
   }>
 > = ({ account, group, selected, onSelect, children }) => (
   <CommandItem
@@ -125,4 +125,4 @@ const AccountOption: FC<
       className={cn("ml-auto shrink-0", selected ? "opacity-100" : "opacity-0")}
     />
   </CommandItem>
-);
+)

@@ -1,10 +1,10 @@
-import { ModalContext, usePlugin } from "@polkahub/context";
-import { Account, addrEq } from "@polkahub/plugin";
+import { ModalContext, usePlugin } from "@polkahub/context"
+import { Account, addrEq } from "@polkahub/plugin"
 import {
   SelectedAccountButton,
   SelectedAccountPlugin,
   selectedAccountPluginId,
-} from "@polkahub/select-account";
+} from "@polkahub/select-account"
 import {
   Button,
   Dialog,
@@ -13,10 +13,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@polkahub/ui-components";
-import { state, useStateObservable } from "@react-rxjs/core";
-import { createSignal } from "@react-rxjs/utils";
-import { ChevronLeft } from "lucide-react";
+} from "@polkahub/ui-components"
+import { state, useStateObservable } from "@react-rxjs/core"
+import { createSignal } from "@react-rxjs/utils"
+import { ChevronLeft } from "lucide-react"
 import {
   ComponentProps,
   FC,
@@ -25,52 +25,52 @@ import {
   useEffect,
   useMemo,
   useState,
-} from "react";
+} from "react"
 
 // For lazy-loading optimizations
-export const PolkaHubModalTrigger: FC = () => <SelectedAccountButton loading />;
+export const PolkaHubModalTrigger: FC = () => <SelectedAccountButton loading />
 
-const [openChange$, setOpen] = createSignal<boolean>();
-export const openSelectAccount = () => setOpen(true);
-const open$ = state(openChange$, false);
-const close = () => setOpen(false);
+const [openChange$, setOpen] = createSignal<boolean>()
+export const openSelectAccount = () => setOpen(true)
+const open$ = state(openChange$, false)
+const close = () => setOpen(false)
 
 export const PolkaHubModal: FC<
   PropsWithChildren<{
-    className?: string;
-    buttonProps?: ComponentProps<typeof SelectedAccountButton>;
-    title?: string;
+    className?: string
+    buttonProps?: ComponentProps<typeof SelectedAccountButton>
+    title?: string
   }>
 > = ({ children, buttonProps, className, title = "Connect" }) => {
-  const open = useStateObservable(open$);
+  const open = useStateObservable(open$)
   const selectedAccountPlugin = usePlugin<SelectedAccountPlugin>(
-    selectedAccountPluginId
-  );
+    selectedAccountPluginId,
+  )
 
-  const { contentStack, contextValue } = usePolkaHubModalState(close);
+  const { contentStack, contextValue } = usePolkaHubModalState(close)
   const activeContent = contentStack.length
     ? contentStack[contentStack.length - 1]
-    : null;
+    : null
 
   useEffect(() => {
-    if (!selectedAccountPlugin) return;
+    if (!selectedAccountPlugin) return
 
-    let first = true;
-    let prev: Account | null = null;
+    let first = true
+    let prev: Account | null = null
     const sub = selectedAccountPlugin.selectedAccount$.subscribe((acc) => {
       if (first) {
-        first = false;
-        prev = acc;
-        return;
+        first = false
+        prev = acc
+        return
       }
-      if (addrEq(prev?.address, acc?.address)) return;
-      prev = acc;
+      if (addrEq(prev?.address, acc?.address)) return
+      prev = acc
       // Only close when setting an account, not when resetting it.
-      if (acc) contextValue.closeModal();
-    });
+      if (acc) contextValue.closeModal()
+    })
 
-    return () => sub.unsubscribe();
-  }, [selectedAccountPlugin, contextValue]);
+    return () => sub.unsubscribe()
+  }, [selectedAccountPlugin, contextValue])
 
   return (
     <Dialog
@@ -88,7 +88,7 @@ export const PolkaHubModal: FC<
             evt.target instanceof HTMLElement &&
             evt.target.tagName === "WCM-MODAL"
           )
-            evt.preventDefault();
+            evt.preventDefault()
         }}
       >
         <DialogHeader className="flex-row items-center">
@@ -115,13 +115,13 @@ export const PolkaHubModal: FC<
         </DialogBody>
       </DialogContent>
     </Dialog>
-  );
-};
+  )
+}
 
 export const usePolkaHubModalState = (onClose?: () => void) => {
   const [contentStack, setContentStack] = useState<
     { title?: string; element: ReactNode }[]
-  >([]);
+  >([])
 
   const contextValue = useMemo(() => {
     const ctx: ModalContext = {
@@ -129,28 +129,28 @@ export const usePolkaHubModalState = (onClose?: () => void) => {
         element == null
           ? ctx.popContent()
           : setContentStack((stack) => {
-              const newStack = [...stack];
-              const i = Math.max(newStack.length - 1, 0);
-              newStack[i] = element;
-              return newStack;
+              const newStack = [...stack]
+              const i = Math.max(newStack.length - 1, 0)
+              newStack[i] = element
+              return newStack
             }),
       pushContent: (element: { title?: string; element: ReactNode }) =>
         setContentStack((stack) =>
-          element == null ? stack : [...stack, element]
+          element == null ? stack : [...stack, element],
         ),
       popContent: () =>
         setContentStack((stack) => {
-          const newStack = [...stack];
-          newStack.pop();
-          return newStack;
+          const newStack = [...stack]
+          newStack.pop()
+          return newStack
         }),
       closeModal: () => {
         // Remove stack after small duration, otherwise the content might flash as the dialog is transitioning away
-        setTimeout(() => setContentStack([]), 250);
-        onClose?.();
+        setTimeout(() => setContentStack([]), 250)
+        onClose?.()
       },
-    };
-    return ctx;
-  }, [onClose]);
-  return { contentStack, contextValue, setContentStack };
-};
+    }
+    return ctx
+  }, [onClose])
+  return { contentStack, contextValue, setContentStack }
+}

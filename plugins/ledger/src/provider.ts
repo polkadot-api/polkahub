@@ -1,5 +1,5 @@
-import type Transport from "@ledgerhq/hw-transport";
-import { LedgerSigner } from "@polkadot-api/ledger-signer";
+import type Transport from "@ledgerhq/hw-transport"
+import { LedgerSigner } from "@polkadot-api/ledger-signer"
 import {
   Account,
   AccountAddress,
@@ -7,9 +7,9 @@ import {
   persistedState,
   PersistenceProvider,
   Plugin,
-} from "@polkahub/plugin";
-import { DefaultedStateObservable, withDefault } from "@react-rxjs/core";
-import { AccountId, type PolkadotSigner } from "polkadot-api";
+} from "@polkahub/plugin"
+import { DefaultedStateObservable, withDefault } from "@react-rxjs/core"
+import { AccountId, type PolkadotSigner } from "polkadot-api"
 import {
   catchError,
   combineLatest,
@@ -19,57 +19,57 @@ import {
   map,
   Observable,
   switchMap,
-} from "rxjs";
+} from "rxjs"
 
-export const ledgerProviderId = "ledger";
+export const ledgerProviderId = "ledger"
 
 export interface LedgerAccountInfo {
-  address: AccountAddress;
-  deviceId: number;
-  index: number;
+  address: AccountAddress
+  deviceId: number
+  index: number
 }
 export interface LedgerAccount extends Account {
-  provider: "ledger";
-  deviceId: number;
-  index: number;
+  provider: "ledger"
+  deviceId: number
+  index: number
 }
 
 export interface LedgerProvider extends Plugin<LedgerAccount> {
-  id: "ledger";
-  accounts$: DefaultedStateObservable<LedgerAccount[]>;
+  id: "ledger"
+  accounts$: DefaultedStateObservable<LedgerAccount[]>
 
-  setAccounts: (payload: LedgerAccountInfo[]) => void;
-  addAccount: (payload: LedgerAccountInfo) => LedgerAccount;
-  removeAccount: (payload: LedgerAccountInfo) => void;
+  setAccounts: (payload: LedgerAccountInfo[]) => void
+  addAccount: (payload: LedgerAccountInfo) => LedgerAccount
+  removeAccount: (payload: LedgerAccountInfo) => void
 
-  getLedgerAccounts$: (idx: Array<number>) => Observable<LedgerAccountInfo>;
+  getLedgerAccounts$: (idx: Array<number>) => Observable<LedgerAccountInfo>
 }
 
 export type NetworkInfo = {
-  decimals: number;
-  tokenSymbol: string;
-};
+  decimals: number
+  tokenSymbol: string
+}
 
 export const createLedgerProvider = (
   createTransport: () => Promise<Transport>,
   getNetworkInfo: () => Promise<NetworkInfo>,
   opts?: Partial<{
-    persist: PersistenceProvider;
-  }>
+    persist: PersistenceProvider
+  }>,
 ): LedgerProvider => {
   const { persist } = {
     persist: localStorageProvider("ledger-acc"),
     ...opts,
-  };
-  let ss58Format = 42;
+  }
+  let ss58Format = 42
 
   const [ledgerAccounts$, setLedgerAccounts] = persistedState(
     persist,
-    [] as LedgerAccountInfo[]
-  );
+    [] as LedgerAccountInfo[],
+  )
 
   const getLedgerAccounts$ = (
-    idxs: Array<number>
+    idxs: Array<number>,
   ): Observable<LedgerAccountInfo> =>
     from(initializeLedgerSigner(createTransport)).pipe(
       switchMap((ledger) =>
@@ -78,51 +78,47 @@ export const createLedgerProvider = (
           deviceId: ledger.ledgerSigner.deviceId(),
         }).pipe(
           catchError((ex) => {
-            ledger.close();
-            throw ex;
-          })
-        )
+            ledger.close()
+            throw ex
+          }),
+        ),
       ),
       switchMap(({ ledger, deviceId }) =>
         from(idxs).pipe(
           concatMap(async (idx) => {
-            const pk = await ledger.ledgerSigner.getPubkey(idx);
+            const pk = await ledger.ledgerSigner.getPubkey(idx)
             return {
               address: AccountId(ss58Format).dec(pk),
               deviceId,
               index: idx,
-            };
+            }
           }),
-          finalize(() => ledger.close())
-        )
-      )
-    );
+          finalize(() => ledger.close()),
+        ),
+      ),
+    )
 
   const createLedgerSigner = (account: LedgerAccountInfo): PolkadotSigner => {
-    const publicKey = AccountId().enc(account.address);
+    const publicKey = AccountId().enc(account.address)
 
     const operateWithSigner = async <R>(
-      cb: (signer: PolkadotSigner) => Promise<R>
+      cb: (signer: PolkadotSigner) => Promise<R>,
     ) => {
-      const { ledgerSigner, close } = await initializeLedgerSigner(
-        createTransport
-      );
+      const { ledgerSigner, close } =
+        await initializeLedgerSigner(createTransport)
       try {
-        const info = await getNetworkInfo();
+        const info = await getNetworkInfo()
 
-        const signer = await ledgerSigner.getPolkadotSigner(
-          info,
-          account.index
-        );
+        const signer = await ledgerSigner.getPolkadotSigner(info, account.index)
         if (!pkAreEq(publicKey, signer.publicKey)) {
-          throw new Error("Device mismatch");
+          throw new Error("Device mismatch")
         }
 
-        return await cb(signer);
+        return await cb(signer)
       } finally {
-        close();
+        close()
       }
-    };
+    }
 
     return {
       publicKey,
@@ -130,22 +126,22 @@ export const createLedgerProvider = (
         operateWithSigner((signer) => signer.signBytes(...args)),
       signTx: (...args) =>
         operateWithSigner((signer) => signer.signTx(...args)),
-    };
-  };
+    }
+  }
 
   const toAccount = (info: LedgerAccountInfo): LedgerAccount => ({
     provider: ledgerProviderId,
     ...info,
     signer: createLedgerSigner(info),
-  });
+  })
 
   const accounts$ = ledgerAccounts$.pipeState(
     map((accounts) => accounts.map(toAccount)),
-    withDefault([])
-  );
+    withDefault([]),
+  )
 
   const accountEq = (a: LedgerAccountInfo, b: LedgerAccountInfo) =>
-    a.deviceId === b.deviceId && a.index === b.index;
+    a.deviceId === b.deviceId && a.index === b.index
   return {
     id: ledgerProviderId,
     deserialize: (acc) =>
@@ -164,60 +160,60 @@ export const createLedgerProvider = (
     setAccounts: setLedgerAccounts,
     addAccount: (account) => {
       setLedgerAccounts((v) => {
-        const set = new Set(v);
-        set.add(account);
-        return [...set];
-      });
-      return toAccount(account);
+        const set = new Set(v)
+        set.add(account)
+        return [...set]
+      })
+      return toAccount(account)
     },
     removeAccount: (account) =>
       setLedgerAccounts((v) => v.filter((acc) => !accountEq(acc, account))),
     getLedgerAccounts$,
     receiveContext(context) {
-      ss58Format = context.ss58Format;
+      ss58Format = context.ss58Format
     },
-  };
-};
-
-const pkAreEq = (a: Uint8Array, b: Uint8Array) => a.every((v, i) => b[i] === v);
-
-export class AlreadyInUseError extends Error {
-  constructor() {
-    super("Device already in use");
   }
 }
 
-let usingLedger = false;
+const pkAreEq = (a: Uint8Array, b: Uint8Array) => a.every((v, i) => b[i] === v)
+
+export class AlreadyInUseError extends Error {
+  constructor() {
+    super("Device already in use")
+  }
+}
+
+let usingLedger = false
 async function initializeLedgerSigner(
-  createTransport: () => Promise<Transport>
+  createTransport: () => Promise<Transport>,
 ) {
   if (!(globalThis as any).Buffer) {
-    const bufferModule = await import("buffer");
-    (globalThis as any).Buffer =
-      bufferModule.default?.Buffer ?? bufferModule.Buffer;
+    const bufferModule = await import("buffer")
+    ;(globalThis as any).Buffer =
+      bufferModule.default?.Buffer ?? bufferModule.Buffer
   }
 
-  if (usingLedger) throw new AlreadyInUseError();
-  usingLedger = true;
+  if (usingLedger) throw new AlreadyInUseError()
+  usingLedger = true
 
-  let transport: Transport;
+  let transport: Transport
   try {
-    transport = await createTransport();
+    transport = await createTransport()
   } catch (ex) {
-    usingLedger = false;
-    throw ex;
+    usingLedger = false
+    throw ex
   }
 
   const close = () => {
-    usingLedger = false;
-    transport.close();
-  };
+    usingLedger = false
+    transport.close()
+  }
 
   try {
-    const ledgerSigner = new LedgerSigner(transport);
-    return { ledgerSigner, transport, close };
+    const ledgerSigner = new LedgerSigner(transport)
+    return { ledgerSigner, transport, close }
   } catch (ex) {
-    close();
-    throw ex;
+    close()
+    throw ex
   }
 }

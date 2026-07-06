@@ -1,5 +1,17 @@
 ## Unreleased
 
+## 0.7.1 2026-07-06
+
+### Fixed
+
+- `@polkahub/read-only`
+
+  - Support fake signing with eth-like addresses
+
+- `@polkahub/select-account`
+
+  - Refresh selected account from persistence when plugins change
+
 ## 0.7.0 2026-05-13
 
 ### Added
@@ -14,32 +26,26 @@
 - Update dependencies
 
 - `@polkahub/multisig`
-
   - Display account name on multisig account list.
   - Fix link visual overflow on `MultisigExternalSignerModal`.
   - Improve dark mode support.
 
 - `@polkahub/proxy`
-
   - Display account name on proxy account list.
   - Improve dark mode support.
 
 - `@polkahub/read-only`
-
   - Display account name on read-only account list.
 
 - `@polkahub/vault`
-
   - Display account name on vault account list.
 
 ### Changed
 
 - `@polkahub/ui-components`
-
   - Remove `Alert`, replace with newer `AlertBox` from shadcn/ui
 
 - `@polkahub/multisig`
-
   - `MultisigExternalSignerModal.getMultisigUrl` can also return `Promise<string>`.
 
 ## 0.5.1 2026-03-17
