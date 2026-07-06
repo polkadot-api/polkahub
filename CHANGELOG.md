@@ -1,5 +1,17 @@
 ## Unreleased
 
+## 0.7.1 2026-07-06
+
+### Fixed
+
+- `@polkahub/read-only`
+
+  - Support fake signing with eth-like addresses
+
+- `@polkahub/select-account`
+
+  - Refresh selected account from persistence when plugins change
+
 ## 0.7.0 2026-05-13
 
 ### Added
