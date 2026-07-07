@@ -36,8 +36,6 @@ import {
   tap,
 } from "rxjs"
 
-const accId = AccountId(42)
-
 export const walletConnectProviderId = "walletconnect"
 export interface WalletConnectAccount extends Account {
   provider: "walletconnect"
@@ -163,6 +161,7 @@ export const createWalletConnectProvider = (
     relayUrl: "wss://relay.walletconnect.com",
     ...opts,
   }
+  let ss58Format = 42
 
   const provider$ = defer(() =>
     import("@walletconnect/universal-provider").then((mod) =>
@@ -199,17 +198,16 @@ export const createWalletConnectProvider = (
 
   const initializeSession$ = () =>
     provider$.pipe(
-      switchMap(
-        (provider): Promise<InitializedSession> =>
-          provider.client.connect({
-            requiredNamespaces: {
-              polkadot: {
-                methods: ["polkadot_signTransaction", "polkadot_signMessage"],
-                chains,
-                events: ["chainChanged", "accountsChanged"],
-              },
+      switchMap((provider): Promise<InitializedSession> =>
+        provider.client.connect({
+          requiredNamespaces: {
+            polkadot: {
+              methods: ["polkadot_signTransaction", "polkadot_signMessage"],
+              chains,
+              events: ["chainChanged", "accountsChanged"],
             },
-          }),
+          },
+        }),
       ),
     )
 
@@ -319,7 +317,10 @@ export const createWalletConnectProvider = (
           .flat()
           // Format: `polkadot:{genesis_hash}:{account_id}`
           .map((wcAccount) => wcAccount.split(":")[2])
-          .map((acc) => accId.dec(accId.enc(acc))),
+          .map((acc) => {
+            const accId = AccountId(ss58Format)
+            return accId.dec(accId.enc(acc))
+          }),
       ),
     )
 
@@ -397,6 +398,9 @@ export const createWalletConnectProvider = (
     accounts$,
     toggleWalletConnect,
     walletConnectStatus$,
+    receiveContext(context) {
+      ss58Format = context.ss58Format
+    },
   }
 }
 
