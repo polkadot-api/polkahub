@@ -11,6 +11,7 @@ import { createSignal } from "@react-rxjs/utils"
 import type { CaipNetwork } from "@reown/appkit/core"
 import { defineChain } from "@reown/appkit/networks"
 import type { SessionTypes } from "@walletconnect/types"
+import { AccountId } from "polkadot-api"
 import { getPolkadotSignerFromPjs } from "polkadot-api/pjs-signer"
 import {
   catchError,
@@ -160,6 +161,7 @@ export const createWalletConnectProvider = (
     relayUrl: "wss://relay.walletconnect.com",
     ...opts,
   }
+  let ss58Format = 42
 
   const provider$ = defer(() =>
     import("@walletconnect/universal-provider").then((mod) =>
@@ -196,17 +198,16 @@ export const createWalletConnectProvider = (
 
   const initializeSession$ = () =>
     provider$.pipe(
-      switchMap(
-        (provider): Promise<InitializedSession> =>
-          provider.client.connect({
-            requiredNamespaces: {
-              polkadot: {
-                methods: ["polkadot_signTransaction", "polkadot_signMessage"],
-                chains,
-                events: ["chainChanged", "accountsChanged"],
-              },
+      switchMap((provider): Promise<InitializedSession> =>
+        provider.client.connect({
+          requiredNamespaces: {
+            polkadot: {
+              methods: ["polkadot_signTransaction", "polkadot_signMessage"],
+              chains,
+              events: ["chainChanged", "accountsChanged"],
             },
-          }),
+          },
+        }),
       ),
     )
 
@@ -309,11 +310,19 @@ export const createWalletConnectProvider = (
   )
 
   const getAccounts = (session: SessionTypes.Struct) =>
-    Object.values(session.namespaces)
-      .map((namespace) => namespace.accounts)
-      .flat()
-      // Format: `polkadot:{genesis_hash}:{account_id}`
-      .map((wcAccount) => wcAccount.split(":")[2])
+    Array.from(
+      new Set(
+        Object.values(session.namespaces)
+          .map((namespace) => namespace.accounts)
+          .flat()
+          // Format: `polkadot:{genesis_hash}:{account_id}`
+          .map((wcAccount) => wcAccount.split(":")[2])
+          .map((acc) => {
+            const accId = AccountId(ss58Format)
+            return accId.dec(accId.enc(acc))
+          }),
+      ),
+    )
 
   const getSigner = (session: SessionTypes.Struct, address: string) =>
     getPolkadotSignerFromPjs(
@@ -389,6 +398,9 @@ export const createWalletConnectProvider = (
     accounts$,
     toggleWalletConnect,
     walletConnectStatus$,
+    receiveContext(context) {
+      ss58Format = context.ss58Format
+    },
   }
 }
 
