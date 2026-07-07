@@ -1,11 +1,6 @@
 ## Unreleased
 
-## 0.7.2 2026-07-07
-
-- `@polkahub/wallet-connect`
-  - Do not show duplicated accounts
-
-## 0.7.1 2026-07-06
+## 0.7.1 2026-07-07
 
 ### Fixed
 
@@ -14,6 +9,9 @@
 
 - `@polkahub/select-account`
   - Refresh selected account from persistence when plugins change
+
+- `@polkahub/wallet-connect`
+  - Do not show duplicated accounts
 
 ## 0.7.0 2026-05-13
 
