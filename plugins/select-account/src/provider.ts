@@ -170,6 +170,7 @@ const mergeUntilNext = <T>(...observables: Array<Observable<T>>) =>
   new Observable<T>((observer) => {
     const subscriptions = new Array<Subscription>()
 
+    let subscribing = true
     for (const source of observables) {
       const sub = new Subscription()
       subscriptions.push(sub)
@@ -187,11 +188,13 @@ const mergeUntilNext = <T>(...observables: Array<Observable<T>>) =>
             subscriptions.splice(index, 1)
             sub.unsubscribe()
 
-            if (subscriptions.length === 0) observer.complete()
+            if (subscriptions.length === 0 && !subscribing) observer.complete()
           },
         }),
       )
     }
+    subscribing = false
+    if (subscriptions.length === 0) observer.complete()
 
     return () => {
       subscriptions.forEach((sub) => sub.unsubscribe())
