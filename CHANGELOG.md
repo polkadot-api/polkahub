@@ -1,5 +1,12 @@
 ## Unreleased
 
+## 0.7.2 2026-07-08
+
+### Fixed
+
+- `@polkahub/select-account`
+  - Unresponsive select account when an account is not persisted.
+
 ## 0.7.1 2026-07-07
 
 ### Fixed
