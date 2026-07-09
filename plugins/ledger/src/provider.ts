@@ -134,7 +134,7 @@ export const createLedgerProvider = (
     }
     const signerProps: PropsOnly<LedgerTxCreator> = {
       publicKey: publicKey as any,
-      signBytes: (...args: Parameters<LedgerTxCreator["signBytes"]>) =>
+      signBytes: (...args) =>
         operateWithSigner((signer) => signer.signBytes(...args)),
     }
 

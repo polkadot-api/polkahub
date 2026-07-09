@@ -53,9 +53,6 @@ export const multisigExternalSigner =
     return Object.assign(creator as T, {
       accountId: publicKey,
       publicKey,
-      signBytes() {
-        throw new Error("Raw bytes can't be signed with a multisig")
-      },
     })
   }
 

@@ -1,4 +1,8 @@
 import {
+  merkleizeMetadata,
+  MetadataMerkleizer,
+} from "@polkadot-api/merkleize-metadata"
+import {
   createV4Tx,
   getSignBytes,
   withCommonExtensions,
@@ -22,13 +26,9 @@ import {
 import { DefaultedStateObservable, state, withDefault } from "@react-rxjs/core"
 import { createSignal } from "@react-rxjs/utils"
 import { Binary, getSs58AddressInfo, HexString } from "polkadot-api"
+import type { getTxCreator } from "polkadot-api/signer"
 import { fromHex, mergeUint8, toHex } from "polkadot-api/utils"
 import { firstValueFrom, map, merge, race } from "rxjs"
-import {
-  merkleizeMetadata,
-  MetadataMerkleizer,
-} from "@polkadot-api/merkleize-metadata"
-import type { getTxCreator } from "polkadot-api/signer"
 
 export const polkadotVaultProviderId = "polkadot-vault"
 export interface VaultAccountInfo {
