@@ -22,12 +22,12 @@ import {
   filter,
   map,
   NEVER,
+  Observable,
   of,
   Subject,
+  Subscription,
   switchMap,
-  take,
   takeUntil,
-  timeout,
 } from "rxjs"
 
 export const selectedAccountPluginId = "selected-account"
@@ -50,34 +50,32 @@ export const createSelectedAccountPlugin = (
   const [accountChange$, setAccount] = createSignal<Account | null>()
   const plugins$ = new BehaviorSubject<Plugin[]>([])
 
-  const initialValue$ = defer(() => {
+  const persistedValue$ = defer(() => {
     const loaded = persist.load() ?? "null"
     const persisted: SerializableAccount | null = JSON.parse(loaded)
     if (!persisted) return of(null)
 
     return plugins$.pipe(
       distinctUntilChanged(),
+      filter((v) => v.length > 0),
       map((plugins) =>
         plugins.find((plugin) => plugin.id === persisted.provider),
       ),
-      filter((r) => r != null),
-      switchMap((plugin) => Promise.resolve(plugin.deserialize(persisted))),
+      switchMap((plugin) =>
+        Promise.resolve(plugin?.deserialize(persisted) ?? null),
+      ),
     )
   }).pipe(
-    timeout({
-      first: 3000,
-    }),
     catchError((ex) => {
       console.error(ex)
-      return [null]
+      return []
     }),
-    take(1),
   )
 
   const ss58Format$ = new Subject<number>()
   const selectedAccount$ = state(
-    concat(
-      initialValue$,
+    mergeUntilNext(
+      persistedValue$,
       accountChange$.pipe(
         switchMap((account) => {
           if (!account) {
@@ -167,3 +165,38 @@ export const useSetSelectedAccount = () => {
   const plugin = usePlugin<SelectedAccountPlugin>(selectedAccountPluginId)
   return plugin?.setAccount ?? null
 }
+
+const mergeUntilNext = <T>(...observables: Array<Observable<T>>) =>
+  new Observable<T>((observer) => {
+    const subscriptions = new Array<Subscription>()
+
+    let subscribing = true
+    for (const source of observables) {
+      const sub = new Subscription()
+      subscriptions.push(sub)
+      sub.add(
+        source.subscribe({
+          next: (v) => {
+            const index = subscriptions.indexOf(sub)
+            const deleted = subscriptions.splice(0, index)
+            deleted.forEach((s) => s.unsubscribe())
+            observer.next(v)
+          },
+          error: (e) => observer.error(e),
+          complete: () => {
+            const index = subscriptions.indexOf(sub)
+            subscriptions.splice(index, 1)
+            sub.unsubscribe()
+
+            if (subscriptions.length === 0 && !subscribing) observer.complete()
+          },
+        }),
+      )
+    }
+    subscribing = false
+    if (subscriptions.length === 0) observer.complete()
+
+    return () => {
+      subscriptions.forEach((sub) => sub.unsubscribe())
+    }
+  })

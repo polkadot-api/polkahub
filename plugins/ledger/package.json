@@ -1,6 +1,6 @@
 {
   "name": "@polkahub/ledger",
-  "version": "0.6.0",
+  "version": "0.7.1",
   "author": "Victor Oliva (https://github.com/voliva)",
   "repository": {
     "type": "git",
@@ -31,16 +31,16 @@
     "build": "tsc -b && rollup -c ../../rollup.config.js"
   },
   "dependencies": {
-    "@polkadot-api/ledger-signer": "canary",
-    "@polkahub/context": "workspace:*",
-    "@polkahub/plugin": "workspace:*",
-    "@polkahub/select-account": "workspace:*",
-    "@polkahub/ui-components": "workspace:*",
+    "@polkadot-api/ledger-signer": "0.4.0-rc.1",
+    "@polkahub/context": "workspace:^*",
+    "@polkahub/plugin": "workspace:^*",
+    "@polkahub/select-account": "workspace:^*",
+    "@polkahub/ui-components": "workspace:^*",
     "@react-rxjs/core": "^0.10.8",
     "@react-rxjs/utils": "^0.9.7",
     "buffer": "^6.0.3",
-    "lucide-react": "^1.17.0",
-    "polkadot-api": "canary",
+    "lucide-react": "^1.23.0",
+    "polkadot-api": "3.0.0-rc.1",
     "rxjs": "^7.8.2"
   },
   "peerDependencies": {
@@ -49,7 +49,7 @@
     "react": "^19.2.0"
   },
   "devDependencies": {
-    "@ledgerhq/hw-transport": "^6.35.3",
+    "@ledgerhq/hw-transport": "^6.35.5",
     "@types/react": "^19.2.17",
     "react": "^19.2.7"
   }

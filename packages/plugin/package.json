@@ -29,10 +29,10 @@
     "build": "tsc -b && rollup -c ../../rollup.config.js"
   },
   "dependencies": {
-    "@polkadot-api/polkadot-signer": "canary",
+    "@polkadot-api/polkadot-signer": "0.2.0-rc.1",
     "@react-rxjs/utils": "^0.9.7",
     "@rx-state/core": "^0.1.4",
-    "polkadot-api": "canary",
+    "polkadot-api": "3.0.0-rc.1",
     "rxjs": "^7.8.2"
   }
 }

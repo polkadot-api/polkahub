@@ -1,6 +1,6 @@
 {
   "name": "polkahub",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "author": "Victor Oliva (https://github.com/voliva)",
   "repository": {
     "type": "git",
@@ -31,23 +31,23 @@
     "build": "tsc -b && rollup -c ../../rollup.config.js"
   },
   "dependencies": {
-    "@polkahub/context": "workspace:*",
-    "@polkahub/ledger": "workspace:*",
-    "@polkahub/mimir": "workspace:*",
-    "@polkahub/multisig": "workspace:*",
-    "@polkahub/pjs-wallet": "workspace:*",
-    "@polkahub/plugin": "workspace:*",
-    "@polkahub/proxy": "workspace:*",
-    "@polkahub/read-only": "workspace:*",
-    "@polkahub/select-account": "workspace:*",
-    "@polkahub/state": "workspace:*",
-    "@polkahub/ui-components": "workspace:*",
-    "@polkahub/vault": "workspace:*",
-    "@polkahub/wallet-connect": "workspace:*",
+    "@polkahub/context": "workspace:^*",
+    "@polkahub/ledger": "workspace:^*",
+    "@polkahub/mimir": "workspace:^*",
+    "@polkahub/multisig": "workspace:^*",
+    "@polkahub/pjs-wallet": "workspace:^*",
+    "@polkahub/plugin": "workspace:^*",
+    "@polkahub/proxy": "workspace:^*",
+    "@polkahub/read-only": "workspace:^*",
+    "@polkahub/select-account": "workspace:^*",
+    "@polkahub/state": "workspace:^*",
+    "@polkahub/ui-components": "workspace:^*",
+    "@polkahub/vault": "workspace:^*",
+    "@polkahub/wallet-connect": "workspace:^*",
     "@react-rxjs/core": "^0.10.8",
     "@react-rxjs/utils": "^0.9.7",
-    "lucide-react": "^1.17.0",
-    "polkadot-api": "canary"
+    "lucide-react": "^1.23.0",
+    "polkadot-api": "3.0.0-rc.1"
   },
   "peerDependencies": {
     "@types/react": "^19.2.2",

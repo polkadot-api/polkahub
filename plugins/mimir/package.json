@@ -1,6 +1,6 @@
 {
   "name": "@polkahub/mimir",
-  "version": "0.6.0",
+  "version": "0.7.1",
   "author": "Victor Oliva (https://github.com/voliva)",
   "repository": {
     "type": "git",
@@ -28,17 +28,17 @@
     "index.css"
   ],
   "scripts": {
-    "build": "echo 'TODO: migration pending'"
+    "build": "tsc -b && rollup -c ../../rollup.config.js"
   },
   "dependencies": {
     "@mimirdev/apps-inject": "^3.2.0",
     "@mimirdev/papi-signer": "^3.1.0",
-    "@polkadot-api/polkadot-signer": "canary",
-    "@polkadot-api/substrate-bindings": "canary",
-    "@polkadot-api/utils": "canary",
-    "@polkahub/context": "workspace:*",
-    "@polkahub/plugin": "workspace:*",
-    "@polkahub/ui-components": "workspace:*",
+    "@polkadot-api/polkadot-signer": "0.2.0-rc.1",
+    "@polkadot-api/substrate-bindings": "0.21.0-rc.1",
+    "@polkadot-api/utils": "^0.4.0",
+    "@polkahub/context": "workspace:^*",
+    "@polkahub/plugin": "workspace:^*",
+    "@polkahub/ui-components": "workspace:^*",
     "@react-rxjs/core": "^0.10.8",
     "rxjs": "^7.8.2"
   },

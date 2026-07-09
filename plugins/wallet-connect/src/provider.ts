@@ -169,6 +169,7 @@ export const createWalletConnectProvider = (
     relayUrl: "wss://relay.walletconnect.com",
     ...opts,
   }
+  let ss58Format = 42
 
   const provider$ = defer(() =>
     import("@walletconnect/universal-provider").then((mod) =>
@@ -325,7 +326,10 @@ export const createWalletConnectProvider = (
           .flat()
           // Format: `polkadot:{genesis_hash}:{account_id}`
           .map((wcAccount) => wcAccount.split(":")[2])
-          .map((acc) => accId.dec(accId.enc(acc))),
+          .map((acc) => {
+            const accId = AccountId(ss58Format)
+            return accId.dec(accId.enc(acc))
+          }),
       ),
     )
 
@@ -403,6 +407,9 @@ export const createWalletConnectProvider = (
     accounts$,
     toggleWalletConnect,
     walletConnectStatus$,
+    receiveContext(context) {
+      ss58Format = context.ss58Format
+    },
   }
 }
 

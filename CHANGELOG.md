@@ -1,5 +1,25 @@
 ## Unreleased
 
+## 0.7.2 2026-07-08
+
+### Fixed
+
+- `@polkahub/select-account`
+  - Unresponsive select account when an account is not persisted.
+
+## 0.7.1 2026-07-07
+
+### Fixed
+
+- `@polkahub/read-only`
+  - Support fake signing with eth-like addresses
+
+- `@polkahub/select-account`
+  - Refresh selected account from persistence when plugins change
+
+- `@polkahub/wallet-connect`
+  - Do not show duplicated accounts
+
 ## 0.7.0 2026-05-13
 
 ### Added

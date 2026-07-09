@@ -7,7 +7,7 @@ import {
   Plugin,
 } from "@polkahub/plugin"
 import { DefaultedStateObservable, withDefault } from "@react-rxjs/core"
-import { AccountId } from "polkadot-api"
+import { AccountId, Binary } from "polkadot-api"
 import { getTxCreator } from "polkadot-api/signer"
 import { map } from "rxjs"
 
@@ -97,10 +97,16 @@ export const createReadOnlyProvider = (
 }
 
 const createFakeSigner = (address: AccountAddress) =>
-  getTxCreator(AccountId().enc(address)!, "Sr25519", () => {
-    // From https://wiki.acala.network/build/sdks/homa
-    const signature = new Uint8Array(64)
-    signature.fill(0xcd)
-    signature.set([0xde, 0xad, 0xbe, 0xef])
-    return signature
-  })
+  getTxCreator(
+    address.startsWith("0x")
+      ? Binary.fromHex(address)
+      : AccountId().enc(address)!,
+    "Sr25519",
+    () => {
+      // From https://wiki.acala.network/build/sdks/homa
+      const signature = new Uint8Array(64)
+      signature.fill(0xcd)
+      signature.set([0xde, 0xad, 0xbe, 0xef])
+      return signature
+    },
+  )
