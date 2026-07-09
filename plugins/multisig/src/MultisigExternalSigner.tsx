@@ -3,27 +3,31 @@ import {
   getMultisigAccountId,
   HexString,
 } from "@polkadot-api/substrate-bindings"
-import { CreateMultisigTxCreator, MultisigInfo } from "./provider"
-import { createSignal } from "@react-rxjs/utils"
-import { state, useStateObservable } from "@react-rxjs/core"
-import { filter, firstValueFrom } from "rxjs"
-import { FC } from "react"
+import { TxCreator } from "@polkahub/plugin"
 import {
   Dialog,
+  DialogBody,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogBody,
 } from "@polkahub/ui-components"
+import { state, useStateObservable } from "@react-rxjs/core"
+import { createSignal } from "@react-rxjs/utils"
 import { Link } from "lucide-react"
-import { TxCreator } from "@polkahub/plugin"
+import { FC } from "react"
+import { filter, firstValueFrom } from "rxjs"
+import {
+  CreateMultisigTxCreator,
+  IdentifiedTxCreator,
+  MultisigInfo,
+} from "./provider"
 
 const [urlChange$, setUrl] = createSignal<string | null>()
 const url$ = state(urlChange$, null)
 
 const [enc] = AccountId()
 export const multisigExternalSigner =
-  <T extends TxCreator<any>>(
+  <T extends IdentifiedTxCreator>(
     getMultisigUrl: (
       info: MultisigInfo,
       callData: HexString,

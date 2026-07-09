@@ -40,9 +40,10 @@ export interface MultisigInfo {
   name?: string
 }
 
-export type CreateMultisigTxCreator<T extends TxCreator<any>> = (
+export type IdentifiedTxCreator = TxCreator<any> & { publicKey: Uint8Array }
+export type CreateMultisigTxCreator<T extends IdentifiedTxCreator> = (
   info: MultisigInfo,
-  parentSigner?: T & { publicKey?: Uint8Array },
+  parentSigner?: T,
 ) => WrapTxCreator<T> | null
 
 export const multisigProviderId = "multisig"
@@ -62,8 +63,8 @@ export interface MultisigProvider extends Plugin<MultisigAccount> {
   removeMultisig: (addr: AccountAddress) => void
 }
 
-export const createMultisigProvider = <T extends TxCreator<any>>(
-  createMultisigTxCreator: CreateMultisigTxCreator<T>,
+export const createMultisigProvider = (
+  createMultisigTxCreator: CreateMultisigTxCreator<IdentifiedTxCreator>,
   opts?: Partial<{
     persist: PersistenceProvider
   }>,
@@ -79,13 +80,13 @@ export const createMultisigProvider = <T extends TxCreator<any>>(
   )
   const plugins$ = new BehaviorSubject<Plugin<Account>[]>([])
 
-  const getAccount = <T extends TxCreator<any>>(
+  const getAccount = (
     info: MultisigInfo,
-    parentSigner?: T,
+    parentSigner?: IdentifiedTxCreator,
   ): MultisigAccount => ({
     provider: multisigProviderId,
     address: getMultisigAddress(info),
-    txCreator: createMultisigTxCreator(info, parentSigner as any) ?? undefined,
+    txCreator: createMultisigTxCreator(info, parentSigner) ?? undefined,
     info,
     name: info.name,
   })
@@ -108,7 +109,13 @@ export const createMultisigProvider = <T extends TxCreator<any>>(
       if (!plugin) return getAccount(info, undefined)
 
       const parentSigner = await plugin.deserialize(info.parentSigner)
-      return getAccount(info, parentSigner?.txCreator)
+      const parentTxCreator =
+        !parentSigner?.txCreator || !("publicKey" in parentSigner.txCreator)
+          ? undefined
+          : (parentSigner.txCreator as TxCreator<any> & {
+              publicKey: Uint8Array
+            })
+      return getAccount(info, parentTxCreator)
     } catch (ex) {
       console.error(ex)
       return getAccount(info, undefined)
@@ -172,7 +179,7 @@ const getMultisigAddress = (info: MultisigInfo) => {
 }
 
 export const multisigDirectSigner =
-  <T extends TxCreator<any>>(
+  (
     getMultisigInfo: (
       multisig: AccountAddress,
       callHash: SizedHex<32>,
@@ -196,7 +203,7 @@ export const multisigDirectSigner =
       }
     }>,
     opts?: MultisigTxCreatorOptions<AccountAddress>,
-  ): CreateMultisigTxCreator<T> =>
+  ): CreateMultisigTxCreator<IdentifiedTxCreator> =>
   (info, parentSigner) => {
     if (parentSigner && !parentSigner.publicKey)
       throw new Error("Proxy provider requires TxCreator with `publicKey`.")
@@ -205,7 +212,7 @@ export const multisigDirectSigner =
           info,
           getMultisigInfo,
           txPaymentInfo,
-          parentSigner as any,
+          parentSigner,
           opts ?? {
             method: () => "as_multi",
           },
