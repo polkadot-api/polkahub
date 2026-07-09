@@ -1,3 +1,4 @@
+import { AccountId } from "@polkadot-api/substrate-bindings"
 import {
   Account,
   addrEq,
@@ -11,7 +12,6 @@ import { createSignal } from "@react-rxjs/utils"
 import type { CaipNetwork } from "@reown/appkit/core"
 import { defineChain } from "@reown/appkit/networks"
 import type { SessionTypes } from "@walletconnect/types"
-import { AccountId } from "@polkadot-api/substrate-bindings"
 import {
   getTxCreatorFromPjs,
   InjectedPolkadotAccount,
@@ -38,8 +38,6 @@ import {
   takeUntil,
   tap,
 } from "rxjs"
-
-const accId = AccountId(42)
 
 export const walletConnectProviderId = "walletconnect"
 export interface WalletConnectAccount extends Account<

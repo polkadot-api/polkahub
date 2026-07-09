@@ -122,17 +122,23 @@ export const createLedgerProvider = (
         close()
       }
     }
-    const creatorWithSigner = (
-      ...args: Parameters<LedgerTxCreator>
-    ): ReturnType<LedgerTxCreator> =>
+
+    type FunctionOnly<T extends (...args: any) => any> = (
+      ...args: Parameters<T>
+    ) => ReturnType<T>
+    const createTx: FunctionOnly<LedgerTxCreator> = (...args) =>
       operateWithSigner((creator) => creator(...args))
 
-    return Object.assign(creatorWithSigner, {
-      // ArrayBuffer mismatch
+    type PropsOnly<T> = {
+      [K in keyof T]: T[K]
+    }
+    const signerProps: PropsOnly<LedgerTxCreator> = {
       publicKey: publicKey as any,
       signBytes: (...args: Parameters<LedgerTxCreator["signBytes"]>) =>
         operateWithSigner((signer) => signer.signBytes(...args)),
-    })
+    }
+
+    return Object.assign(createTx as LedgerTxCreator, signerProps)
   }
 
   const toAccount = (info: LedgerAccountInfo): LedgerAccount => ({
