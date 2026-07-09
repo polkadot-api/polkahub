@@ -14,7 +14,6 @@ export {
   usePolkaHubContext,
 } from "@polkahub/context"
 export * from "@polkahub/ledger"
-// export * from "@polkahub/mimir"
 export * from "@polkahub/multisig"
 export * from "@polkahub/pjs-wallet"
 export * from "@polkahub/plugin"

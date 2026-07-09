@@ -33,7 +33,6 @@
   "dependencies": {
     "@polkahub/context": "workspace:^*",
     "@polkahub/ledger": "workspace:^*",
-    "@polkahub/mimir": "workspace:^*",
     "@polkahub/multisig": "workspace:^*",
     "@polkahub/pjs-wallet": "workspace:^*",
     "@polkahub/plugin": "workspace:^*",
