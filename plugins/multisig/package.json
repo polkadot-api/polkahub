@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "@polkadot-api/meta-signers": "0.3.0-rc.1",
+    "@polkadot-api/metadata-builders": "0.14.4-rc.1",
     "@polkadot-api/substrate-bindings": "0.21.0-rc.1",
     "@polkahub/context": "workspace:^*",
     "@polkahub/plugin": "workspace:^*",
