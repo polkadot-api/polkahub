@@ -193,15 +193,6 @@ export const multisigDirectSigner =
         }
       | undefined
     >,
-    txPaymentInfo: (
-      uxt: Uint8Array,
-      len: number,
-    ) => Promise<{
-      weight: {
-        ref_time: bigint
-        proof_size: bigint
-      }
-    }>,
     opts?: MultisigTxCreatorOptions<AccountAddress>,
   ): CreateMultisigTxCreator<IdentifiedTxCreator> =>
   (info, parentSigner) => {
@@ -211,7 +202,6 @@ export const multisigDirectSigner =
       ? getMultisigTxCreator(
           info,
           getMultisigInfo,
-          txPaymentInfo,
           parentSigner,
           opts ?? {
             method: () => "as_multi",

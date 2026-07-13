@@ -1,11 +1,8 @@
 import { getMultisigTxCreator } from "@polkadot-api/meta-signers"
-import { getDynamicBuilder, getLookupFn } from "@polkadot-api/metadata-builders"
 import {
   AccountId,
-  decAnyMetadata,
   getMultisigAccountId,
   HexString,
-  unifyMetadata,
 } from "@polkadot-api/substrate-bindings"
 import { TxCreator } from "@polkahub/plugin"
 import {
@@ -19,7 +16,7 @@ import { state, useStateObservable } from "@react-rxjs/core"
 import { createSignal } from "@react-rxjs/utils"
 import { Link } from "lucide-react"
 import { FC } from "react"
-import { defer, filter, firstValueFrom, map, Observable } from "rxjs"
+import { filter, firstValueFrom } from "rxjs"
 import {
   CreateMultisigTxCreator,
   IdentifiedTxCreator,
@@ -48,17 +45,13 @@ export const multisigExternalSigner =
     })
 
     const creator: TxCreator<any> = async (txPayload, opts, bindings, fake) => {
-      const {
-        callData,
-        context: { metadata, bestBlockHash },
-      } = txPayload
+      const { callData } = txPayload
       if (fake) {
         if (!signer) throw new Error("Needs a parent signer to fake sign")
 
         const multisigSigner = getMultisigTxCreator(
           info,
           async () => undefined,
-          paymentInfoFromBindings(metadata, bestBlockHash, bindings),
           signer,
         )
         return multisigSigner(txPayload, opts, bindings, true)
@@ -106,59 +99,3 @@ export const MultisigExternalSignerModal: FC = () => {
     </Dialog>
   )
 }
-
-let cachedBuilder: {
-  metadata: string
-  builder: ReturnType<typeof getDynamicBuilder>
-} | null = null
-const getCachedBuilder = (metadata: string) => {
-  if (cachedBuilder?.metadata !== metadata)
-    cachedBuilder = {
-      metadata,
-      builder: getDynamicBuilder(
-        getLookupFn(unifyMetadata(decAnyMetadata(metadata))),
-      ),
-    }
-  return cachedBuilder.builder
-}
-
-const paymentInfoFromBindings =
-  (
-    metadata: string,
-    block: string,
-    bindings: {
-      call: (
-        call: string,
-        args: Uint8Array,
-        at: string,
-      ) => Observable<Uint8Array>
-    },
-  ) =>
-  (uxt: Uint8Array, len: number) =>
-    firstValueFrom(
-      defer(() => {
-        const dynamicBuilder = getCachedBuilder(metadata)
-        const codecs = dynamicBuilder.buildRuntimeCall(
-          "TransactionPaymentApi",
-          "query_info",
-        )
-
-        return bindings
-          .call(
-            "TransactionPaymentApi_query_info",
-            codecs.args.enc([uxt, len]),
-            block,
-          )
-          .pipe(
-            map(
-              (res) =>
-                codecs.value.dec(res) as {
-                  weight: {
-                    ref_time: bigint
-                    proof_size: bigint
-                  }
-                },
-            ),
-          )
-      }),
-    )
