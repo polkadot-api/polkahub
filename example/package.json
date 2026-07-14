@@ -17,7 +17,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.23.0",
-    "polkadot-api": "3.0.0-rc.2",
+    "polkadot-api": "3.0.0-rc.3",
     "polkahub": "workspace:^*",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",

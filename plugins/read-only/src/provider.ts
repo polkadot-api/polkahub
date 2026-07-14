@@ -7,7 +7,7 @@ import {
   Plugin,
 } from "@polkahub/plugin"
 import { DefaultedStateObservable, withDefault } from "@react-rxjs/core"
-import { getFakeTxCreator, getTxCreator } from "polkadot-api/signer"
+import { getFakeTxCreator, RawTxCreator } from "polkadot-api/tx-creator"
 import { map } from "rxjs"
 
 export interface ReadonlyAccountInfo {
@@ -16,7 +16,7 @@ export interface ReadonlyAccountInfo {
 }
 
 export const readOnlyProviderId = "readonly"
-type ReadOnlyAccount = Account<ReturnType<typeof getTxCreator>>
+type ReadOnlyAccount = Account<RawTxCreator>
 export interface ReadOnlyProvider extends Plugin<ReadOnlyAccount> {
   id: "readonly"
   accounts$: DefaultedStateObservable<ReadOnlyAccount[]>

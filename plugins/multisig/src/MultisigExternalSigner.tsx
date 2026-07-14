@@ -44,7 +44,7 @@ export const multisigExternalSigner =
       signatories: info.signatories.map(enc),
     })
 
-    const creator: TxCreator<any> = async (txPayload, opts, bindings, fake) => {
+    const creator: TxCreator = async (txPayload, opts, bindings, fake) => {
       const { callData } = txPayload
       if (fake) {
         if (!signer) throw new Error("Needs a parent signer to fake sign")

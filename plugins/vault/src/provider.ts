@@ -26,7 +26,7 @@ import {
 import { DefaultedStateObservable, state, withDefault } from "@react-rxjs/core"
 import { createSignal } from "@react-rxjs/utils"
 import { Binary, getSs58AddressInfo, HexString } from "polkadot-api"
-import type { getTxCreator } from "polkadot-api/signer"
+import type { RawTxCreator } from "polkadot-api/tx-creator"
 import { fromHex, mergeUint8, toHex } from "polkadot-api/utils"
 import { firstValueFrom, map, merge, race } from "rxjs"
 
@@ -35,7 +35,7 @@ export interface VaultAccountInfo {
   address: AccountAddress
   genesis: HexString
 }
-type Creator = ReturnType<typeof getTxCreator>
+type Creator = RawTxCreator
 export interface PolkadotVaultAccount extends Account<Creator> {
   provider: "polkadot-vault"
   genesis: HexString

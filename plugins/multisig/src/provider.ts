@@ -40,7 +40,7 @@ export interface MultisigInfo {
   name?: string
 }
 
-export type IdentifiedTxCreator = TxCreator<any> & { publicKey: Uint8Array }
+export type IdentifiedTxCreator = { publicKey: Uint8Array } & TxCreator
 export type CreateMultisigTxCreator<T extends IdentifiedTxCreator> = (
   info: MultisigInfo,
   parentSigner?: T,
@@ -48,7 +48,7 @@ export type CreateMultisigTxCreator<T extends IdentifiedTxCreator> = (
 
 export const multisigProviderId = "multisig"
 export interface MultisigAccount<
-  T extends TxCreator<any> = TxCreator<any>,
+  T extends TxCreator = TxCreator,
 > extends Account<WrapTxCreator<T>> {
   provider: "multisig"
   info: MultisigInfo
@@ -108,13 +108,19 @@ export const createMultisigProvider = (
       )
       if (!plugin) return getAccount(info, undefined)
 
-      const parentSigner = await plugin.deserialize(info.parentSigner)
+      const parentSigner: Account<
+        TxCreator &
+          (
+            | {
+                publicKey: Uint8Array
+              }
+            | {}
+          )
+      > | null = await plugin.deserialize(info.parentSigner)
       const parentTxCreator =
         !parentSigner?.txCreator || !("publicKey" in parentSigner.txCreator)
           ? undefined
-          : (parentSigner.txCreator as TxCreator<any> & {
-              publicKey: Uint8Array
-            })
+          : parentSigner.txCreator
       return getAccount(info, parentTxCreator)
     } catch (ex) {
       console.error(ex)

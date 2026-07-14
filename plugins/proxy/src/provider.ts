@@ -28,9 +28,9 @@ export interface ProxyInfo {
 }
 
 export const proxyProviderId = "proxy"
-export interface ProxyAccount<
-  T extends TxCreator<any> = TxCreator<any>,
-> extends Account<WrapTxCreator<T>> {
+export interface ProxyAccount<T extends TxCreator = TxCreator> extends Account<
+  WrapTxCreator<T>
+> {
   provider: "proxy"
   info: ProxyInfo
 }
@@ -75,7 +75,7 @@ export const createProxyProvider = (
   )
   const plugins$ = new BehaviorSubject<Plugin[]>([])
 
-  const getAccount = <T extends TxCreator<any>>(
+  const getAccount = <T extends TxCreator>(
     info: ProxyInfo,
     parentSigner?: T & { publicKey?: Uint8Array },
   ): ProxyAccount<T> => {

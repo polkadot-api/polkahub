@@ -31,14 +31,14 @@
     "build": "tsc -b && rollup -c ../../rollup.config.js"
   },
   "dependencies": {
-    "@polkadot-api/pjs-signer": "0.8.0-rc.1",
+    "@polkadot-api/pjs-signer": "0.8.0-rc.2",
     "@polkahub/context": "workspace:^*",
     "@polkahub/plugin": "workspace:^*",
     "@polkahub/ui-components": "workspace:^*",
     "@react-rxjs/core": "^0.10.8",
     "@react-rxjs/utils": "^0.9.7",
     "lucide-react": "^1.23.0",
-    "polkadot-api": "3.0.0-rc.2",
+    "polkadot-api": "3.0.0-rc.3",
     "rxjs": "^7.8.2"
   },
   "peerDependencies": {
