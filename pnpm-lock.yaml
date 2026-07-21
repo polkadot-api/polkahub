@@ -46,13 +46,13 @@ importers:
         version: 6.36.0
       '@polkadot-api/descriptors':
         specifier: file:.papi/descriptors
-        version: file:example/.papi/descriptors(polkadot-api@3.0.0-rc.3(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6))
+        version: file:example/.papi/descriptors(polkadot-api@3.0.0-rc.4(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6))
       '@polkadot-api/react-components':
         specifier: ^0.4.2
         version: 0.4.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@polkadot-api/sdk-accounts':
         specifier: ^0.7.0
-        version: 0.7.0(@react-rxjs/core@0.10.8(react@19.2.7)(rxjs@7.8.2))(polkadot-api@3.0.0-rc.3(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6))(react@19.2.7)(rxjs@7.8.2)
+        version: 0.7.0(@react-rxjs/core@0.10.8(react@19.2.7)(rxjs@7.8.2))(polkadot-api@3.0.0-rc.4(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6))(react@19.2.7)(rxjs@7.8.2)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -63,8 +63,8 @@ importers:
         specifier: ^1.23.0
         version: 1.23.0(react@19.2.7)
       polkadot-api:
-        specifier: 3.0.0-rc.3
-        version: 3.0.0-rc.3(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6)
+        specifier: 3.0.0-rc.4
+        version: 3.0.0-rc.4(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6)
       polkahub:
         specifier: workspace:^*
         version: link:../packages/polkahub
@@ -130,8 +130,8 @@ importers:
         specifier: ^0.1.4
         version: 0.1.4(rxjs@7.8.2)
       polkadot-api:
-        specifier: 3.0.0-rc.3
-        version: 3.0.0-rc.3(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6)
+        specifier: 3.0.0-rc.4
+        version: 3.0.0-rc.4(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6)
       rxjs:
         specifier: ^7.8.2
         version: 7.8.2
@@ -155,8 +155,8 @@ importers:
         specifier: ^0.1.4
         version: 0.1.4(rxjs@7.8.2)
       polkadot-api:
-        specifier: 3.0.0-rc.3
-        version: 3.0.0-rc.3(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6)
+        specifier: 3.0.0-rc.4
+        version: 3.0.0-rc.4(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6)
       rxjs:
         specifier: ^7.8.2
         version: 7.8.2
@@ -209,8 +209,8 @@ importers:
         specifier: ^1.23.0
         version: 1.23.0(react@19.2.7)
       polkadot-api:
-        specifier: 3.0.0-rc.3
-        version: 3.0.0-rc.3(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6)
+        specifier: 3.0.0-rc.4
+        version: 3.0.0-rc.4(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6)
     devDependencies:
       '@types/react':
         specifier: ^19.2.17
@@ -231,8 +231,8 @@ importers:
         specifier: ^0.1.4
         version: 0.1.4(rxjs@7.8.2)
       polkadot-api:
-        specifier: 3.0.0-rc.3
-        version: 3.0.0-rc.3(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6)
+        specifier: 3.0.0-rc.4
+        version: 3.0.0-rc.4(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6)
       rxjs:
         specifier: ^7.8.2
         version: 7.8.2
@@ -352,8 +352,8 @@ importers:
         specifier: ^1.23.0
         version: 1.23.0(react@19.2.7)
       polkadot-api:
-        specifier: 3.0.0-rc.3
-        version: 3.0.0-rc.3(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6)
+        specifier: 3.0.0-rc.4
+        version: 3.0.0-rc.4(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6)
       rxjs:
         specifier: ^7.8.2
         version: 7.8.2
@@ -404,8 +404,8 @@ importers:
         specifier: ^1.23.0
         version: 1.23.0(react@19.2.7)
       polkadot-api:
-        specifier: 3.0.0-rc.3
-        version: 3.0.0-rc.3(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6)
+        specifier: 3.0.0-rc.4
+        version: 3.0.0-rc.4(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6)
       rxjs:
         specifier: ^7.8.2
         version: 7.8.2
@@ -441,8 +441,8 @@ importers:
         specifier: ^1.23.0
         version: 1.23.0(react@19.2.7)
       polkadot-api:
-        specifier: 3.0.0-rc.3
-        version: 3.0.0-rc.3(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6)
+        specifier: 3.0.0-rc.4
+        version: 3.0.0-rc.4(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6)
       rxjs:
         specifier: ^7.8.2
         version: 7.8.2
@@ -481,8 +481,8 @@ importers:
         specifier: ^1.23.0
         version: 1.23.0(react@19.2.7)
       polkadot-api:
-        specifier: 3.0.0-rc.3
-        version: 3.0.0-rc.3(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6)
+        specifier: 3.0.0-rc.4
+        version: 3.0.0-rc.4(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6)
       rxjs:
         specifier: ^7.8.2
         version: 7.8.2
@@ -521,8 +521,8 @@ importers:
         specifier: ^1.23.0
         version: 1.23.0(react@19.2.7)
       polkadot-api:
-        specifier: 3.0.0-rc.3
-        version: 3.0.0-rc.3(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6)
+        specifier: 3.0.0-rc.4
+        version: 3.0.0-rc.4(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6)
       rxjs:
         specifier: ^7.8.2
         version: 7.8.2
@@ -607,8 +607,8 @@ importers:
         specifier: ^1.23.0
         version: 1.23.0(react@19.2.7)
       polkadot-api:
-        specifier: 3.0.0-rc.3
-        version: 3.0.0-rc.3(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6)
+        specifier: 3.0.0-rc.4
+        version: 3.0.0-rc.4(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6)
       rxjs:
         specifier: ^7.8.2
         version: 7.8.2
@@ -656,8 +656,8 @@ importers:
         specifier: 2.23.9
         version: 2.23.9(typescript@5.9.3)(zod@3.25.76)
       polkadot-api:
-        specifier: 3.0.0-rc.3
-        version: 3.0.0-rc.3(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6)
+        specifier: 3.0.0-rc.4
+        version: 3.0.0-rc.4(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6)
       rxjs:
         specifier: ^7.8.2
         version: 7.8.2
@@ -969,8 +969,8 @@ packages:
   '@phosphor-icons/webcomponents@2.1.5':
     resolution: {integrity: sha512-JcvQkZxvcX2jK+QCclm8+e8HXqtdFW9xV4/kk2aL9Y3dJA2oQVt+pzbv1orkumz3rfx4K9mn9fDoMr1He1yr7Q==}
 
-  '@polkadot-api/cli@0.21.8-rc.1':
-    resolution: {integrity: sha512-Ihlga88AfHqNORvnwGGHLiVI8YjLtG8YUuCgUyaGlacbeOZzppEQEpS66tkDaXK1yi/H6VEh9BTskJ6TArjpDg==}
+  '@polkadot-api/cli@0.21.9-rc.1':
+    resolution: {integrity: sha512-xoehmVNMnPC1dw5aVsWoHxObQl6CUn1deuJyadhkflxWastPmEnCk6AFn6tav5qrzaZ1KseCjKW0hxgTG65O7Q==}
     hasBin: true
 
   '@polkadot-api/codegen@0.23.0-rc.1':
@@ -990,14 +990,14 @@ packages:
   '@polkadot-api/ink-contracts@0.6.4-rc.1':
     resolution: {integrity: sha512-ZnBfNwStWCGaYZLhCN3+i/RGmFMbz4zN5aaFnHVtEpev0Qv5A0uUd/4FeoyojxdszoR6Zd9B45IhEmB7K9I+5w==}
 
-  '@polkadot-api/json-rpc-provider-proxy@0.4.0':
-    resolution: {integrity: sha512-h+ay62wwj4y+PJ/JiZ8o54il9UYsgBxq1dxas8mN1Ybth1QxxYPxWvkhyswBNQuWBZIWJw5p3X9cGQku+LvaWQ==}
+  '@polkadot-api/json-rpc-provider-proxy@0.4.1':
+    resolution: {integrity: sha512-F1Hw01C60jn98KQ0vBbgcwAvEcMcKLsJ5kFzq600sgjc6Rnbn1VF/XjTdrjcIqvfpR9sXyGIrpImrov2Usbrsw==}
 
   '@polkadot-api/json-rpc-provider@0.2.0':
     resolution: {integrity: sha512-lhkuBS/x06i3djQIN7p8jVkMnYuGsUAEMS6RhdWeEpz7X/8/APER4Wdih7MEBovCuwVSCTjOxl8f+alH7AZHZg==}
 
-  '@polkadot-api/known-chains@0.11.7':
-    resolution: {integrity: sha512-9MocWVCl/GyBaPF3hM5EyOfgYADVG25xmWxPqAbAQlQQXiSXsTHlhWGmcJZoVykWYRY+ci4L8qzVzuuWUXcc9g==}
+  '@polkadot-api/known-chains@0.12.0':
+    resolution: {integrity: sha512-ZMdrTIZCvBLo9U9xwH5+y63UP7nBM9gUHut8QKVHZp1ZBjgCL84xV53nUj6raXTJeQ/a6IZy8p6hAnHzCekO2g==}
 
   '@polkadot-api/ledger-signer@0.4.0-rc.2':
     resolution: {integrity: sha512-PkBnt3kmcqLTP1/rjuzvQA/gcmGAJLa5ficEqIFRZaY/mhJEFuSwQYe5nU/Ewi3JzN4obothxbNtuBxvF3lZuA==}
@@ -1058,8 +1058,8 @@ packages:
     peerDependencies:
       rxjs: '>=7.8.0'
 
-  '@polkadot-api/sm-provider@0.3.7':
-    resolution: {integrity: sha512-pqJtxrc+Xc2mEVm9brbjftbWk/nOUc7VX1ms0QZj8+6nEu1+DxBn6W8w2EoJ14VlTc+u6kDw6Nne4/DHxz+AAA==}
+  '@polkadot-api/sm-provider@0.3.8':
+    resolution: {integrity: sha512-jIvzBNsBsh6LIpCrUOa7miZdQPwLPns5IUQyz/8v84R3ON7URSIVbtywGSR8O83BZGyW/DmVkqa5lClLE2fkqw==}
     peerDependencies:
       '@polkadot-api/smoldot': '>=0.3'
 
@@ -1092,13 +1092,13 @@ packages:
   '@polkadot-api/wasm-executor@0.2.3':
     resolution: {integrity: sha512-B2h1o+Qlo9idpASaHvMSoViB2I5ko5OAfwfhYF8LQDkTADK0B+SeStzNj1Qn+FG34wqTuv7HzBCdjaUgzYINJQ==}
 
-  '@polkadot-api/ws-middleware@0.3.6-rc.1':
-    resolution: {integrity: sha512-7Ppa00FQzBJsfhwaWOtRQXtCPM3x8XIeZ0gJHixhKW5GDaLkW0Eu7px6zXSuVm72tmFLOSw518Pg74wJt5Is5Q==}
+  '@polkadot-api/ws-middleware@0.3.7-rc.1':
+    resolution: {integrity: sha512-D40QBdgV6i6WVZFwznKu/oBBqv2vkv7zpgQWyxLnKWTiZPiDDT/lRcZKeiYCa0RD6TQMtNLDRFIelW9hYI/ZOg==}
     peerDependencies:
       rxjs: '>=7.8.0'
 
-  '@polkadot-api/ws-provider@0.9.0':
-    resolution: {integrity: sha512-czTLgHEJPqx+6t5sb5OJpXDaSmbDTr8zYngBdUI47QYqcNB225zo/GdYakiNiGThtxVp1MLK7QsNXcT6XgqQNQ==}
+  '@polkadot-api/ws-provider@0.9.1':
+    resolution: {integrity: sha512-Ft2QJEjLZgTyKiCEbz3urSOxNfMdqNkg+QKqJhRbOFB7JtR1qMTvLE3TjM+5d2mNlEpOc3j2KDK3APNSj7uQ2Q==}
     peerDependencies:
       rxjs: '>=7.8.0'
 
@@ -3221,8 +3221,8 @@ packages:
     resolution: {integrity: sha512-40QW5YalBNfQo5yRYmiw7Yz6TKKVr3h6970B2YE+3fQpsWcrbj1PzJgxeJ19DRQjhMbKPIuMY8rFaXc8moolVw==}
     engines: {node: '>=10.13.0'}
 
-  polkadot-api@3.0.0-rc.3:
-    resolution: {integrity: sha512-rb8BvbLdyMIpAqBa72BgGT3evKvsmPgwbdLdB/Rt0KPjpp+ZALY1obc0VRU0O8PwYMY1Igw+RAFQ0hmQX9716A==}
+  polkadot-api@3.0.0-rc.4:
+    resolution: {integrity: sha512-KVAerhWy6AzSQGKQuvG3Ctjb55k5Wmbk6QNEMWWQESVx+F6uQtO5kUdTW24AcyXi0aRct//ucq4rmcs3PWN5Gg==}
     hasBin: true
     peerDependencies:
       rxjs: '>=7.8.0'
@@ -4370,23 +4370,23 @@ snapshots:
     dependencies:
       lit: 3.3.0
 
-  '@polkadot-api/cli@0.21.8-rc.1(bufferutil@4.1.0)(esbuild@0.27.3)(utf-8-validate@6.0.6)':
+  '@polkadot-api/cli@0.21.9-rc.1(bufferutil@4.1.0)(esbuild@0.27.3)(utf-8-validate@6.0.6)':
     dependencies:
       '@commander-js/extra-typings': 15.0.0(commander@15.0.0)
       '@polkadot-api/codegen': 0.23.0-rc.1
       '@polkadot-api/ink-contracts': 0.6.4-rc.1
       '@polkadot-api/json-rpc-provider': 0.2.0
-      '@polkadot-api/known-chains': 0.11.7
+      '@polkadot-api/known-chains': 0.12.0
       '@polkadot-api/metadata-compatibility': 0.6.4-rc.1
       '@polkadot-api/observable-client': 0.18.8-rc.1(rxjs@7.8.2)
-      '@polkadot-api/sm-provider': 0.3.7(@polkadot-api/smoldot@0.4.6(bufferutil@4.1.0))
+      '@polkadot-api/sm-provider': 0.3.8(@polkadot-api/smoldot@0.4.6(bufferutil@4.1.0))
       '@polkadot-api/smoldot': 0.4.6(bufferutil@4.1.0)(utf-8-validate@6.0.6)
       '@polkadot-api/substrate-bindings': 0.21.0-rc.1
       '@polkadot-api/substrate-client': 0.7.0
       '@polkadot-api/utils': 0.4.0
       '@polkadot-api/wasm-executor': 0.2.3
-      '@polkadot-api/ws-middleware': 0.3.6-rc.1(rxjs@7.8.2)
-      '@polkadot-api/ws-provider': 0.9.0(rxjs@7.8.2)
+      '@polkadot-api/ws-middleware': 0.3.7-rc.1(rxjs@7.8.2)
+      '@polkadot-api/ws-provider': 0.9.1(rxjs@7.8.2)
       '@types/node': 25.9.4
       commander: 15.0.0
       execa: 9.6.1
@@ -4413,14 +4413,14 @@ snapshots:
       '@polkadot-api/substrate-bindings': 0.21.0-rc.1
       '@polkadot-api/utils': 0.4.0
 
-  '@polkadot-api/common-sdk-utils@0.3.0(polkadot-api@3.0.0-rc.3(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6))(rxjs@7.8.2)':
+  '@polkadot-api/common-sdk-utils@0.3.0(polkadot-api@3.0.0-rc.4(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6))(rxjs@7.8.2)':
     dependencies:
-      polkadot-api: 3.0.0-rc.3(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6)
+      polkadot-api: 3.0.0-rc.4(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6)
       rxjs: 7.8.2
 
-  '@polkadot-api/descriptors@file:example/.papi/descriptors(polkadot-api@3.0.0-rc.3(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6))':
+  '@polkadot-api/descriptors@file:example/.papi/descriptors(polkadot-api@3.0.0-rc.4(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6))':
     dependencies:
-      polkadot-api: 3.0.0-rc.3(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6)
+      polkadot-api: 3.0.0-rc.4(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6)
 
   '@polkadot-api/ink-contracts@0.6.4-rc.1':
     dependencies:
@@ -4428,11 +4428,11 @@ snapshots:
       '@polkadot-api/substrate-bindings': 0.21.0-rc.1
       '@polkadot-api/utils': 0.4.0
 
-  '@polkadot-api/json-rpc-provider-proxy@0.4.0': {}
+  '@polkadot-api/json-rpc-provider-proxy@0.4.1': {}
 
   '@polkadot-api/json-rpc-provider@0.2.0': {}
 
-  '@polkadot-api/known-chains@0.11.7': {}
+  '@polkadot-api/known-chains@0.12.0': {}
 
   '@polkadot-api/ledger-signer@0.4.0-rc.2(@ledgerhq/hw-transport@6.35.5)(rxjs@7.8.2)':
     dependencies:
@@ -4527,12 +4527,12 @@ snapshots:
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
 
-  '@polkadot-api/sdk-accounts@0.7.0(@react-rxjs/core@0.10.8(react@19.2.7)(rxjs@7.8.2))(polkadot-api@3.0.0-rc.3(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6))(react@19.2.7)(rxjs@7.8.2)':
+  '@polkadot-api/sdk-accounts@0.7.0(@react-rxjs/core@0.10.8(react@19.2.7)(rxjs@7.8.2))(polkadot-api@3.0.0-rc.4(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6))(react@19.2.7)(rxjs@7.8.2)':
     dependencies:
-      '@polkadot-api/common-sdk-utils': 0.3.0(polkadot-api@3.0.0-rc.3(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6))(rxjs@7.8.2)
+      '@polkadot-api/common-sdk-utils': 0.3.0(polkadot-api@3.0.0-rc.4(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6))(rxjs@7.8.2)
       '@polkadot-api/substrate-bindings': 0.19.0
       '@react-rxjs/utils': 0.9.7(@react-rxjs/core@0.10.8(react@19.2.7)(rxjs@7.8.2))(react@19.2.7)(rxjs@7.8.2)
-      polkadot-api: 3.0.0-rc.3(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6)
+      polkadot-api: 3.0.0-rc.4(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6)
       rxjs: 7.8.2
     transitivePeerDependencies:
       - '@react-rxjs/core'
@@ -4546,10 +4546,10 @@ snapshots:
       '@polkadot-api/utils': 0.4.0
       rxjs: 7.8.2
 
-  '@polkadot-api/sm-provider@0.3.7(@polkadot-api/smoldot@0.4.6(bufferutil@4.1.0))':
+  '@polkadot-api/sm-provider@0.3.8(@polkadot-api/smoldot@0.4.6(bufferutil@4.1.0))':
     dependencies:
       '@polkadot-api/json-rpc-provider': 0.2.0
-      '@polkadot-api/json-rpc-provider-proxy': 0.4.0
+      '@polkadot-api/json-rpc-provider-proxy': 0.4.1
       '@polkadot-api/smoldot': 0.4.6(bufferutil@4.1.0)(utf-8-validate@6.0.6)
 
   '@polkadot-api/smoldot@0.4.6(bufferutil@4.1.0)(utf-8-validate@6.0.6)':
@@ -4597,19 +4597,19 @@ snapshots:
 
   '@polkadot-api/wasm-executor@0.2.3': {}
 
-  '@polkadot-api/ws-middleware@0.3.6-rc.1(rxjs@7.8.2)':
+  '@polkadot-api/ws-middleware@0.3.7-rc.1(rxjs@7.8.2)':
     dependencies:
       '@polkadot-api/json-rpc-provider': 0.2.0
-      '@polkadot-api/json-rpc-provider-proxy': 0.4.0
+      '@polkadot-api/json-rpc-provider-proxy': 0.4.1
       '@polkadot-api/raw-client': 0.3.0
       '@polkadot-api/substrate-bindings': 0.21.0-rc.1
       '@polkadot-api/utils': 0.4.0
       rxjs: 7.8.2
 
-  '@polkadot-api/ws-provider@0.9.0(rxjs@7.8.2)':
+  '@polkadot-api/ws-provider@0.9.1(rxjs@7.8.2)':
     dependencies:
       '@polkadot-api/json-rpc-provider': 0.2.0
-      '@polkadot-api/json-rpc-provider-proxy': 0.4.0
+      '@polkadot-api/json-rpc-provider-proxy': 0.4.1
       '@polkadot-api/utils': 0.4.0
       rxjs: 7.8.2
 
@@ -7241,12 +7241,12 @@ snapshots:
 
   pngjs@5.0.0: {}
 
-  polkadot-api@3.0.0-rc.3(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6):
+  polkadot-api@3.0.0-rc.4(bufferutil@4.1.0)(esbuild@0.27.3)(rxjs@7.8.2)(utf-8-validate@6.0.6):
     dependencies:
-      '@polkadot-api/cli': 0.21.8-rc.1(bufferutil@4.1.0)(esbuild@0.27.3)(utf-8-validate@6.0.6)
+      '@polkadot-api/cli': 0.21.9-rc.1(bufferutil@4.1.0)(esbuild@0.27.3)(utf-8-validate@6.0.6)
       '@polkadot-api/ink-contracts': 0.6.4-rc.1
       '@polkadot-api/json-rpc-provider': 0.2.0
-      '@polkadot-api/known-chains': 0.11.7
+      '@polkadot-api/known-chains': 0.12.0
       '@polkadot-api/logs-provider': 0.2.0
       '@polkadot-api/metadata-builders': 0.14.4-rc.1
       '@polkadot-api/metadata-compatibility': 0.6.4-rc.1
@@ -7254,14 +7254,14 @@ snapshots:
       '@polkadot-api/pjs-signer': 0.8.0-rc.2(rxjs@7.8.2)
       '@polkadot-api/raw-tx-creator': 0.4.0-rc.3(rxjs@7.8.2)
       '@polkadot-api/signers-common': 0.3.0-rc.2(rxjs@7.8.2)
-      '@polkadot-api/sm-provider': 0.3.7(@polkadot-api/smoldot@0.4.6(bufferutil@4.1.0))
+      '@polkadot-api/sm-provider': 0.3.8(@polkadot-api/smoldot@0.4.6(bufferutil@4.1.0))
       '@polkadot-api/smoldot': 0.4.6(bufferutil@4.1.0)(utf-8-validate@6.0.6)
       '@polkadot-api/substrate-bindings': 0.21.0-rc.1
       '@polkadot-api/substrate-client': 0.7.0
       '@polkadot-api/tx-creator': 0.2.0-rc.2(rxjs@7.8.2)
       '@polkadot-api/utils': 0.4.0
-      '@polkadot-api/ws-middleware': 0.3.6-rc.1(rxjs@7.8.2)
-      '@polkadot-api/ws-provider': 0.9.0(rxjs@7.8.2)
+      '@polkadot-api/ws-middleware': 0.3.7-rc.1(rxjs@7.8.2)
+      '@polkadot-api/ws-provider': 0.9.1(rxjs@7.8.2)
       '@rx-state/core': 0.1.4(rxjs@7.8.2)
       rxjs: 7.8.2
     transitivePeerDependencies:
