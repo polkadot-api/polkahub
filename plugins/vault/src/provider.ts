@@ -1,4 +1,13 @@
-import { createV4Tx } from "@polkadot-api/signers-common"
+import {
+  merkleizeMetadata,
+  MetadataMerkleizer,
+} from "@polkadot-api/merkleize-metadata"
+import {
+  createV4Tx,
+  getSignBytes,
+  withCommonExtensions,
+  withNonce,
+} from "@polkadot-api/signers-common"
 import {
   compact,
   decAnyMetadata,
@@ -12,30 +21,25 @@ import {
   persistedState,
   PersistenceProvider,
   Plugin,
+  type TxCreator,
 } from "@polkahub/plugin"
 import { DefaultedStateObservable, state, withDefault } from "@react-rxjs/core"
 import { createSignal } from "@react-rxjs/utils"
-import {
-  Binary,
-  getSs58AddressInfo,
-  HexString,
-  PolkadotSigner,
-} from "polkadot-api"
-import { mergeUint8 } from "polkadot-api/utils"
+import { Binary, getSs58AddressInfo, HexString } from "polkadot-api"
+import type { RawTxCreator } from "polkadot-api/tx-creator"
+import { fromHex, mergeUint8, toHex } from "polkadot-api/utils"
 import { firstValueFrom, map, merge, race } from "rxjs"
-import {
-  merkleizeMetadata,
-  MetadataMerkleizer,
-} from "@polkadot-api/merkleize-metadata"
 
 export const polkadotVaultProviderId = "polkadot-vault"
 export interface VaultAccountInfo {
   address: AccountAddress
   genesis: HexString
 }
-export interface PolkadotVaultAccount extends Account {
+type Creator = RawTxCreator
+export interface PolkadotVaultAccount extends Account<Creator> {
   provider: "polkadot-vault"
   genesis: HexString
+  txCreator: Creator
 }
 
 export interface PolkadotVaultProvider extends Plugin<PolkadotVaultAccount> {
@@ -89,7 +93,7 @@ export const createPolkadotVaultProvider = (
   const createVaultSigner = ({
     address,
     genesis: accountGenesis,
-  }: VaultAccountInfo): PolkadotSigner => {
+  }: VaultAccountInfo): Creator => {
     const info = getSs58AddressInfo(address)
     if (!info.isValid) {
       throw new Error("Invalid SS58 address " + address)
@@ -97,9 +101,96 @@ export const createPolkadotVaultProvider = (
 
     const publicKey = info.publicKey
 
-    return {
+    const creator: TxCreator<[]> = async (payload, _, mocked) => {
+      let merkleizer: MetadataMerkleizer | null = null
+      const decMeta = unifyMetadata(decAnyMetadata(payload.context.metadata))
+      const extra: Array<Uint8Array> = []
+      const additionalSigned: Array<Uint8Array> = []
+      const txExtVersion = payload.txExtVersion ?? 0
+      if (txExtVersion !== 0)
+        throw new Error("Only txExtVersion 0 is allowed for extrinsic v4")
+      for (const { identifier } of decMeta.extrinsic.extensionsByVersion[
+        txExtVersion
+      ]) {
+        if (identifier === "CheckMetadataHash") {
+          if (getNetworkInfo) {
+            merkleizer = merkleizeMetadata(
+              payload.context.metadata,
+              await getNetworkInfo(),
+            )
+            extra.push(Uint8Array.from([1]))
+            additionalSigned.push(
+              mergeUint8([Uint8Array.from([1]), merkleizer.digest()]),
+            )
+            continue
+          } else {
+            console.warn(
+              "The chain supports `CheckMetadataHash`, but `getNetworkInfo` was not provided. Polkadot Vault will need the whole metadata downloaded beforehand.",
+            )
+          }
+        }
+        const signedExtension = payload.extensions.find(
+          ({ id }) => id === identifier,
+        )
+        if (!signedExtension)
+          throw new Error(`Missing ${identifier} signed extension`)
+        extra.push(fromHex(signedExtension.extra))
+        additionalSigned.push(fromHex(signedExtension.additionalSigned))
+      }
+      const extensions = mergeUint8([...extra, ...additionalSigned])
+
+      const genesis = fromHex(
+        payload.extensions.find(({ id }) => id === "CheckGenesis")
+          ?.additionalSigned ?? accountGenesis,
+      )
+      const callData = fromHex(payload.callData)
+
+      const qrPayload = merkleizer
+        ? createQrProofedTransaction(
+            VaultQrEncryption.Sr25519,
+            publicKey,
+            merkleizer.getProofForExtrinsicParts(
+              callData,
+              mergeUint8(extra),
+              mergeUint8(additionalSigned),
+            ),
+            callData,
+            extensions,
+            genesis,
+          )
+        : createQrTransaction(
+            VaultQrEncryption.Sr25519,
+            publicKey,
+            callData,
+            extensions,
+            genesis,
+          )
+      setTx(qrPayload)
+
+      const signature = mocked
+        ? // there is a slice(1) a bit afterwards, signature length is 64
+          new Uint8Array(65).fill(0)
+        : await firstValueFrom(currentScannedSignature$)
+      if (!signature) {
+        throw new Error("Cancelled")
+      }
+
+      const tx = createV4Tx(
+        decMeta,
+        publicKey,
+        // Remove encryption code, we already know it
+        signature.slice(1),
+        extra,
+        callData,
+        // TODO schema?
+        "Sr25519",
+      )
+
+      return toHex(tx)
+    }
+    return Object.assign(withNonce(publicKey)(withCommonExtensions(creator)), {
       publicKey,
-      async signBytes(data) {
+      signBytes: getSignBytes(async (data) => {
         const qrPayload = createQrMessage(
           VaultQrEncryption.Sr25519,
           publicKey,
@@ -114,81 +205,8 @@ export const createPolkadotVaultProvider = (
         }
 
         return signature
-      },
-      async signTx(callData, signedExtensions, metadata) {
-        let merkleizer: MetadataMerkleizer | null = null
-        const decMeta = unifyMetadata(decAnyMetadata(metadata))
-        const extra: Array<Uint8Array> = []
-        const additionalSigned: Array<Uint8Array> = []
-        // TODO use the best version
-        for (const { identifier } of decMeta.extrinsic.signedExtensions[0]) {
-          if (identifier === "CheckMetadataHash") {
-            if (getNetworkInfo) {
-              merkleizer = merkleizeMetadata(metadata, await getNetworkInfo())
-              extra.push(Uint8Array.from([1]))
-              additionalSigned.push(
-                mergeUint8([Uint8Array.from([1]), merkleizer.digest()]),
-              )
-              continue
-            } else {
-              console.warn(
-                "The chain supports `CheckMetadataHash`, but `getNetworkInfo` was not provided. Polkadot Vault will need the whole metadata downloaded beforehand.",
-              )
-            }
-          }
-          const signedExtension = signedExtensions[identifier]
-          if (!signedExtension)
-            throw new Error(`Missing ${identifier} signed extension`)
-          extra.push(signedExtension.value)
-          additionalSigned.push(signedExtension.additionalSigned)
-        }
-        const extensions = mergeUint8([...extra, ...additionalSigned])
-
-        const genesis =
-          signedExtensions.CheckGenesis?.additionalSigned ??
-          Binary.fromHex(accountGenesis)
-
-        const qrPayload = merkleizer
-          ? createQrProofedTransaction(
-              VaultQrEncryption.Sr25519,
-              publicKey,
-              merkleizer.getProofForExtrinsicParts(
-                callData,
-                mergeUint8(extra),
-                mergeUint8(additionalSigned),
-              ),
-              callData,
-              extensions,
-              genesis,
-            )
-          : createQrTransaction(
-              VaultQrEncryption.Sr25519,
-              publicKey,
-              callData,
-              extensions,
-              genesis,
-            )
-        setTx(qrPayload)
-
-        const signature = await firstValueFrom(currentScannedSignature$)
-        if (!signature) {
-          throw new Error("Cancelled")
-        }
-
-        const tx = createV4Tx(
-          decMeta,
-          publicKey,
-          // Remove encryption code, we already know it
-          signature.slice(1),
-          extra,
-          callData,
-          // TODO schema?
-          "Sr25519",
-        )
-
-        return tx
-      },
-    }
+      }),
+    })
   }
 
   const accountInfoToAccount = (
@@ -197,7 +215,7 @@ export const createPolkadotVaultProvider = (
     provider: polkadotVaultProviderId,
     address: info.address,
     genesis: info.genesis,
-    signer: createVaultSigner(info),
+    txCreator: createVaultSigner(info),
   })
 
   const accounts$ = vaultAccounts$.pipeState(

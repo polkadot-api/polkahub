@@ -1,3 +1,4 @@
+import { AccountId } from "@polkadot-api/substrate-bindings"
 import {
   Account,
   addrEq,
@@ -11,8 +12,10 @@ import { createSignal } from "@react-rxjs/utils"
 import type { CaipNetwork } from "@reown/appkit/core"
 import { defineChain } from "@reown/appkit/networks"
 import type { SessionTypes } from "@walletconnect/types"
-import { AccountId } from "polkadot-api"
-import { getPolkadotSignerFromPjs } from "polkadot-api/pjs-signer"
+import {
+  getTxCreatorFromPjs,
+  InjectedPolkadotAccount,
+} from "polkadot-api/pjs-signer"
 import {
   catchError,
   combineLatest,
@@ -37,8 +40,11 @@ import {
 } from "rxjs"
 
 export const walletConnectProviderId = "walletconnect"
-export interface WalletConnectAccount extends Account {
+export interface WalletConnectAccount extends Account<
+  InjectedPolkadotAccount["txCreator"]
+> {
   provider: "walletconnect"
+  txCreator: InjectedPolkadotAccount["txCreator"]
 }
 
 type WalletConnectStatus =
@@ -198,16 +204,17 @@ export const createWalletConnectProvider = (
 
   const initializeSession$ = () =>
     provider$.pipe(
-      switchMap((provider): Promise<InitializedSession> =>
-        provider.client.connect({
-          requiredNamespaces: {
-            polkadot: {
-              methods: ["polkadot_signTransaction", "polkadot_signMessage"],
-              chains,
-              events: ["chainChanged", "accountsChanged"],
+      switchMap(
+        (provider): Promise<InitializedSession> =>
+          provider.client.connect({
+            requiredNamespaces: {
+              polkadot: {
+                methods: ["polkadot_signTransaction", "polkadot_signMessage"],
+                chains,
+                events: ["chainChanged", "accountsChanged"],
+              },
             },
-          },
-        }),
+          }),
       ),
     )
 
@@ -325,7 +332,7 @@ export const createWalletConnectProvider = (
     )
 
   const getSigner = (session: SessionTypes.Struct, address: string) =>
-    getPolkadotSignerFromPjs(
+    getTxCreatorFromPjs(
       address,
       async (transactionPayload) => {
         const provider = await firstValueFrom(provider$)
@@ -348,8 +355,9 @@ export const createWalletConnectProvider = (
       async ({ address, data }) => {
         const provider = await firstValueFrom(provider$)
 
-        // const chainId = provider.session.topic.split(":")[1];
-        const chainId = session.topic.split(":")[1]
+        const chainId =
+          session.namespaces.polkadot?.chains?.[0] ??
+          session.topic.split(":")[1]
 
         return provider.client.request({
           topic: session.topic,
@@ -372,7 +380,7 @@ export const createWalletConnectProvider = (
     return accounts.map((address) => ({
       provider: walletConnectProviderId,
       address,
-      signer: getSigner(session, address),
+      txCreator: getSigner(session, address),
     }))
   }
 

@@ -44,10 +44,13 @@ import {
 
 export const pjsWalletProviderId = "pjs-wallet"
 
-export interface PjsWalletAccount extends Account {
+export interface PjsWalletAccount extends Account<
+  InjectedPolkadotAccount["txCreator"]
+> {
   provider: "pjs-wallet"
   extensionId: string
   injectedAccount: InjectedPolkadotAccount
+  txCreator: InjectedPolkadotAccount["txCreator"]
 }
 
 export interface PjsWalletProvider extends Plugin<PjsWalletAccount> {
@@ -201,7 +204,7 @@ export const createPjsWalletProvider = (
               provider: pjsWalletProviderId,
               address: acc.address,
               name: acc.name,
-              signer: acc.polkadotSigner,
+              txCreator: acc.txCreator,
               extensionId: extension.name,
               injectedAccount: acc,
             }),

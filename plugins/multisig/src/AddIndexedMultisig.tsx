@@ -191,7 +191,7 @@ const IndexedMultisigInfo: FC<{
       Object.entries(availableAccounts)
         .map(([name, accounts]) => ({
           name,
-          accounts: accounts.filter((acc) => !!acc.signer),
+          accounts: accounts.filter((acc) => !!acc.txCreator),
         }))
         .filter(({ accounts }) => accounts.length > 0),
     [availableAccounts],

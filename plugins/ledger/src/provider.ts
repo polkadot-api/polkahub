@@ -9,7 +9,7 @@ import {
   Plugin,
 } from "@polkahub/plugin"
 import { DefaultedStateObservable, withDefault } from "@react-rxjs/core"
-import { AccountId, type PolkadotSigner } from "polkadot-api"
+import { AccountId } from "polkadot-api"
 import {
   catchError,
   combineLatest,
@@ -23,15 +23,18 @@ import {
 
 export const ledgerProviderId = "ledger"
 
+type LedgerTxCreator = Awaited<ReturnType<LedgerSigner["getTxCreator"]>>
+
 export interface LedgerAccountInfo {
   address: AccountAddress
   deviceId: number
   index: number
 }
-export interface LedgerAccount extends Account {
+export interface LedgerAccount extends Account<LedgerTxCreator> {
   provider: "ledger"
   deviceId: number
   index: number
+  txCreator: LedgerTxCreator
 }
 
 export interface LedgerProvider extends Plugin<LedgerAccount> {
@@ -98,18 +101,18 @@ export const createLedgerProvider = (
       ),
     )
 
-  const createLedgerSigner = (account: LedgerAccountInfo): PolkadotSigner => {
+  const createLedgerSigner = (account: LedgerAccountInfo): LedgerTxCreator => {
     const publicKey = AccountId().enc(account.address)
 
     const operateWithSigner = async <R>(
-      cb: (signer: PolkadotSigner) => Promise<R>,
+      cb: (signer: LedgerTxCreator) => Promise<R>,
     ) => {
       const { ledgerSigner, close } =
         await initializeLedgerSigner(createTransport)
       try {
         const info = await getNetworkInfo()
 
-        const signer = await ledgerSigner.getPolkadotSigner(info, account.index)
+        const signer = await ledgerSigner.getTxCreator(info, account.index)
         if (!pkAreEq(publicKey, signer.publicKey)) {
           throw new Error("Device mismatch")
         }
@@ -120,19 +123,28 @@ export const createLedgerProvider = (
       }
     }
 
-    return {
-      publicKey,
+    type FunctionOnly<T extends (...args: any) => any> = (
+      ...args: Parameters<T>
+    ) => ReturnType<T>
+    const createTx: FunctionOnly<LedgerTxCreator> = (...args) =>
+      operateWithSigner((creator) => creator(...args))
+
+    type PropsOnly<T> = {
+      [K in keyof T]: T[K]
+    }
+    const signerProps: PropsOnly<LedgerTxCreator> = {
+      publicKey: publicKey as any,
       signBytes: (...args) =>
         operateWithSigner((signer) => signer.signBytes(...args)),
-      signTx: (...args) =>
-        operateWithSigner((signer) => signer.signTx(...args)),
     }
+
+    return Object.assign(createTx as LedgerTxCreator, signerProps)
   }
 
   const toAccount = (info: LedgerAccountInfo): LedgerAccount => ({
     provider: ledgerProviderId,
     ...info,
-    signer: createLedgerSigner(info),
+    txCreator: createLedgerSigner(info),
   })
 
   const accounts$ = ledgerAccounts$.pipeState(

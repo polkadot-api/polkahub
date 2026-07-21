@@ -1,6 +1,7 @@
 import {
-  getMultisigSigner,
-  MultisigSignerOptions,
+  getMultisigTxCreator,
+  MultisigTxCreatorOptions,
+  WrapTxCreator,
 } from "@polkadot-api/meta-signers"
 import {
   AccountId,
@@ -17,9 +18,9 @@ import {
   PersistenceProvider,
   Plugin,
   SerializableAccount,
+  type TxCreator,
 } from "@polkahub/plugin"
 import { DefaultedStateObservable, state } from "@react-rxjs/core"
-import { PolkadotSigner } from "polkadot-api"
 import {
   BehaviorSubject,
   combineLatest,
@@ -39,13 +40,16 @@ export interface MultisigInfo {
   name?: string
 }
 
-export type CreateMultisigSigner = (
+export type IdentifiedTxCreator = { publicKey: Uint8Array } & TxCreator
+export type CreateMultisigTxCreator<T extends IdentifiedTxCreator> = (
   info: MultisigInfo,
-  parentSigner?: PolkadotSigner,
-) => PolkadotSigner | null
+  parentSigner?: T,
+) => WrapTxCreator<T> | null
 
 export const multisigProviderId = "multisig"
-export interface MultisigAccount extends Account {
+export interface MultisigAccount<
+  T extends TxCreator = TxCreator,
+> extends Account<WrapTxCreator<T>> {
   provider: "multisig"
   info: MultisigInfo
 }
@@ -60,7 +64,7 @@ export interface MultisigProvider extends Plugin<MultisigAccount> {
 }
 
 export const createMultisigProvider = (
-  createMultisigSigner: CreateMultisigSigner,
+  createMultisigTxCreator: CreateMultisigTxCreator<IdentifiedTxCreator>,
   opts?: Partial<{
     persist: PersistenceProvider
   }>,
@@ -78,11 +82,11 @@ export const createMultisigProvider = (
 
   const getAccount = (
     info: MultisigInfo,
-    parentSigner: PolkadotSigner | undefined,
+    parentSigner?: IdentifiedTxCreator,
   ): MultisigAccount => ({
     provider: multisigProviderId,
     address: getMultisigAddress(info),
-    signer: createMultisigSigner(info, parentSigner) ?? undefined,
+    txCreator: createMultisigTxCreator(info, parentSigner) ?? undefined,
     info,
     name: info.name,
   })
@@ -104,8 +108,20 @@ export const createMultisigProvider = (
       )
       if (!plugin) return getAccount(info, undefined)
 
-      const parentSigner = await plugin.deserialize(info.parentSigner)
-      return getAccount(info, parentSigner?.signer)
+      const parentSigner: Account<
+        TxCreator &
+          (
+            | {
+                publicKey: Uint8Array
+              }
+            | {}
+          )
+      > | null = await plugin.deserialize(info.parentSigner)
+      const parentTxCreator =
+        !parentSigner?.txCreator || !("publicKey" in parentSigner.txCreator)
+          ? undefined
+          : parentSigner.txCreator
+      return getAccount(info, parentTxCreator)
     } catch (ex) {
       console.error(ex)
       return getAccount(info, undefined)
@@ -183,26 +199,19 @@ export const multisigDirectSigner =
         }
       | undefined
     >,
-    txPaymentInfo: (
-      uxt: Uint8Array,
-      len: number,
-    ) => Promise<{
-      weight: {
-        ref_time: bigint
-        proof_size: bigint
-      }
-    }>,
-    opts?: MultisigSignerOptions<AccountAddress>,
-  ): CreateMultisigSigner =>
-  (info, parentSigner) =>
-    parentSigner
-      ? getMultisigSigner(
+    opts?: MultisigTxCreatorOptions<AccountAddress>,
+  ): CreateMultisigTxCreator<IdentifiedTxCreator> =>
+  (info, parentSigner) => {
+    if (parentSigner && !parentSigner.publicKey)
+      throw new Error("Proxy provider requires TxCreator with `publicKey`.")
+    return parentSigner
+      ? getMultisigTxCreator(
           info,
           getMultisigInfo,
-          txPaymentInfo,
           parentSigner,
           opts ?? {
             method: () => "as_multi",
           },
         )
       : null
+  }

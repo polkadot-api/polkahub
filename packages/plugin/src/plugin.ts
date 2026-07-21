@@ -1,11 +1,11 @@
-import type { PolkadotSigner } from "polkadot-api"
+import type { TxCreator } from "@polkadot-api/tx-creator"
 import type { Observable } from "rxjs"
 import { AccountAddress } from "./addr"
 
-export interface Account {
+export interface Account<T extends TxCreator = TxCreator> {
   provider: string
   address: AccountAddress
-  signer?: PolkadotSigner
+  txCreator?: T
   name?: string
 }
 

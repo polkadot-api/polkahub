@@ -1,5 +1,20 @@
 ## Unreleased
 
+## 0.8.0 2026-07-13
+
+### Changed
+
+- Updated to PAPI v3
+
+### Removed
+
+- `@polkahub/mimir`
+
+### Fixed
+
+- `@polkahub/wallet-connect`
+  - Potentially broken `signBytes` because of unmatched `chainId`
+
 ## 0.7.2 2026-07-08
 
 ### Fixed

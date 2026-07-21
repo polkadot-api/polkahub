@@ -1,4 +1,4 @@
-import { getProxySigner } from "@polkadot-api/meta-signers"
+import { getProxyTxCreator, WrapTxCreator } from "@polkadot-api/meta-signers"
 import {
   Account,
   AccountAddress,
@@ -8,9 +8,9 @@ import {
   PersistenceProvider,
   Plugin,
   SerializableAccount,
+  type TxCreator,
 } from "@polkahub/plugin"
 import { DefaultedStateObservable, state } from "@react-rxjs/core"
-import { PolkadotSigner } from "polkadot-api"
 import {
   BehaviorSubject,
   combineLatest,
@@ -28,7 +28,9 @@ export interface ProxyInfo {
 }
 
 export const proxyProviderId = "proxy"
-export interface ProxyAccount extends Account {
+export interface ProxyAccount<T extends TxCreator = TxCreator> extends Account<
+  WrapTxCreator<T>
+> {
   provider: "proxy"
   info: ProxyInfo
 }
@@ -73,16 +75,22 @@ export const createProxyProvider = (
   )
   const plugins$ = new BehaviorSubject<Plugin[]>([])
 
-  const getAccount = (
+  const getAccount = <T extends TxCreator>(
     info: ProxyInfo,
-    parentSigner?: PolkadotSigner,
-  ): ProxyAccount => ({
-    provider: proxyProviderId,
-    address: info.real,
-    signer: parentSigner ? getProxySigner(info, parentSigner) : undefined,
-    name: info.name,
-    info,
-  })
+    parentSigner?: T & { publicKey?: Uint8Array },
+  ): ProxyAccount<T> => {
+    if (parentSigner && !parentSigner.publicKey)
+      throw new Error("Proxy provider requires TxCreator with `publicKey`.")
+    return {
+      provider: proxyProviderId,
+      address: info.real,
+      txCreator: parentSigner
+        ? getProxyTxCreator(info, parentSigner as any)
+        : undefined,
+      name: info.name,
+      info,
+    }
+  }
 
   const proxyInfoToAccount = async (info: ProxyInfo) => {
     try {
@@ -100,7 +108,7 @@ export const createProxyProvider = (
 
       if (!plugin) return getAccount(info)
       const parentSigner = await plugin.deserialize(info.parentSigner)
-      return getAccount(info, parentSigner?.signer)
+      return getAccount(info, parentSigner?.txCreator)
     } catch (ex) {
       console.error(ex)
       return getAccount(info)

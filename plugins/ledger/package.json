@@ -1,6 +1,6 @@
 {
   "name": "@polkahub/ledger",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "author": "Victor Oliva (https://github.com/voliva)",
   "repository": {
     "type": "git",
@@ -31,7 +31,7 @@
     "build": "tsc -b && rollup -c ../../rollup.config.js"
   },
   "dependencies": {
-    "@polkadot-api/ledger-signer": "^0.3.3",
+    "@polkadot-api/ledger-signer": "0.4.0-rc.2",
     "@polkahub/context": "workspace:^*",
     "@polkahub/plugin": "workspace:^*",
     "@polkahub/select-account": "workspace:^*",
@@ -40,7 +40,7 @@
     "@react-rxjs/utils": "^0.9.7",
     "buffer": "^6.0.3",
     "lucide-react": "^1.23.0",
-    "polkadot-api": "^2.1.7",
+    "polkadot-api": "3.0.0-rc.4",
     "rxjs": "^7.8.2"
   },
   "peerDependencies": {

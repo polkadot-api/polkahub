@@ -1,6 +1,6 @@
 {
   "name": "polkahub",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "author": "Victor Oliva (https://github.com/voliva)",
   "repository": {
     "type": "git",
@@ -33,7 +33,6 @@
   "dependencies": {
     "@polkahub/context": "workspace:^*",
     "@polkahub/ledger": "workspace:^*",
-    "@polkahub/mimir": "workspace:^*",
     "@polkahub/multisig": "workspace:^*",
     "@polkahub/pjs-wallet": "workspace:^*",
     "@polkahub/plugin": "workspace:^*",
@@ -47,7 +46,7 @@
     "@react-rxjs/core": "^0.10.8",
     "@react-rxjs/utils": "^0.9.7",
     "lucide-react": "^1.23.0",
-    "polkadot-api": "^2.1.7"
+    "polkadot-api": "3.0.0-rc.4"
   },
   "peerDependencies": {
     "@types/react": "^19.2.2",

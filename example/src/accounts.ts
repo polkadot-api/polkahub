@@ -48,10 +48,7 @@ export const polkaHub = createPolkaHub(
   [
     createProxyProvider(getDelegates),
     createMultisigProvider(
-      multisigDirectSigner(
-        dotApi.query.Multisig.Multisigs.getValue,
-        dotApi.apis.TransactionPaymentApi.query_info,
-      ),
+      multisigDirectSigner(dotApi.query.Multisig.Multisigs.getValue),
     ),
     selectedAccountPlugin,
     pjsWalletProvider,
