@@ -1,4 +1,4 @@
-import { TxCreator } from "@polkadot-api/tx-creator"
+import type { TxCreator } from "@polkadot-api/tx-creator"
 import type { Observable } from "rxjs"
 import { AccountAddress } from "./addr"
 

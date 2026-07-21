@@ -10,6 +10,11 @@
 
 - `@polkahub/mimir`
 
+### Fixed
+
+- `@polkahub/wallet-connect`
+  - Potentially broken `signBytes` because of unmatched `chainId`
+
 ## 0.7.2 2026-07-08
 
 ### Fixed

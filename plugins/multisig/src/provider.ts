@@ -18,7 +18,7 @@ import {
   PersistenceProvider,
   Plugin,
   SerializableAccount,
-  TxCreator,
+  type TxCreator,
 } from "@polkahub/plugin"
 import { DefaultedStateObservable, state } from "@react-rxjs/core"
 import {

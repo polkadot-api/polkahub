@@ -4,7 +4,7 @@ import {
   getMultisigAccountId,
   HexString,
 } from "@polkadot-api/substrate-bindings"
-import { TxCreator } from "@polkahub/plugin"
+import type { TxCreator } from "@polkahub/plugin"
 import {
   Dialog,
   DialogBody,

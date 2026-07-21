@@ -21,7 +21,7 @@ import {
   persistedState,
   PersistenceProvider,
   Plugin,
-  TxCreator,
+  type TxCreator,
 } from "@polkahub/plugin"
 import { DefaultedStateObservable, state, withDefault } from "@react-rxjs/core"
 import { createSignal } from "@react-rxjs/utils"

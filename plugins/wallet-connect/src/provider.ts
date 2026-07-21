@@ -355,8 +355,9 @@ export const createWalletConnectProvider = (
       async ({ address, data }) => {
         const provider = await firstValueFrom(provider$)
 
-        // const chainId = provider.session.topic.split(":")[1];
-        const chainId = session.topic.split(":")[1]
+        const chainId =
+          session.namespaces.polkadot?.chains?.[0] ??
+          session.topic.split(":")[1]
 
         return provider.client.request({
           topic: session.topic,
