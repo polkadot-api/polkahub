@@ -15,20 +15,17 @@ import {
 import { state, useStateObservable } from "@react-rxjs/core"
 import { createSignal } from "@react-rxjs/utils"
 import { Link } from "lucide-react"
+import { SignerTxCreator } from "polkadot-api/tx-creator"
 import { FC } from "react"
 import { filter, firstValueFrom } from "rxjs"
-import {
-  CreateMultisigTxCreator,
-  IdentifiedTxCreator,
-  MultisigInfo,
-} from "./provider"
+import { CreateMultisigTxCreator, MultisigInfo } from "./provider"
 
 const [urlChange$, setUrl] = createSignal<string | null>()
 const url$ = state(urlChange$, null)
 
 const [enc] = AccountId()
 export const multisigExternalSigner =
-  <T extends IdentifiedTxCreator>(
+  <T extends SignerTxCreator>(
     getMultisigUrl: (
       info: MultisigInfo,
       callData: HexString,

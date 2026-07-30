@@ -2,6 +2,7 @@ import { AccountId } from "@polkadot-api/substrate-bindings"
 import {
   Account,
   addrEq,
+  CommonSignerTxCreator,
   localStorageProvider,
   persistedState,
   PersistenceProvider,
@@ -12,10 +13,7 @@ import { createSignal } from "@react-rxjs/utils"
 import type { CaipNetwork } from "@reown/appkit/core"
 import { defineChain } from "@reown/appkit/networks"
 import type { SessionTypes } from "@walletconnect/types"
-import {
-  getTxCreatorFromPjs,
-  InjectedPolkadotAccount,
-} from "polkadot-api/pjs-signer"
+import { getTxCreatorFromPjs } from "polkadot-api/pjs-signer"
 import {
   catchError,
   combineLatest,
@@ -40,11 +38,9 @@ import {
 } from "rxjs"
 
 export const walletConnectProviderId = "walletconnect"
-export interface WalletConnectAccount extends Account<
-  InjectedPolkadotAccount["txCreator"]
-> {
+export interface WalletConnectAccount extends Account {
   provider: "walletconnect"
-  txCreator: InjectedPolkadotAccount["txCreator"]
+  txCreator: CommonSignerTxCreator
 }
 
 type WalletConnectStatus =

@@ -3,6 +3,7 @@ import {
   MetadataMerkleizer,
 } from "@polkadot-api/merkleize-metadata"
 import {
+  CommonSignerTxCreator,
   createV4Tx,
   getSignBytes,
   withCommonExtensions,
@@ -26,7 +27,6 @@ import {
 import { DefaultedStateObservable, state, withDefault } from "@react-rxjs/core"
 import { createSignal } from "@react-rxjs/utils"
 import { Binary, getSs58AddressInfo, HexString } from "polkadot-api"
-import type { RawTxCreator } from "polkadot-api/tx-creator"
 import { fromHex, mergeUint8, toHex } from "polkadot-api/utils"
 import { firstValueFrom, map, merge, race } from "rxjs"
 
@@ -35,11 +35,10 @@ export interface VaultAccountInfo {
   address: AccountAddress
   genesis: HexString
 }
-type Creator = RawTxCreator
-export interface PolkadotVaultAccount extends Account<Creator> {
+export interface PolkadotVaultAccount extends Account {
   provider: "polkadot-vault"
   genesis: HexString
-  txCreator: Creator
+  txCreator: CommonSignerTxCreator
 }
 
 export interface PolkadotVaultProvider extends Plugin<PolkadotVaultAccount> {
@@ -93,7 +92,7 @@ export const createPolkadotVaultProvider = (
   const createVaultSigner = ({
     address,
     genesis: accountGenesis,
-  }: VaultAccountInfo): Creator => {
+  }: VaultAccountInfo): CommonSignerTxCreator => {
     const info = getSs58AddressInfo(address)
     if (!info.isValid) {
       throw new Error("Invalid SS58 address " + address)

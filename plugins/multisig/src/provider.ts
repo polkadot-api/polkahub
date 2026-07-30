@@ -21,6 +21,7 @@ import {
   type TxCreator,
 } from "@polkahub/plugin"
 import { DefaultedStateObservable, state } from "@react-rxjs/core"
+import { SignerTxCreator } from "polkadot-api/tx-creator"
 import {
   BehaviorSubject,
   combineLatest,
@@ -40,15 +41,14 @@ export interface MultisigInfo {
   name?: string
 }
 
-export type IdentifiedTxCreator = { publicKey: Uint8Array } & TxCreator
-export type CreateMultisigTxCreator<T extends IdentifiedTxCreator> = (
+export type CreateMultisigTxCreator<T extends SignerTxCreator> = (
   info: MultisigInfo,
   parentSigner?: T,
 ) => WrapTxCreator<T> | null
 
 export const multisigProviderId = "multisig"
 export interface MultisigAccount<
-  T extends TxCreator = TxCreator,
+  T extends SignerTxCreator = SignerTxCreator,
 > extends Account<WrapTxCreator<T>> {
   provider: "multisig"
   info: MultisigInfo
@@ -64,7 +64,7 @@ export interface MultisigProvider extends Plugin<MultisigAccount> {
 }
 
 export const createMultisigProvider = (
-  createMultisigTxCreator: CreateMultisigTxCreator<IdentifiedTxCreator>,
+  createMultisigTxCreator: CreateMultisigTxCreator<SignerTxCreator>,
   opts?: Partial<{
     persist: PersistenceProvider
   }>,
@@ -82,7 +82,7 @@ export const createMultisigProvider = (
 
   const getAccount = (
     info: MultisigInfo,
-    parentSigner?: IdentifiedTxCreator,
+    parentSigner?: SignerTxCreator,
   ): MultisigAccount => ({
     provider: multisigProviderId,
     address: getMultisigAddress(info),
@@ -120,7 +120,7 @@ export const createMultisigProvider = (
       const parentTxCreator =
         !parentSigner?.txCreator || !("publicKey" in parentSigner.txCreator)
           ? undefined
-          : parentSigner.txCreator
+          : (parentSigner.txCreator as SignerTxCreator)
       return getAccount(info, parentTxCreator)
     } catch (ex) {
       console.error(ex)
@@ -200,7 +200,7 @@ export const multisigDirectSigner =
       | undefined
     >,
     opts?: MultisigTxCreatorOptions<AccountAddress>,
-  ): CreateMultisigTxCreator<IdentifiedTxCreator> =>
+  ): CreateMultisigTxCreator<SignerTxCreator> =>
   (info, parentSigner) => {
     if (parentSigner && !parentSigner.publicKey)
       throw new Error("Proxy provider requires TxCreator with `publicKey`.")

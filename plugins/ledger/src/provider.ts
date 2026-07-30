@@ -3,6 +3,7 @@ import { LedgerSigner } from "@polkadot-api/ledger-signer"
 import {
   Account,
   AccountAddress,
+  CommonSignerTxCreator,
   localStorageProvider,
   persistedState,
   PersistenceProvider,
@@ -23,18 +24,17 @@ import {
 
 export const ledgerProviderId = "ledger"
 
-type LedgerTxCreator = Awaited<ReturnType<LedgerSigner["getTxCreator"]>>
-
 export interface LedgerAccountInfo {
   address: AccountAddress
   deviceId: number
   index: number
 }
-export interface LedgerAccount extends Account<LedgerTxCreator> {
+
+export interface LedgerAccount extends Account {
   provider: "ledger"
   deviceId: number
   index: number
-  txCreator: LedgerTxCreator
+  txCreator: CommonSignerTxCreator
 }
 
 export interface LedgerProvider extends Plugin<LedgerAccount> {
@@ -101,11 +101,13 @@ export const createLedgerProvider = (
       ),
     )
 
-  const createLedgerSigner = (account: LedgerAccountInfo): LedgerTxCreator => {
+  const createLedgerSigner = (
+    account: LedgerAccountInfo,
+  ): CommonSignerTxCreator => {
     const publicKey = AccountId().enc(account.address)
 
     const operateWithSigner = async <R>(
-      cb: (signer: LedgerTxCreator) => Promise<R>,
+      cb: (signer: CommonSignerTxCreator) => Promise<R>,
     ) => {
       const { ledgerSigner, close } =
         await initializeLedgerSigner(createTransport)
@@ -126,19 +128,19 @@ export const createLedgerProvider = (
     type FunctionOnly<T extends (...args: any) => any> = (
       ...args: Parameters<T>
     ) => ReturnType<T>
-    const createTx: FunctionOnly<LedgerTxCreator> = (...args) =>
+    const createTx: FunctionOnly<CommonSignerTxCreator> = (...args) =>
       operateWithSigner((creator) => creator(...args))
 
     type PropsOnly<T> = {
       [K in keyof T]: T[K]
     }
-    const signerProps: PropsOnly<LedgerTxCreator> = {
+    const signerProps: PropsOnly<CommonSignerTxCreator> = {
       publicKey: publicKey as any,
       signBytes: (...args) =>
         operateWithSigner((signer) => signer.signBytes(...args)),
     }
 
-    return Object.assign(createTx as LedgerTxCreator, signerProps)
+    return Object.assign(createTx as CommonSignerTxCreator, signerProps)
   }
 
   const toAccount = (info: LedgerAccountInfo): LedgerAccount => ({
