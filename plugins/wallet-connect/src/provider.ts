@@ -200,17 +200,16 @@ export const createWalletConnectProvider = (
 
   const initializeSession$ = () =>
     provider$.pipe(
-      switchMap(
-        (provider): Promise<InitializedSession> =>
-          provider.client.connect({
-            requiredNamespaces: {
-              polkadot: {
-                methods: ["polkadot_signTransaction", "polkadot_signMessage"],
-                chains,
-                events: ["chainChanged", "accountsChanged"],
-              },
+      switchMap((provider): Promise<InitializedSession> =>
+        provider.client.connect({
+          requiredNamespaces: {
+            polkadot: {
+              methods: ["polkadot_signTransaction", "polkadot_signMessage"],
+              chains,
+              events: ["chainChanged", "accountsChanged"],
             },
-          }),
+          },
+        }),
       ),
     )
 

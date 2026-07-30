@@ -344,16 +344,14 @@ export function svgToPng(
   height: number,
 ): Promise<string> {
   return new Promise((resolve, reject) => {
-    if (
-      !(
-        Number.isSafeInteger(width) &&
-        Number.isSafeInteger(height) &&
-        width > 0 &&
-        height > 0 &&
-        width < 8192 &&
-        height < 8192
-      )
-    )
+    if (!(
+      Number.isSafeInteger(width) &&
+      Number.isSafeInteger(height) &&
+      width > 0 &&
+      height > 0 &&
+      width < 8192 &&
+      height < 8192
+    ))
       return reject(
         new Error("invalid width and height: " + width + " " + height),
       )

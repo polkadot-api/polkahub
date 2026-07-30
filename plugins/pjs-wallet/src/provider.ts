@@ -198,16 +198,14 @@ export const createPjsWalletProvider = (
       map((extensions) =>
         Array.from(extensions.values()).map(({ extension, accounts }) => ({
           extension,
-          accounts: accounts.map(
-            (acc): PjsWalletAccount => ({
-              provider: pjsWalletProviderId,
-              address: acc.address,
-              name: acc.name,
-              txCreator: acc.txCreator,
-              extensionId: extension.name,
-              injectedAccount: acc,
-            }),
-          ),
+          accounts: accounts.map((acc): PjsWalletAccount => ({
+            provider: pjsWalletProviderId,
+            address: acc.address,
+            name: acc.name,
+            txCreator: acc.txCreator,
+            extensionId: extension.name,
+            injectedAccount: acc,
+          })),
         })),
       ),
     ),

@@ -86,8 +86,7 @@ export const createReadOnlyProvider = (
       setPersistedAccounts(
         (v) =>
           v.filter((acc) => normalizeInfo(acc).address !== addr) as
-            | ReadonlyAccountInfo[]
-            | AccountAddress[],
+            ReadonlyAccountInfo[] | AccountAddress[],
       ),
     toAccount: (address) =>
       getAccount({
