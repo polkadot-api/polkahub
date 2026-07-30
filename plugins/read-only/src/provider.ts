@@ -1,13 +1,14 @@
 import {
   Account,
   AccountAddress,
+  CommonSignerTxCreator,
   localStorageProvider,
   persistedState,
   PersistenceProvider,
   Plugin,
 } from "@polkahub/plugin"
 import { DefaultedStateObservable, withDefault } from "@react-rxjs/core"
-import { getFakeTxCreator, RawTxCreator } from "polkadot-api/tx-creator"
+import { getFakeTxCreator } from "polkadot-api/tx-creator"
 import { map } from "rxjs"
 
 export interface ReadonlyAccountInfo {
@@ -16,7 +17,7 @@ export interface ReadonlyAccountInfo {
 }
 
 export const readOnlyProviderId = "readonly"
-type ReadOnlyAccount = Account<RawTxCreator>
+type ReadOnlyAccount = Account<CommonSignerTxCreator>
 export interface ReadOnlyProvider extends Plugin<ReadOnlyAccount> {
   id: "readonly"
   accounts$: DefaultedStateObservable<ReadOnlyAccount[]>
@@ -85,8 +86,7 @@ export const createReadOnlyProvider = (
       setPersistedAccounts(
         (v) =>
           v.filter((acc) => normalizeInfo(acc).address !== addr) as
-            | ReadonlyAccountInfo[]
-            | AccountAddress[],
+            ReadonlyAccountInfo[] | AccountAddress[],
       ),
     toAccount: (address) =>
       getAccount({

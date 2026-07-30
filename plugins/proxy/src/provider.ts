@@ -8,9 +8,9 @@ import {
   PersistenceProvider,
   Plugin,
   SerializableAccount,
-  type TxCreator,
 } from "@polkahub/plugin"
 import { DefaultedStateObservable, state } from "@react-rxjs/core"
+import { SignerTxCreator } from "polkadot-api/tx-creator"
 import {
   BehaviorSubject,
   combineLatest,
@@ -28,9 +28,9 @@ export interface ProxyInfo {
 }
 
 export const proxyProviderId = "proxy"
-export interface ProxyAccount<T extends TxCreator = TxCreator> extends Account<
-  WrapTxCreator<T>
-> {
+export interface ProxyAccount<
+  T extends SignerTxCreator = SignerTxCreator,
+> extends Account<WrapTxCreator<T>> {
   provider: "proxy"
   info: ProxyInfo
 }
@@ -75,9 +75,9 @@ export const createProxyProvider = (
   )
   const plugins$ = new BehaviorSubject<Plugin[]>([])
 
-  const getAccount = <T extends TxCreator>(
+  const getAccount = <T extends SignerTxCreator>(
     info: ProxyInfo,
-    parentSigner?: T & { publicKey?: Uint8Array },
+    parentSigner?: T,
   ): ProxyAccount<T> => {
     if (parentSigner && !parentSigner.publicKey)
       throw new Error("Proxy provider requires TxCreator with `publicKey`.")
@@ -108,7 +108,10 @@ export const createProxyProvider = (
 
       if (!plugin) return getAccount(info)
       const parentSigner = await plugin.deserialize(info.parentSigner)
-      return getAccount(info, parentSigner?.txCreator)
+      return getAccount(
+        info,
+        parentSigner?.txCreator as SignerTxCreator | undefined,
+      )
     } catch (ex) {
       console.error(ex)
       return getAccount(info)

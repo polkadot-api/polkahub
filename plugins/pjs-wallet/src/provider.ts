@@ -7,6 +7,7 @@ import {
 import {
   Account,
   addrEq,
+  CommonSignerTxCreator,
   localStorageProvider,
   persistedState,
   PersistenceProvider,
@@ -44,13 +45,11 @@ import {
 
 export const pjsWalletProviderId = "pjs-wallet"
 
-export interface PjsWalletAccount extends Account<
-  InjectedPolkadotAccount["txCreator"]
-> {
+export interface PjsWalletAccount extends Account {
   provider: "pjs-wallet"
   extensionId: string
   injectedAccount: InjectedPolkadotAccount
-  txCreator: InjectedPolkadotAccount["txCreator"]
+  txCreator: CommonSignerTxCreator
 }
 
 export interface PjsWalletProvider extends Plugin<PjsWalletAccount> {
@@ -199,16 +198,14 @@ export const createPjsWalletProvider = (
       map((extensions) =>
         Array.from(extensions.values()).map(({ extension, accounts }) => ({
           extension,
-          accounts: accounts.map(
-            (acc): PjsWalletAccount => ({
-              provider: pjsWalletProviderId,
-              address: acc.address,
-              name: acc.name,
-              txCreator: acc.txCreator,
-              extensionId: extension.name,
-              injectedAccount: acc,
-            }),
-          ),
+          accounts: accounts.map((acc): PjsWalletAccount => ({
+            provider: pjsWalletProviderId,
+            address: acc.address,
+            name: acc.name,
+            txCreator: acc.txCreator,
+            extensionId: extension.name,
+            injectedAccount: acc,
+          })),
         })),
       ),
     ),

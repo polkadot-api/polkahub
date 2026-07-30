@@ -139,13 +139,12 @@ const createFrames = (payload: Uint8Array): Uint8Array[] => {
     idx += frameSize
   }
 
-  return frames.map(
-    (f, i): Uint8Array =>
-      mergeUint8([
-        new Uint8Array([0x00]),
-        Binary.fromHex(frames.length.toString(16).padStart(4, "0")),
-        Binary.fromHex(i.toString(16).padStart(4, "0")),
-        f,
-      ]),
+  return frames.map((f, i): Uint8Array =>
+    mergeUint8([
+      new Uint8Array([0x00]),
+      Binary.fromHex(frames.length.toString(16).padStart(4, "0")),
+      Binary.fromHex(i.toString(16).padStart(4, "0")),
+      f,
+    ]),
   )
 }

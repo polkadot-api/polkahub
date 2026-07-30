@@ -1,5 +1,11 @@
 ## Unreleased
 
+## 0.9.0 2026-07-30
+
+### Changed
+
+- Updated to @polkadot-api@3.0.0-rc.5
+
 ## 0.8.0 2026-07-13
 
 ### Changed
