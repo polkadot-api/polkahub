@@ -1,6 +1,6 @@
 {
   "name": "@polkahub/state",
-  "version": "0.9.1",
+  "version": "0.10.0",
   "author": "Victor Oliva (https://github.com/voliva)",
   "repository": {
     "type": "git",
@@ -29,10 +29,10 @@
     "build": "tsc -b && rollup -c ../../rollup.config.js"
   },
   "dependencies": {
-    "@polkahub/plugin": "workspace:^*",
+    "@polkahub/plugin": "workspace:^",
     "@react-rxjs/utils": "^0.9.7",
     "@rx-state/core": "^0.1.4",
-    "polkadot-api": "3.0.0",
+    "polkadot-api": "3.3.0",
     "rxjs": "^7.8.2"
   }
 }

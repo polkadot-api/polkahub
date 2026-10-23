@@ -1,16 +1,21 @@
 ## Unreleased
 
-## 0.9.0 2026-08-20
+## 0.10.0 2026-10-23
+
+- Update dependencies
+- Update to polkadot-api@3.3.0
+
+## 0.9.1 2026-08-20
 
 ### Fixed
 
-- Updated to @polkadot-api@3.0.0
+- Updated to polkadot-api@3.0.0
 
 ## 0.9.0 2026-07-30
 
 ### Changed
 
-- Updated to @polkadot-api@3.0.0-rc.5
+- Updated to polkadot-api@3.0.0-rc.5
 
 ## 0.8.0 2026-07-13
 

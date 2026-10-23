@@ -7,11 +7,10 @@ import {
 import {
   Account,
   addrEq,
-  CommonSignerTxCreator,
   localStorageProvider,
   persistedState,
   PersistenceProvider,
-  Plugin,
+  Plugin
 } from "@polkahub/plugin"
 import {
   DefaultedStateObservable,
@@ -49,7 +48,7 @@ export interface PjsWalletAccount extends Account {
   provider: "pjs-wallet"
   extensionId: string
   injectedAccount: InjectedPolkadotAccount
-  txCreator: CommonSignerTxCreator
+  txCreator: InjectedPolkadotAccount['txCreator']
 }
 
 export interface PjsWalletProvider extends Plugin<PjsWalletAccount> {

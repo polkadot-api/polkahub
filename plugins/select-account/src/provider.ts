@@ -24,6 +24,7 @@ import {
   NEVER,
   Observable,
   of,
+  startWith,
   Subject,
   Subscription,
   switchMap,
@@ -98,12 +99,15 @@ export const createSelectedAccountPlugin = (
         }),
       ),
     ).pipe(
-      combineLatestWith(ss58Format$),
+      combineLatestWith(ss58Format$.pipe(startWith(null))),
       map(([account, ss58Format]) =>
         account
           ? {
               ...account,
-              address: ss58Reformat(account.address, ss58Format),
+              address:
+                ss58Format == null
+                  ? account.address
+                  : ss58Reformat(account.address, ss58Format),
             }
           : null,
       ),
